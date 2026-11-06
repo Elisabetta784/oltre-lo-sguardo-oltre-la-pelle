@@ -41,7 +41,7 @@ export function VerticalTimeline({
     currentView === "micro"
       ? String(safeActiveIndex + 1).padStart(3, "0")
       : currentView === "beyond"
-      ? "BEYOND"
+      ? "OLTRE"
       : zoomLevel <= 0.25
       ? "MACRO"
       : `${Math.round(zoomLevel * 100)}%`;
@@ -127,7 +127,7 @@ export function VerticalTimeline({
       <div className="relative flex-1 flex items-stretch gap-2.5 sm:gap-3 touch-none">
         {/* Left Column: Dedicated interactive labels (positioned to the left, never overlapping the line) */}
         <div className="relative flex flex-col justify-between py-0 text-right min-w-[56px] pointer-events-auto">
-          {/* 1. BEYOND (Sopra - 0%) */}
+          {/* 1. OLTRE (Sopra - 0%) */}
           <button
             type="button"
             onClick={(e) => {
@@ -140,9 +140,9 @@ export function VerticalTimeline({
                 ? "text-[#c026d3] font-black scale-105"
                 : "text-[#88562C]/60 hover:text-[#523719] font-semibold"
             }`}
-            title="Vista Beyond (0%)"
+            title="Vista Oltre (0%)"
           >
-            BEYOND
+            OLTRE
           </button>
 
           {/* 2. MACRO (Poco più giù - 24%) */}
@@ -191,7 +191,7 @@ export function VerticalTimeline({
           onPointerUp={handlePointerUp}
           onWheel={handleWheel}
           className="relative w-5 sm:w-6 flex items-center justify-center cursor-pointer group"
-          title="Trascina o usa la rotellina per zoomare tra Beyond, Macro e Micro"
+          title="Trascina o usa la rotellina per zoomare tra Oltre, Macro e Micro"
         >
           {/* The Central Line */}
           <div className="relative w-[1.5px] h-full bg-[#88562C]/40 group-hover:bg-[#88562C] transition-colors">

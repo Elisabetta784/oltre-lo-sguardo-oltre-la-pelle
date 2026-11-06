@@ -1,4 +1,4 @@
-# Archivio Sintesi ✦ High-End Web Platform
+# Oltre lo sguardo oltre la pelle ✦ Segni e testimonianze
 
 Piattaforma moderna ad alto impatto visivo progettata per archiviare, consultare e valorizzare documenti e schede di sintesi, ottimizzata per il deployment istantaneo su **Vercel**.
 

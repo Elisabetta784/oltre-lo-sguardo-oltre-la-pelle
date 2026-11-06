@@ -10,12 +10,12 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "I SEGNI DELLA PELLE — EVERY BODY HAS A STORY",
+  title: "OLTRE LO SGUARDO OLTRE LA PELLE — Segni e testimonianze",
   description:
     "Archivio visivo, sonoro e narrativo dedicato alle memorie impresse sul corpo: cicatrici, nei, rughe, tatuaggi e tracce del tempo.",
-  keywords: ["I Segni della Pelle", "Every Body Has A Story", "Archivio", "Macro Micro", "Fotografia", "Audio"],
+  keywords: ["Oltre lo Sguardo Oltre la Pelle", "Segni e testimonianze", "Archivio", "Oltre", "Macro", "Micro", "Fotografia", "Audio"],
   openGraph: {
-    title: "I SEGNI DELLA PELLE — EVERY BODY HAS A STORY",
+    title: "OLTRE LO SGUARDO OLTRE LA PELLE — Segni e testimonianze",
     description: "Archivio visivo, sonoro e narrativo dedicato alle memorie del corpo.",
     type: "website",
     locale: "it_IT",

@@ -267,7 +267,7 @@ export function BeyondView({
             <span className="text-[#88562C]/40">|</span>
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs sm:text-[13px] font-black tracking-widest text-[#523719] uppercase whitespace-nowrap">
-                BEYOND · VISIONE SISTEMICA
+                OLTRE · VISIONE SISTEMICA
               </span>
             </div>
           </div>

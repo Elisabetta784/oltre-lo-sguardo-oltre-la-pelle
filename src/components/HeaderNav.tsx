@@ -25,7 +25,7 @@ export function HeaderNav({
                 : "text-[#523719]/50 hover:text-[#523719]"
             }`}
           >
-            BEYOND
+            OLTRE
           </button>
 
           <button
@@ -56,11 +56,11 @@ export function HeaderNav({
         {/* Center: Title & Subtitle */}
         <div className="flex items-center gap-3 sm:gap-6 text-center px-2 truncate">
           <span className="font-display font-bold text-xs sm:text-sm text-[#523719] tracking-tight">
-            I SEGNI DELLA PELLE
+            OLTRE LO SGUARDO OLTRE LA PELLE
           </span>
           <span className="hidden md:inline w-6 h-[1px] bg-[#88562C]/30" />
           <span className="hidden sm:inline font-mono-text text-[11px] sm:text-xs text-[#88562C] tracking-widest uppercase">
-            EVERY BODY HAS A STORY
+            SEGNI E TESTIMONIANZE
           </span>
         </div>
 
