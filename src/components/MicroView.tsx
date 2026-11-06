@@ -339,24 +339,24 @@ export function MicroView({
                   <div className="grid grid-cols-2 py-1.5 bg-[#ebe4d1]/30 px-2 mt-1">
                     <div className="pr-2 border-r border-[#88562C]/20 space-y-0.5">
                       <div className="text-[9px] text-[#88562C] uppercase">
-                        MASCHERABILITÀ: <span className="font-bold text-[#523719]">{item.mascherabilita}</span>
+                        COPERTO / SCOPERTO: <span className="font-bold text-[#523719]">{item.mascherabilita}</span>
                       </div>
                       <div className="text-[9px] text-[#88562C] uppercase">
-                        PERC. SOCIALE: <span className="font-bold text-[#523719]">{item.percezioneSociale}</span>
+                        SOTTRAZIONE: <span className="font-bold text-[#523719]">{item.percezioneSociale}</span>
                       </div>
                       <div className="text-[9px] text-[#88562C] uppercase">
-                        VALENZA RICORDO: <span className="font-bold text-[#523719]">{item.valenzaDelRicordo}</span>
+                        TRACCIATO: <span className="font-bold text-[#523719]">{item.valenzaDelRicordo}</span>
                       </div>
                     </div>
                     <div className="pl-2 space-y-0.5">
                       <div className="text-[9px] text-[#88562C] uppercase">
-                        ACCETTABILITÀ: <span className="font-bold text-[#523719]">{item.accettabilitaSociale}</span>
+                        EROICIZZAZIONE: <span className="font-bold text-[#523719]">{item.accettabilitaSociale}</span>
                       </div>
                       <div className="text-[9px] text-[#88562C] uppercase">
-                        PERC. ESTETICA: <span className="font-bold text-[#523719]">{item.percezioneEstetica}</span>
+                        CONFIGURAZIONE: <span className="font-bold text-[#523719]">{item.percezioneEstetica}</span>
                       </div>
                       <div className="text-[9px] text-[#88562C] uppercase">
-                        VERGOGNA: <span className="font-bold text-[#523719]">{item.sensoDiVergogna}</span>
+                        ATTRITO: <span className="font-bold text-[#523719]">{item.sensoDiVergogna}</span>
                       </div>
                     </div>
                   </div>
