@@ -135,7 +135,7 @@ export function MicroView({
                   </div>
                 )}
 
-                {/* Didascalia esplicativa per casi Reddit con contenuto visivo aggiunto */}
+                {/* Didascalia esplicativa per casi con contenuto visivo aggiunto */}
                 {item.isIllustrativeImage && (
                   <div className="w-full bg-[#E5D7B1] border-t border-[#88562C]/30 px-3 py-2 z-10 flex items-center justify-center gap-1.5 shrink-0">
                     <Info className="w-3.5 h-3.5 text-[#88562C] shrink-0 opacity-80" />
