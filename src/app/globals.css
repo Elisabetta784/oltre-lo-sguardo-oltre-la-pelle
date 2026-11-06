@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Space+Grotesk:wght@500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Forma DJR Deck';
+  src: url('/fonts/FormaDJRDeck-Regular.woff2') format('woff2'),
+       url('/fonts/FormaDJRDeck-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Forma DJR Deck';
+  src: url('/fonts/FormaDJRDeck-Bold.woff2') format('woff2'),
+       url('/fonts/FormaDJRDeck-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg-color: #f5f0e0;
+  --text-color: #523719;
+  --detail-color: #88562C;
+  --detail-subtle: rgba(136, 86, 44, 0.25);
+  --detail-dim: rgba(136, 86, 44, 0.1);
+}
+
+@theme inline {
+  --color-background: var(--bg-color);
+  --color-foreground: var(--text-color);
+  --color-detail: var(--detail-color);
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-display: "Forma DJR Deck", "Forma DJR Display", "Space Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background-color: #f5f0e0 !important;
+  color: #523719 !important;
+  font-family: "DM Mono", monospace;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* No document scrolling */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+::selection {
+  background: #88562C;
+  color: #f5f0e0;
+}
+
+/* Typography Helpers */
+.font-display {
+  font-family: "Forma DJR Deck", "Forma DJR Display", "Space Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-mono-text {
+  font-family: "DM Mono", monospace;
+}
+
+/* Edge Fades in #f5f0e0 */
+.edge-fade-top {
+  background: linear-gradient(180deg, #f5f0e0 0%, rgba(245, 240, 224, 0.85) 40%, rgba(245, 240, 224, 0) 100%);
+  pointer-events: none;
+}
+
+.edge-fade-bottom {
+  background: linear-gradient(0deg, #f5f0e0 0%, rgba(245, 240, 224, 0.85) 40%, rgba(245, 240, 224, 0) 100%);
+  pointer-events: none;
+}
+
+.edge-fade-left {
+  background: linear-gradient(90deg, #f5f0e0 0%, rgba(245, 240, 224, 0) 100%);
+  pointer-events: none;
+}
+
+.edge-fade-right {
+  background: linear-gradient(270deg, #f5f0e0 0%, rgba(245, 240, 224, 0) 100%);
+  pointer-events: none;
+}
+
+/* Grid scene container */
+.macro-scene {
+  width: 100%;
+  height: calc(100vh - 54px);
+  margin-top: 54px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Custom subtle squadrato scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(136, 86, 44, 0.08);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #88562C;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #523719;
+}
+
