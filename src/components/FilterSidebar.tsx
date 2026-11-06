@@ -7,7 +7,6 @@ import {
   FILTER_CATEGORIES,
   FilterCategoryId,
   ARCHIVE_ITEMS,
-  AMBITI_TEORICI,
 } from "@/data/archiveData";
 
 export interface SelectedFiltersState {
@@ -109,7 +108,6 @@ export function FilterSidebar({
 
   const [activeCategoryTab, setActiveCategoryTab] = useState<FilterCategoryId>("segno");
   const [viewAllCategories, setViewAllCategories] = useState(false);
-  const [isTeoriaHovered, setIsTeoriaHovered] = useState(false);
 
   // Total active selections
   const totalActiveFilters = Object.values(selectedFilters).reduce(
@@ -124,8 +122,7 @@ export function FilterSidebar({
       if (category === "segno") {
         return (
           item.segno.toLowerCase().includes(optLower) ||
-          (item.segnoTags && item.segnoTags.some((t) => t.toLowerCase() === optLower)) ||
-          (item.ambitoTeorico && item.ambitoTeorico.toLowerCase() === optLower)
+          (item.segnoTags && item.segnoTags.some((t) => t.toLowerCase() === optLower))
         );
       }
       if (category === "tipologia") {
@@ -155,8 +152,7 @@ export function FilterSidebar({
         if (hoveredFilter.category === "segno") {
           return (
             it.segno.toLowerCase().includes(valLower) ||
-            (it.segnoTags && it.segnoTags.some((t) => t.toLowerCase() === valLower)) ||
-            (it.ambitoTeorico && it.ambitoTeorico.toLowerCase() === valLower)
+            (it.segnoTags && it.segnoTags.some((t) => t.toLowerCase() === valLower))
           );
         }
         if (hoveredFilter.category === "tipologia") {
@@ -363,108 +359,6 @@ export function FilterSidebar({
                       {catDef.options.map((opt) => {
                         const isSelected = selectedFilters[catKey].includes(opt);
                         const count = getOptionCount(catKey, opt);
-                        const isTeoria = catKey === "segno" && opt === "Traccia teorica";
-                        const isSubActive = isTeoria && AMBITI_TEORICI.some(a => selectedFilters.segno.includes(a.name));
-                        const showSub = isTeoria && (isTeoriaHovered || isSelected || isSubActive);
-
-                        if (isTeoria) {
-                          return (
-                            <div
-                              key={opt}
-                              onMouseEnter={() => setIsTeoriaHovered(true)}
-                              onMouseLeave={() => setIsTeoriaHovered(false)}
-                              className="flex flex-col"
-                            >
-                              <div
-                                onClick={() => onToggleFilter(catKey, opt)}
-                                onMouseEnter={() =>
-                                  onHoverFilter({
-                                    category: catKey,
-                                    value: opt,
-                                    label: `${opt.toUpperCase()} (${catDef.label})`,
-                                  })
-                                }
-                                onMouseLeave={() => {
-                                  if (!isTeoriaHovered) onHoverFilter(null);
-                                }}
-                                className={`flex items-center justify-between py-1 cursor-pointer font-mono text-xs sm:text-[13px] tracking-wider transition-all duration-150 group ${
-                                  isSelected
-                                    ? "text-[#523719] font-bold"
-                                    : "text-[#523719]/80 hover:text-[#523719]"
-                                }`}
-                              >
-                                <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1">
-                                  <span>[</span>
-                                  <span className={isSelected ? "font-bold text-[#523719]" : ""}>
-                                    {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
-                                  </span>
-                                  <span>]</span>
-                                </span>
-                                <span className="text-[#88562C] font-mono text-xs">
-                                  [ {count} ]
-                                </span>
-                              </div>
-
-                              <AnimatePresence>
-                                {showSub && (
-                                  <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: "auto" }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="overflow-hidden pl-3 py-1 space-y-1 border-l-2 border-[#523719]/40 my-1 ml-2 bg-[#523719]/[0.03]"
-                                  >
-                                    <div className="font-mono text-[9px] uppercase tracking-wider text-[#88562C] font-semibold pb-0.5">
-                                      4 AMBITI EPISTEMOLOGICI:
-                                    </div>
-                                    {AMBITI_TEORICI.map((amb) => {
-                                      const isSubSel = selectedFilters.segno.includes(amb.name);
-                                      return (
-                                        <div
-                                          key={amb.id}
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            onToggleFilter("segno", amb.name);
-                                          }}
-                                          onMouseEnter={(e) => {
-                                            e.stopPropagation();
-                                            onHoverFilter({
-                                              category: "segno",
-                                              value: amb.name,
-                                              label: `${amb.shortLabel} (${amb.count})`,
-                                            });
-                                          }}
-                                          onMouseLeave={() => {
-                                            onHoverFilter({
-                                              category: "segno",
-                                              value: "Traccia teorica",
-                                              label: "TRACCIA TEORICA (26)",
-                                            });
-                                          }}
-                                          className={`flex items-center justify-between py-1 px-1.5 cursor-pointer font-mono text-[10.5px] tracking-wider transition-all duration-150 group border border-transparent rounded-none ${
-                                            isSubSel
-                                              ? "bg-[#523719]/15 text-[#523719] font-bold border-[#523719]/30"
-                                              : "text-[#523719]/80 hover:text-[#523719] hover:bg-[#88562C]/10"
-                                          }`}
-                                        >
-                                          <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1">
-                                            <span className="text-[#88562C]">↳</span>
-                                            <span className={isSubSel ? "font-bold text-[#523719]" : ""}>
-                                              {isSubSel ? `■ ${amb.name.toUpperCase()}` : amb.name.toUpperCase()}
-                                            </span>
-                                          </span>
-                                          <span className="text-[#88562C] font-mono text-[10px]">
-                                            [ {amb.count} ]
-                                          </span>
-                                        </div>
-                                      );
-                                    })}
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
-                          );
-                        }
 
                         return (
                           <div
@@ -507,109 +401,6 @@ export function FilterSidebar({
                 {FILTER_CATEGORIES[activeCategoryTab].options.map((opt) => {
                   const isSelected = selectedFilters[activeCategoryTab].includes(opt);
                   const count = getOptionCount(activeCategoryTab, opt);
-                  const isTeoria = activeCategoryTab === "segno" && opt === "Traccia teorica";
-                  const isSubActive = isTeoria && AMBITI_TEORICI.some(a => selectedFilters.segno.includes(a.name));
-                  const showSub = isTeoria && (isTeoriaHovered || isSelected || isSubActive);
-
-                  if (isTeoria) {
-                    return (
-                      <div
-                        key={opt}
-                        onMouseEnter={() => setIsTeoriaHovered(true)}
-                        onMouseLeave={() => setIsTeoriaHovered(false)}
-                        className="flex flex-col"
-                      >
-                        <div
-                          onClick={() => onToggleFilter(activeCategoryTab, opt)}
-                          onMouseEnter={() =>
-                            onHoverFilter({
-                              category: activeCategoryTab,
-                              value: opt,
-                              label: `${opt.toUpperCase()} (${FILTER_CATEGORIES[activeCategoryTab].label})`,
-                            })
-                          }
-                          onMouseLeave={() => {
-                            if (!isTeoriaHovered) onHoverFilter(null);
-                          }}
-                          className={`flex items-center justify-between py-1.5 px-1 cursor-pointer font-mono text-xs sm:text-[13px] tracking-wider transition-all duration-150 group border border-transparent hover:border-[#88562C]/20 rounded-none ${
-                            isSelected
-                              ? "bg-[#523719]/10 text-[#523719] font-bold border-[#523719]/30"
-                              : "text-[#523719]/80 hover:text-[#523719] hover:bg-[#88562C]/5"
-                          }`}
-                        >
-                          <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1.5">
-                            <span className="text-[#88562C] font-bold">[</span>
-                            <span className={isSelected ? "font-bold text-[#523719]" : ""}>
-                              {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
-                            </span>
-                            <span className="text-[#88562C] font-bold">]</span>
-                          </span>
-                          <span className="text-[#88562C] font-mono text-xs">
-                            [ {count} ]
-                          </span>
-                        </div>
-
-                        {/* AUTOMATIC DROPDOWN OF 4 SUBCATEGORIES */}
-                        <AnimatePresence>
-                          {showSub && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                              className="overflow-hidden pl-3 pr-1 py-1.5 space-y-1 border-l-2 border-[#523719]/40 my-1 ml-2 bg-[#523719]/[0.03]"
-                            >
-                              <div className="font-mono text-[9px] uppercase tracking-wider text-[#88562C] font-semibold pb-0.5">
-                                4 AMBITI EPISTEMOLOGICI:
-                              </div>
-                              {AMBITI_TEORICI.map((amb) => {
-                                const isSubSel = selectedFilters.segno.includes(amb.name);
-                                return (
-                                  <div
-                                    key={amb.id}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      onToggleFilter("segno", amb.name);
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.stopPropagation();
-                                      onHoverFilter({
-                                        category: "segno",
-                                        value: amb.name,
-                                        label: `${amb.shortLabel} (${amb.count})`,
-                                      });
-                                    }}
-                                    onMouseLeave={() => {
-                                      onHoverFilter({
-                                        category: "segno",
-                                        value: "Traccia teorica",
-                                        label: "TRACCIA TEORICA (26)",
-                                      });
-                                    }}
-                                    className={`flex items-center justify-between py-1 px-1.5 cursor-pointer font-mono text-[10.5px] sm:text-[11px] tracking-wider transition-all duration-150 group border border-transparent rounded-none ${
-                                      isSubSel
-                                        ? "bg-[#523719]/15 text-[#523719] font-bold border-[#523719]/30"
-                                        : "text-[#523719]/80 hover:text-[#523719] hover:bg-[#88562C]/10 hover:border-[#88562C]/20"
-                                    }`}
-                                  >
-                                    <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1">
-                                      <span className="text-[#88562C]">↳</span>
-                                      <span className={isSubSel ? "font-bold text-[#523719]" : ""}>
-                                        {isSubSel ? `■ ${amb.name.toUpperCase()}` : amb.name.toUpperCase()}
-                                      </span>
-                                    </span>
-                                    <span className="text-[#88562C] font-mono text-[10px]">
-                                      [ {amb.count} ]
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  }
 
                   return (
                     <div

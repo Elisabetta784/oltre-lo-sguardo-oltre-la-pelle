@@ -5,13 +5,11 @@ import React from "react";
 interface HeaderNavProps {
   currentView: "beyond" | "macro" | "micro";
   onSelectView: (view: "beyond" | "macro" | "micro") => void;
-  onOpenManifesto: () => void;
 }
 
 export function HeaderNav({
   currentView,
   onSelectView,
-  onOpenManifesto,
 }: HeaderNavProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-[#f5f0e0] border-b border-[#88562C]/25 px-4 sm:px-6 h-[52px] select-none">
@@ -66,16 +64,8 @@ export function HeaderNav({
           </span>
         </div>
 
-        {/* Right: MANIFESTO */}
-        <div className="flex items-center justify-end flex-shrink-0">
-          <button
-            type="button"
-            onClick={onOpenManifesto}
-            className="cursor-pointer text-[#523719]/80 hover:text-[#523719] font-medium transition-colors"
-          >
-            MANIFESTO
-          </button>
-        </div>
+        {/* Right: Balanced Spacer */}
+        <div className="flex items-center justify-end flex-shrink-0 w-24 sm:w-48" />
       </div>
     </header>
   );

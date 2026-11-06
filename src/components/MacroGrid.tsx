@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Volume2 } from "lucide-react";
-import { ArchiveItem, AMBITI_TEORICI } from "@/data/archiveData";
+import { ArchiveItem } from "@/data/archiveData";
 
 interface MacroGridProps {
   items: ArchiveItem[];
@@ -255,13 +255,8 @@ export function MacroGrid({
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Show all matching items (all 177 in full overview)
+  // Show all matching items
   const displayItems = items;
-  const isTheoreticalView =
-    displayItems.length > 0 &&
-    displayItems.every(
-      (it) => it.segno.toLowerCase().includes("teorica") || Boolean(it.ambitoTeorico)
-    );
   const gridConfig = useMemo(
     () => getGridConfig(displayItems.length),
     [displayItems.length]
@@ -425,10 +420,6 @@ export function MacroGrid({
     let isLocked = false;
 
     const handleWheel = (e: WheelEvent) => {
-      if (isTheoreticalView) {
-        // Allow natural vertical scrolling when viewing theoretical traces
-        return;
-      }
       e.preventDefault();
       if (isLocked) return;
 
@@ -476,7 +467,7 @@ export function MacroGrid({
       el.removeEventListener("wheel", handleWheel);
       if (dezoomTimer) clearTimeout(dezoomTimer);
     };
-  }, [onGoToBeyond, isTheoreticalView]);
+  }, [onGoToBeyond]);
 
   const containerStyle = {
     "--tile-size": `${baseTilePx}px`,
@@ -507,122 +498,20 @@ export function MacroGrid({
 
       {/* Trackpad zoom indicator hint */}
       <div className="fixed bottom-4 left-6 z-20 font-mono text-[10px] text-[#88562C]/70 pointer-events-none hidden sm:block tracking-wider">
-        {isTheoreticalView
-          ? "SCORRI VERTICALMENTE PER ESPLORARE I 4 AMBITI TEORICI"
-          : "PINCH / SCROLL SUL TRACKPAD PER ZOOMARE E DEZOOMARE"}
+        PINCH / SCROLL SUL TRACKPAD PER ZOOMARE E DEZOOMARE
       </div>
 
-      {/* SYMMETRICALLY CENTERED CSS GRID WITH CSS VARIABLE FOR TILE SIZE OR SUBDIVIDED THEORETICAL VIEW */}
+      {/* SYMMETRICALLY CENTERED CSS GRID WITH CSS VARIABLE FOR TILE SIZE */}
       <div
         ref={gridRef}
-        style={isTheoreticalView ? undefined : containerStyle}
-        className={`relative z-20 w-full h-full max-w-[95vw] max-h-[88vh] p-3 transition-none ${
-          isTheoreticalView
-            ? "flex items-start justify-center pointer-events-auto overflow-hidden"
-            : "grid items-center justify-items-center"
-        } ${
+        style={containerStyle}
+        className={`relative z-20 w-full h-full max-w-[95vw] max-h-[88vh] p-3 transition-none grid items-center justify-items-center ${
           isFilterOpen
-            ? `pl-80 sm:pl-96 lg:pl-[420px] pr-8 sm:pr-12 ${
-                isTheoreticalView ? "pointer-events-auto" : "pointer-events-none"
-              }`
+            ? "pl-80 sm:pl-96 lg:pl-[420px] pr-8 sm:pr-12 pointer-events-none"
             : "pl-6 sm:pl-16 pr-16 sm:pr-24 pointer-events-auto"
         }`}
       >
-        {isTheoreticalView ? (
-          <div className="w-full h-full max-w-5xl overflow-y-auto overscroll-contain custom-scrollbar py-4 px-2 sm:px-4 flex flex-col justify-start pointer-events-auto">
-            {/* TOP ARCHIVAL HEADER */}
-            <div className="w-full mb-6 pb-2.5 border-b-2 border-[#523719] flex flex-col sm:flex-row items-start sm:items-end justify-between gap-2">
-              <div>
-                <div className="font-mono text-[10px] text-[#88562C] uppercase tracking-widest mb-1 flex items-center gap-2">
-                  <span>ARCHIVIO CRITICO · SINTESI TEORICA</span>
-                  <span>•</span>
-                  <span>4 AMBITI EPISTEMOLOGICI</span>
-                </div>
-                <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold uppercase tracking-tight text-[#523719] leading-none">
-                  TRACCE TEORICHE DELLA PELLE
-                </h2>
-              </div>
-              <div className="font-mono text-xs text-[#88562C] flex items-center gap-2">
-                <span>DOCUMENTI: <strong className="text-[#523719]">{displayItems.length}</strong></span>
-              </div>
-            </div>
-
-            {/* 4 SECTIONS */}
-            <div className="space-y-6 sm:space-y-8 pb-36 sm:pb-48">
-              {AMBITI_TEORICI.map((amb) => {
-                const groupItems = displayItems.filter(
-                  (it) => it.ambitoTeorico === amb.name || amb.caseNumbers.includes(it.number)
-                );
-                if (groupItems.length === 0) return null;
-
-                return (
-                  <div key={amb.id} className="flex flex-col gap-2.5">
-                    {/* SECTION HEADER */}
-                    <div className="flex items-center justify-between border-b border-[#88562C]/30 pb-1.5">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2.5">
-                        <span className="font-mono text-xs sm:text-[13px] font-bold text-[#523719] uppercase tracking-wider">
-                          {amb.shortLabel}
-                        </span>
-                        <span className="hidden sm:inline font-mono text-[10px] text-[#88562C]">
-                          — {amb.desc}
-                        </span>
-                      </div>
-                      <span className="font-mono text-[11px] text-[#88562C] font-bold shrink-0">
-                        [ {groupItems.length} CASI ]
-                      </span>
-                    </div>
-
-                    {/* MINIATURE TILES */}
-                    <div className="flex flex-wrap items-start gap-3 sm:gap-4 pt-1">
-                      {groupItems.map((item) => (
-                        <div
-                          key={item.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onSelectItem(item);
-                          }}
-                          className="flex flex-col items-center gap-1 group cursor-pointer"
-                          style={{ width: "76px" }}
-                        >
-                          <motion.div
-                            whileHover={{ scale: 1.14, y: -3 }}
-                            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                            className={`w-[76px] h-[76px] bg-[#ebe4d1] border transition-all duration-150 overflow-hidden relative shadow-sm ${
-                              activeItemId === item.id
-                                ? "border-[#523719] ring-2 ring-[#523719] shadow-md shadow-[#523719]/40"
-                                : "border-[#88562C]/30 group-hover:border-[#523719] group-hover:shadow-md"
-                            }`}
-                          >
-                            <img
-                              src={item.thumbnailUrl || item.imageUrl || ""}
-                              alt=""
-                              draggable={false}
-                              loading="lazy"
-                              decoding="async"
-                              className="w-full h-full object-cover pointer-events-none"
-                            />
-                            <span className="absolute bottom-0.5 right-0.5 bg-[#f5f0e0]/90 text-[#523719] font-mono text-[8px] font-bold px-1 leading-tight border border-[#88562C]/30">
-                              {item.number}
-                            </span>
-                          </motion.div>
-
-                          <div className="w-full text-center px-0.5">
-                            <p className="font-mono text-[8.5px] font-bold text-[#523719] truncate leading-tight group-hover:text-[#88562C] transition-colors" title={item.title}>
-                              {item.title}
-                            </p>
-                            <p className="font-mono text-[7.5px] text-[#88562C] truncate leading-tight" title={item.authorOrSubject}>
-                              {item.authorOrSubject.split("/")[0]}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ) : displayItems.length === 0 ? (
+        {displayItems.length === 0 ? (
           <div className="col-span-full row-span-full pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-[#88562C]/40 bg-[#ebe4d1]/70 w-full max-w-md my-auto shadow-md">
             <p className="font-mono text-xs uppercase tracking-wider text-[#523719] font-bold mb-2">
               NESSUN SEGNO CORRISPONDENTE

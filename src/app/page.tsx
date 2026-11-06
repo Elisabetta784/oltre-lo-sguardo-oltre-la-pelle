@@ -8,7 +8,6 @@ import { BeyondView } from "@/components/BeyondView";
 import { MacroGrid } from "@/components/MacroGrid";
 import { MicroView } from "@/components/MicroView";
 import { VerticalTimeline } from "@/components/VerticalTimeline";
-import { ManifestoModal } from "@/components/ManifestoModal";
 import {
   FilterSidebar,
   SelectedFiltersState,
@@ -20,7 +19,6 @@ export default function Home() {
   const [view, setView] = useState<"beyond" | "macro" | "micro">("macro");
   const [activeItemId, setActiveItemId] = useState<string>(ARCHIVE_ITEMS[0].id);
   const [zoomLevel, setZoomLevel] = useState<number>(0.24);
-  const [isManifestoOpen, setIsManifestoOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<SelectedFiltersState>(INITIAL_FILTERS);
   const [hoveredFilter, setHoveredFilter] = useState<{
@@ -67,8 +65,7 @@ export default function Home() {
         if (hoveredFilter.category === "segno") {
           const matchPrimary = item.segno.toLowerCase().includes(valLower);
           const matchTag = item.segnoTags && item.segnoTags.some((t) => t.toLowerCase() === valLower);
-          const matchAmbito = item.ambitoTeorico && item.ambitoTeorico.toLowerCase() === valLower;
-          if (!matchPrimary && !matchTag && !matchAmbito) return false;
+          if (!matchPrimary && !matchTag) return false;
         }
         if (hoveredFilter.category === "tipologia") {
           if (!item.tipologia.toLowerCase().includes(valLower)) return false;
@@ -95,8 +92,7 @@ export default function Home() {
           const vLower = v.toLowerCase();
           return (
             item.segno.toLowerCase().includes(vLower) ||
-            (item.segnoTags && item.segnoTags.some((t) => t.toLowerCase() === vLower)) ||
-            (item.ambitoTeorico && item.ambitoTeorico.toLowerCase() === vLower)
+            (item.segnoTags && item.segnoTags.some((t) => t.toLowerCase() === vLower))
           );
         });
         if (!hasMatch) return false;
@@ -195,11 +191,10 @@ export default function Home() {
 
   return (
     <main className="w-screen h-screen overflow-hidden bg-[#f5f0e0] text-[#523719] font-mono-text relative select-none">
-      {/* 1. Header: Strictly MACRO and MICRO on the left, Title in the center, MANIFESTO on the right */}
+      {/* 1. Header: Strictly MACRO and MICRO on the left, Title in the center */}
       <HeaderNav
         currentView={view}
         onSelectView={(targetView) => setView(targetView)}
-        onOpenManifesto={() => setIsManifestoOpen(true)}
       />
 
       {/* 2. Left Vertical Menu (Serotoninn-inspired) - strictly ONLY in MACRO, removed in BEYOND */}
@@ -309,12 +304,6 @@ export default function Home() {
           )}
         </AnimatePresence>
       </div>
-
-      {/* 5. Editorial Manifesto Modal */}
-      <ManifestoModal
-        isOpen={isManifestoOpen}
-        onClose={() => setIsManifestoOpen(false)}
-      />
     </main>
   );
 }

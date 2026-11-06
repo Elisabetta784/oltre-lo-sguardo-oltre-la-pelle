@@ -247,11 +247,6 @@ export function MicroView({
               <div>
               {/* Category Boxed Tag (like [ * DESK TOOLS · 道具 ] in micro2.jpeg) */}
               <div className="inline-flex flex-wrap items-center gap-2 mb-4">
-                {item.ambitoTeorico && (
-                  <div className="border border-[#523719] bg-[#523719] text-[#f5f0e0] px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-wider font-bold">
-                    AMBITO: {item.ambitoTeorico.toUpperCase()}
-                  </div>
-                )}
                 <div className="border border-[#88562C]/50 px-2.5 py-1 font-mono text-[10px] text-[#523719] uppercase tracking-wider bg-[#ebe4d1]/60">
                   <span>✱</span> {item.segno.toUpperCase()} · {item.tipologia.toUpperCase()}
                 </div>
@@ -306,15 +301,6 @@ export function MicroView({
                     <span className="font-bold text-[#523719] uppercase">{item.tipologia}</span>
                   </div>
                 </div>
-
-                {item.ambitoTeorico && (
-                  <div className="grid grid-cols-1 border-b border-[#88562C]/20 py-1.5 px-2 bg-[#523719]/[0.03]">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#88562C] text-[10px] uppercase">AMBITO TEORICO</span>
-                      <span className="font-bold text-[#523719] uppercase tracking-wider">{item.ambitoTeorico}</span>
-                    </div>
-                  </div>
-                )}
 
                 {/* Row 3 */}
                 <div className="grid grid-cols-2 border-b border-[#88562C]/20 py-1.5">

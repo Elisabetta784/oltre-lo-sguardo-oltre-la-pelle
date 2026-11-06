@@ -34,7 +34,6 @@ export interface ArchiveItem {
   audioTranscript?: string;
   isIllustrativeImage?: boolean;
   imageDisclaimer?: string;
-  ambitoTeorico?: string;
 }
 
 export const FILTER_CATEGORIES = {
@@ -56,7 +55,6 @@ export const FILTER_CATEGORIES = {
       "Tatuaggio imposto",
       "Marchio a fuoco",
       "Condizioni cutanee",
-      "Traccia teorica",
     ],
   },
   tipologia: {
@@ -109,50 +107,6 @@ export const FILTER_CATEGORIES = {
 
 export type FilterCategoryId = keyof typeof FILTER_CATEGORIES;
 
-
-export interface AmbitoTeoricoDef {
-  id: string;
-  name: string;
-  shortLabel: string;
-  desc: string;
-  count: number;
-  caseNumbers: string[];
-}
-
-export const AMBITI_TEORICI: AmbitoTeoricoDef[] = [
-  {
-    id: "fenomenologia-antropologia",
-    name: "Fenomenologia & Antropologia",
-    shortLabel: "01. FENOMENOLOGIA & ANTROPOLOGIA",
-    desc: "La pelle vissuta dall'interno, sensorialità tattile e involucro dell'Io",
-    count: 10,
-    caseNumbers: ["072", "073", "074", "075", "076", "077", "078", "081", "083", "084"],
-  },
-  {
-    id: "semiotica-segno",
-    name: "Semiotica del segno",
-    shortLabel: "02. SEMIOTICA DEL SEGNO",
-    desc: "La pelle come testo e indice, deviazione dalla norma e sovranità del senso",
-    count: 4,
-    caseNumbers: ["085", "086", "087", "088"],
-  },
-  {
-    id: "sociologia-biopolitica",
-    name: "Sociologia & Biopolitica",
-    shortLabel: "03. SOCIOLOGIA & BIOPOLITICA",
-    desc: "Stigma, sguardo dell'Altro, imperativo della levigatezza e mercato estetico",
-    count: 6,
-    caseNumbers: ["082", "089", "090", "091", "092", "093"],
-  },
-  {
-    id: "trauma-agency",
-    name: "Trauma, Tempo & Agency",
-    shortLabel: "04. TRAUMA, TEMPO & AGENCY",
-    desc: "Rottura biografica, interfaccia temporale e riappropriazione della ferita",
-    count: 6,
-    caseNumbers: ["079", "080", "094", "095", "096", "097"],
-  },
-];
 
 export const ARCHIVE_ITEMS: ArchiveItem[] = [
   {
@@ -309,43 +263,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Lanciata nel 2014 dal brand Aerie, la campagna rivoluziona la comunicazione dell'intimo eliminando del tutto l'aerografo e Photoshop. Mostrando modelle e donne reali con smagliatur..."
   },
   {
-    "id": "caso-072",
-    "number": "072",
-    "title": "PELLE COME LIMES",
-    "authorOrSubject": "David Le Breton",
-    "year": "2016",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Traumi"
-    ],
-    "stileVisivo": "Saggio antropologico e teorico; indagine sulla frontiera corporea, la pelle come limite tra Sé e alterità e la cicatrice come soglia.",
-    "sintesiConcettuale": "Limes significa frontiera, confine. È la linea di demarcazione tra il noto e l'ignoto, tra il gruppo di appartenenza e l'alterità. Qui si incontrano l'identità corporea e la percezione dell'Altro. Sulla pelle segnata il confine si materializza nella cicatrice, che separa il corpo di prima dal corpo di dopo l'evento.",
-    "notes": "Inquadramento antropologico e sociologico di David Le Breton sulla pelle come confine e limes identitario; riflessione sulla cicatrice come materializzazione della transizione.",
-    "externalLink": "https://books.google.it/books?hl=it&lr=&id=b9Fmnmj2bpYC&oi=fnd&pg=PP1&dq=segni+della+pelle&ots=11Wiy2eJT2&sig=Rohi0S43ObWXe7KTHfjXlJXpRyI&redir_esc=y#v=onepage&q=segni%20della%20pelle&f=false",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-072.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-072.jpg",
-    "galleryUrls": [],
-    "excerpt": "Limes significa frontiera, confine. È la linea di demarcazione tra il noto e l'ignoto, tra il gruppo di appartenenza e l'alterità. Qui si incontrano l'identità corporea e la percez...",
-    "microKeyword": "LIMES"
-  },
-  {
     "id": "caso-004",
     "number": "004",
     "title": "Murmurings of the Skin",
@@ -462,43 +379,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Monografia che documenta un decennio di maternità a partire dal parto gemellare e dal cesareo d'emergenza; Ritrae con tenerezza il ventre segnato, la spossatezza e la trasformazion..."
   },
   {
-    "id": "caso-073",
-    "number": "073",
-    "title": "PELLE-ARCHIVIO",
-    "authorOrSubject": "Didier Anzieu",
-    "year": "1985",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Medici",
-    "clusterTags": [
-      "Medici",
-      "Trasformazione"
-    ],
-    "stileVisivo": "Trattato teorico e psicoanalitico; concettualizzazione dell'Io-pelle come involucro psichico, superficie di iscrizione e archivio della memoria somatica.",
-    "sintesiConcettuale": "La pelle costituisce la base materiale su cui si costruisce la psiche. L'Io-pelle registra come un archivio le tracce, le ferite, i segni e le trasformazioni del corpo, che corrispondono alle memorie emotive e all'attraversamento della vita.",
-    "notes": "Concetto fondativo elaborato da Didier Anzieu nel volume 'L'Io-pelle' (Le Moi-peau, 1985); definisce la funzione della pelle come archivio vivente di tracce esperienziali.",
-    "externalLink": "http://www.melissaangelini.com/il-significato-psicologico-della-pelle/",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-073.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-073.jpg",
-    "galleryUrls": [],
-    "excerpt": "La pelle costituisce la base materiale su cui si costruisce la psiche. L'Io-pelle registra come un archivio le tracce, le ferite, i segni e le trasformazioni del corpo, che corrisp...",
-    "microKeyword": "ARCHIVIO"
-  },
-  {
     "id": "caso-007",
     "number": "007",
     "title": "Untitled (The Female Gaze)",
@@ -569,43 +449,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-008-3.jpg"
     ],
     "excerpt": "Campagna visiva e social media movement ideata per celebrare le smagliature femminili come linee di vita e tracce di maternità, crescita e cambiamento corporeo."
-  },
-  {
-    "id": "caso-074",
-    "number": "074",
-    "title": "MEMORIA VIVA",
-    "authorOrSubject": "il manifesto",
-    "year": "2021",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Traumi",
-    "clusterTags": [
-      "Traumi",
-      "Trasformazione"
-    ],
-    "stileVisivo": "Articolo critico e saggio divulgativo; approfondimento interdisciplinare tra psicoanalisi, corporeità e persistenza mnestica delle iscrizioni epidermiche.",
-    "sintesiConcettuale": "La pelle ha il compito di «conservare le iscrizioni sensoriali ed emotive». Le modificazioni cutanee nel tempo attestano un involucro corporeo che ha funzionato da memoria viva e trattiene la continuità dell'esistenza individuale.",
-    "notes": "Contributo critico pubblicato su 'il manifesto' incentrato sul nesso tra psicoanalisi, memoria cutanea e continuità identitaria attraverso i segni del corpo.",
-    "externalLink": "https://ilmanifesto.it/la-psicoanalisi-tra-corpo-e-immaginazione",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-074.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-074.jpg",
-    "galleryUrls": [],
-    "excerpt": "La pelle ha il compito di «conservare le iscrizioni sensoriali ed emotive». Le modificazioni cutanee nel tempo attestano un involucro corporeo che ha funzionato da memoria viva e t...",
-    "microKeyword": "MEMORIA"
   },
   {
     "id": "caso-009",
@@ -682,43 +525,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-010-2.jpg"
     ],
     "excerpt": "Progetto documentario che esplora il rapporto intimo delle donne con il proprio corpo post-parto, affrontando dismorfia, smagliature e cambiamenti fisici dopo la nascita."
-  },
-  {
-    "id": "caso-075",
-    "number": "075",
-    "title": "CONTAMINARSI",
-    "authorOrSubject": "Ashley Montagu",
-    "year": "1971",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Traumi"
-    ],
-    "stileVisivo": "Saggio antropologico e psicologico; indagine sulla dimensione tattile, la pelle come soglia vitale di contatto e confine tra interno ed esterno.",
-    "sintesiConcettuale": "L'essere umano ha una necessità biologica e culturale di contaminarsi con il mondo esterno attraverso il contatto. La pelle funziona da soglia di transito, il luogo in cui l'esterno scrive la sua storia su di noi.",
-    "notes": "Riflessione teorica fondata sugli studi antropologici di Ashley Montagu sul valore primario del tatto e della pelle come primo tramite relazionale ed emotivo.",
-    "externalLink": "https://www.universitadelsociale.org/pelle-confini-e-memoria-emotiva-quando-il-corpo-mostra-cio-che-non-riusciamo-a-dire/",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-075.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-075.jpg",
-    "galleryUrls": [],
-    "excerpt": "L'essere umano ha una necessità biologica e culturale di contaminarsi con il mondo esterno attraverso il contatto. La pelle funziona da soglia di transito, il luogo in cui l'estern...",
-    "microKeyword": "CONTATTO"
   },
   {
     "id": "caso-011",
@@ -833,42 +639,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Serie fotografica che decostruisce il ritratto di gravidanza trasformando il corpo materno in paesaggio astratto, stimolando riflessioni sociali sul corpo e la famiglia."
   },
   {
-    "id": "caso-076",
-    "number": "076",
-    "title": "CONTATTO",
-    "authorOrSubject": "Maurice Merleau-Ponty",
-    "year": "1964",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione"
-    ],
-    "stileVisivo": "Trattato filosofico e fenomenologico; ontologia della carne, reversibilità percettiva del sensibile e cerniera tra corpo e mondo.",
-    "sintesiConcettuale": "La pelle è il punto di cerniera in cui il vedente e il visibile si toccano. Tatto e vista mostrano che siamo fatti della stessa materia del mondo: toccare significa sempre essere toccati.",
-    "notes": "Concetto elaborato a partire dalla fenomenologia della carne e del chiasmo di Maurice Merleau-Ponty, in cui l'epidermide funge da cerniera tra soggetto percipiente e mondo visibile.",
-    "externalLink": "https://link.springer.com/article/10.1007/s11007-024-09628-4",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-076.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-076.jpg",
-    "galleryUrls": [],
-    "excerpt": "La pelle è il punto di cerniera in cui il vedente e il visibile si toccano. Tatto e vista mostrano che siamo fatti della stessa materia del mondo: toccare significa sempre essere t...",
-    "microKeyword": "CERNIERA"
-  },
-  {
     "id": "caso-014",
     "number": "014",
     "title": "Silk & Skin Works",
@@ -952,43 +722,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Ritratti su larga scala di giovani donne con mastectomia post-cancro. Rifiutando la retorica del nastro rosa, l'opera mostra la fierezza del corpo segnato dalla chirurgia, trasform..."
   },
   {
-    "id": "caso-077",
-    "number": "077",
-    "title": "CORPO VISSUTO",
-    "authorOrSubject": "Maurice Merleau-Ponty",
-    "year": "1945",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Traumi"
-    ],
-    "stileVisivo": "Indagine fenomenologica ed esistenziale; concettualizzazione del corpo proprio come soggetto d'esperienza, veicolo d'essere al mondo e incarnazione dell'identità.",
-    "sintesiConcettuale": "«Noi siamo il nostro corpo». Ogni cambiamento, cicatrice o segno sulla pelle modifica il modo di abitare lo spazio e di fare esperienza, e chiama in causa l'identità intera della persona.",
-    "notes": "Nozione cardine di Maurice Merleau-Ponty sviluppata nella 'Phénoménologie de la perception' (1945): la pelle e le sue tracce ridefiniscono l'ancoraggio esistenziale e corporeo nel mondo.",
-    "externalLink": "https://link.springer.com/article/10.1007/s11007-024-09628-4",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-077.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-077.jpg",
-    "galleryUrls": [],
-    "excerpt": "«Noi siamo il nostro corpo». Ogni cambiamento, cicatrice o segno sulla pelle modifica il modo di abitare lo spazio e di fare esperienza, e chiama in causa l'identità intera della p...",
-    "microKeyword": "VISSUTO"
-  },
-  {
     "id": "caso-016",
     "number": "016",
     "title": "Saving Faces",
@@ -1064,42 +797,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-017-2.jpg"
     ],
     "excerpt": "L'artista reinterpreta l'Olympia di Manet esponendo il proprio corpo segnato dalle terapie oncologiche. L'opera scardina i canoni della bellezza accademica, infrangendo il tabù del..."
-  },
-  {
-    "id": "caso-078",
-    "number": "078",
-    "title": "TEMPO INCARNATO",
-    "authorOrSubject": "Maurice Merleau-Ponty",
-    "year": "1945",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione"
-    ],
-    "stileVisivo": "Riflessione filosofico-fenomenologica; analisi della temporalità incorporata, del tempo che si fa carne e della stratificazione mnestica cutanea.",
-    "sintesiConcettuale": "Il tempo passa attraverso la carne. Il corpo invecchia, muta e registra gli eventi perché porta inscritta la sua storia temporale.",
-    "notes": "Articolazione fenomenologica merleau-pontyana della temporalità vissuta, in cui l'epidermide diviene archivio temporale e testimonianza incarnata del divenire.",
-    "externalLink": "https://link.springer.com/article/10.1007/s11007-024-09628-4",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-078.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-078.jpg",
-    "galleryUrls": [],
-    "excerpt": "Il tempo passa attraverso la carne. Il corpo invecchia, muta e registra gli eventi perché porta inscritta la sua storia temporale.",
-    "microKeyword": "TEMPO"
   },
   {
     "id": "caso-018",
@@ -1179,43 +876,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-019-5.jpg"
     ],
     "excerpt": "In risposta alla diagnosi di cancro al seno e all'infantilizzazione subita in ambito ospedaliero, Spence sviluppa la pratica della fototerapia: documenta la mastectomia e le terapi..."
-  },
-  {
-    "id": "caso-079",
-    "number": "079",
-    "title": "CICATRICE COME INTERRUZIONE BIOGRAFICA",
-    "authorOrSubject": "Mike Bury",
-    "year": "1982",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Trauma, Tempo & Agency",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Traumi",
-    "clusterTags": [
-      "Traumi",
-      "Medici"
-    ],
-    "stileVisivo": "Saggio sociologico e teorico; concettualizzazione della malattia cronica e della cicatrice come rottura biografica e cesura temporale.",
-    "sintesiConcettuale": "Un evento improvviso (un incidente, una malattia, un'operazione d'urgenza) danneggia il corpo fisico e insieme spezza la linea temporale e le aspettative di vita dell'individuo. La cicatrice è la prova materiale di una biografia interrotta, da riscrivere a partire da quel segno.",
-    "notes": "Articolo seminale pubblicato su 'Sociology of Health & Illness' (1982); introduce il concetto di 'biographical disruption' per spiegare l'impatto della condizione cronica sull'identità.",
-    "externalLink": "[link removed]",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-079.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-079.jpg",
-    "galleryUrls": [],
-    "excerpt": "Un evento improvviso (un incidente, una malattia, un'operazione d'urgenza) danneggia il corpo fisico e insieme spezza la linea temporale e le aspettative di vita dell'individuo. La...",
-    "microKeyword": "FRATTURA"
   },
   {
     "id": "caso-020",
@@ -1336,43 +996,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Iniziativa che trasforma i punti indelebili della radioterapia in simboli di forza e rinascita: accoppiando pazienti oncologici a tatuatori professionisti, converte le tracce clini..."
   },
   {
-    "id": "caso-080",
-    "number": "080",
-    "title": "CORPO PLASTICO",
-    "authorOrSubject": "Catherine Malabou",
-    "year": "2009",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Trauma, Tempo & Agency",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Traumi",
-    "clusterTags": [
-      "Traumi",
-      "Trasformazione"
-    ],
-    "stileVisivo": "Trattato filosofico e saggio teorico; ontologia della plasticità distruttiva, metamorfosi traumatica e deviazione irreversibile della forma corporea.",
-    "sintesiConcettuale": "Il corpo segnato dall'imprevisto è una forma inedita, scolpita dall'urto. La vita progettata per anni subisce una deviazione improvvisa e irreversibile.",
-    "notes": "Saggio filosofico 'Ontologie de l'accident' (2009); esplora la plasticità distruttiva scaturita da eventi traumatici improvvisi che ridefiniscono irreversibilmente l'essere.",
-    "externalLink": "https://www.societyandspace.org/articles/ontology-of-the-accident-by-catherine-malabou",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-080.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-080.jpg",
-    "galleryUrls": [],
-    "excerpt": "Il corpo segnato dall'imprevisto è una forma inedita, scolpita dall'urto. La vita progettata per anni subisce una deviazione improvvisa e irreversibile.",
-    "microKeyword": "PLASTICO"
-  },
-  {
     "id": "caso-023",
     "number": "023",
     "title": "Zipper",
@@ -1444,42 +1067,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-024-3.jpg"
     ],
     "excerpt": "Progetto fotografico dedicato a celebrare la nascita con parto cesareo: attraverso ritratti autentici e raccolte di testimonianze, trasforma la cicatrice chirurgica in un simbolo d..."
-  },
-  {
-    "id": "caso-081",
-    "number": "081",
-    "title": "TRACCE DEL VISSUTO",
-    "authorOrSubject": "Michel Serres",
-    "year": "1985",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione"
-    ],
-    "stileVisivo": "Saggio filosofico ed epistemologico; fenomenologia dei cinque sensi, la pelle come tessuto di pieghe, impressioni tattili e incontro con il mondo.",
-    "sintesiConcettuale": "La pelle non è una scatola rigida, ma un tessuto che si piega e si segna a ogni incontro. L'accumulo di pieghe e rughe sulla superficie del corpo è letteralmente la prova visibile che abbiamo incontrato l'altro, che abbiamo toccato il mondo e ci siamo lasciati impressionare da esso.",
-    "notes": "Tratto dal volume 'Les Cinq Sens' (1985); testo cardine sulla sensorialità epidermica, in cui le pieghe e i segni della pelle testimoniano la relazione e il contatto con l'ambiente.",
-    "externalLink": "https://filodiariannapsicologia.it/psicosomatica-la-pelle-come-specchio-della-psiche/",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-081.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-081.jpg",
-    "galleryUrls": [],
-    "excerpt": "La pelle non è una scatola rigida, ma un tessuto che si piega e si segna a ogni incontro. L'accumulo di pieghe e rughe sulla superficie del corpo è letteralmente la prova visibile ...",
-    "microKeyword": "TRACCE"
   },
   {
     "id": "caso-025",
@@ -1567,43 +1154,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Autoritratto che espone la cicatrice della mastectomia sulla copertina del New York Times Magazine (1993), rompendo il silenzio e la vergogna legati alla malattia."
   },
   {
-    "id": "caso-082",
-    "number": "082",
-    "title": "L’IO LETTO DALL’ALTRO",
-    "authorOrSubject": "Erving Goffman",
-    "year": "1963",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Sociologia & Biopolitica",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Politico / Rivendicativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Sistemici",
-    "clusterTags": [
-      "Sistemici",
-      "Trasformazione"
-    ],
-    "stileVisivo": "Saggio sociologico e teoria dell'interazione; concettualizzazione dello stigma, dell'identità deteriorata e dello specchio sociale.",
-    "sintesiConcettuale": "La pelle è il primo \"schermo\" con cui ci presentiamo agli altri. Il soggetto non sperimenta il proprio corpo in solitudine, ma attraverso lo \"specchio sociale\" (il giudizio interiorizzato degli altri).",
-    "notes": "Riflessione sociologica fondata sugli studi di Erving Goffman sullo stigma e la presentazione del sé; la pelle come interfaccia corporea e specchio del giudizio sociale interiorizzato.",
-    "externalLink": "https://cris.unibo.it/handle/11585/872762",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-082.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-082.jpg",
-    "galleryUrls": [],
-    "excerpt": "La pelle è il primo \"schermo\" con cui ci presentiamo agli altri. Il soggetto non sperimenta il proprio corpo in solitudine, ma attraverso lo \"specchio sociale\" (il giudizio interio...",
-    "microKeyword": "SCHERMO"
-  },
-  {
     "id": "caso-027",
     "number": "027",
     "title": "Mes cicatrices, Je suis d'elles, entièrement tissé.e",
@@ -1680,42 +1230,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-028-4.jpg"
     ],
     "excerpt": "Esplorazione visiva e concettuale dei corpi cuciti e dei segni corporali chirurgici come cartografia del trauma, dove i punti di sutura segnano il confine tra vulnerabilità e guari..."
-  },
-  {
-    "id": "caso-083",
-    "number": "083",
-    "title": "KÖRPER E LEIB",
-    "authorOrSubject": "Maurice Merleau-Ponty",
-    "year": "1945",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione"
-    ],
-    "stileVisivo": "Trattato fenomenologico ed esistenziale; dicotomia filosofica tra corpo-oggetto (Körper) anatomico e corpo-vivente/vissuto (Leib) esperienziale.",
-    "sintesiConcettuale": "Il corpo si vive in due modi. Il Körper è il corpo oggetto, materiale, misurabile, osservabile dall'esterno (lo specchio che giudica). Il Leib è il corpo vissuto, il corpo proprio attraverso cui si fa esperienza del mondo senza pensarci.",
-    "notes": "Concetto sviluppato nella 'Phénoménologie de la perception' (1945); indaga la tensione fenomenologica tra il corpo oggettivato dallo sguardo esterno e il corpo vissuto dall'interno.",
-    "externalLink": "[link removed]",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-083.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-083.jpg",
-    "galleryUrls": [],
-    "excerpt": "Il corpo si vive in due modi. Il Körper è il corpo oggetto, materiale, misurabile, osservabile dall'esterno (lo specchio che giudica). Il Leib è il corpo vissuto, il corpo proprio ...",
-    "microKeyword": "LEIB"
   },
   {
     "id": "caso-029",
@@ -1838,43 +1352,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Campagna fotografica e narrativa dedicata a bambini nati con cardiopatie congenite: valorizza la cicatrice sternotomica 'zipper' come simbolo di forza, sopravvivenza e fierezza."
   },
   {
-    "id": "caso-084",
-    "number": "084",
-    "title": "DOPPIA SENSAZIONE",
-    "authorOrSubject": "Edmund Husserl",
-    "year": "1952",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Fenomenologia & Antropologia",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Sistemici"
-    ],
-    "stileVisivo": "Indagine fenomenologica trascendentale; analisi della 'Doppelempfindung' (doppia sensazione tattile) e della localizzazione somatica della coscienza corporea.",
-    "sintesiConcettuale": "Il corpo è l'unico oggetto del mondo che risulta insieme percepito dall'esterno e sentito dall'interno. Un segno sulla pelle amplifica questa spaccatura e costringe il soggetto a guardarsi con gli occhi della società, invece di vivere liberamente.",
-    "notes": "Nozione fenomenologica sviluppata nelle 'Ideen II' (Idee per una fenomenologia pura e per una filosofia fenomenologica, 1952); analisi del doppio statuto della pelle e del corpo proprio.",
-    "externalLink": "https://umontreal.scholaris.ca/server/api/core/bitstreams/27ba327e-b107-4575-9904-e13f0ee59dc1/content",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-084.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-084.jpg",
-    "galleryUrls": [],
-    "excerpt": "Il corpo è l'unico oggetto del mondo che risulta insieme percepito dall'esterno e sentito dall'interno. Un segno sulla pelle amplifica questa spaccatura e costringe il soggetto a g...",
-    "microKeyword": "SENSAZIONE"
-  },
-  {
     "id": "caso-032",
     "number": "032",
     "title": "Children's Healthcare of Atlanta",
@@ -1954,43 +1431,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Progetto fotografico che documenta centinaia di individui con cicatrici da interventi, traumi o ustioni, affiancando le loro storie scritte per ribaltare lo stigma ed esaltare la s..."
   },
   {
-    "id": "caso-085",
-    "number": "085",
-    "title": "PELLE COME TESTO, SEGNO COME INDICE",
-    "authorOrSubject": "Charles Sanders Peirce",
-    "year": "1894",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Semiotica del segno",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Traumi"
-    ],
-    "stileVisivo": "Trattato filosofico e semiotico; teoria della traccia indicale, legame causale tra evento corporeo e segno cutaneo.",
-    "sintesiConcettuale": "Nella classificazione dei segni di Peirce la cicatrice è un indice. L'indice ha un legame fisico e causale con il suo referente: la cicatrice c'è perché c'è stata una ferita, un evento, un trauma o un'operazione. Un disegno o un simbolo arbitrario non hanno questo vincolo.",
-    "notes": "Riflessione teorica fondata sulla classificazione semiotica triadica di C. S. Peirce; la cicatrice come indice non arbitrario di un'azione materiale pregressa.",
-    "externalLink": "",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-085.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-085.jpg",
-    "galleryUrls": [],
-    "excerpt": "Nella classificazione dei segni di Peirce la cicatrice è un indice. L'indice ha un legame fisico e causale con il suo referente: la cicatrice c'è perché c'è stata una ferita, un ev...",
-    "microKeyword": "INDICE"
-  },
-  {
     "id": "caso-034",
     "number": "034",
     "title": "IN/VISIBLE",
@@ -2065,43 +1505,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-035-3.jpg"
     ],
     "excerpt": "Serie documentaria e ritrattistica sui sopravvissuti ad attacchi con acido in Iran; l'opera infrange il silenzio, restituendo dignità e identità ai volti delle vittime."
-  },
-  {
-    "id": "caso-086",
-    "number": "086",
-    "title": "SEGNO COME DEVIAZIONE DELLA NORMA",
-    "authorOrSubject": "Algirdas Julien Greimas",
-    "year": "1966",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Semiotica del segno",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Sistemici"
-    ],
-    "stileVisivo": "Trattato semiotico e strutturale; opposizioni binarie della percezione visiva e semiosi dello scarto rispetto alla superficie integra.",
-    "sintesiConcettuale": "La percezione visiva si organizza in opposizioni binarie: liscio/rugoso, regolare/irregolare, simmetrico/asimmetrico, norma/scarto. Il segno sulla pelle è una differenza, una deviazione dalla norma.",
-    "notes": "Modello teorico strutturale applicato alla superficie corporea; l'epidermide come piano di manifestazione in cui il segno produce significazione per differenziazione.",
-    "externalLink": "",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-086.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-086.jpg",
-    "galleryUrls": [],
-    "excerpt": "La percezione visiva si organizza in opposizioni binarie: liscio/rugoso, regolare/irregolare, simmetrico/asimmetrico, norma/scarto. Il segno sulla pelle è una differenza, una devia...",
-    "microKeyword": "NORMA"
   },
   {
     "id": "caso-036",
@@ -2218,43 +1621,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Indagine fotogiornalistica pionieristica che documenta la violenza domestica e i traumi fisici inflitti alle donne, rompendo il tabù dell'abuso intrafamiliare."
   },
   {
-    "id": "caso-087",
-    "number": "087",
-    "title": "SEGNO E STEREOTIPO",
-    "authorOrSubject": "Asia Benedetti / Edizioni Ca' Foscari",
-    "year": "2025",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Semiotica del segno",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Politico / Rivendicativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Sistemici",
-    "clusterTags": [
-      "Sistemici",
-      "Traumi"
-    ],
-    "stileVisivo": "Saggio accademico e teoria critica; analisi semiotica della codifica culturale e degli stereotipi narrativi associati al corpo segnato.",
-    "sintesiConcettuale": "Nelle narrazioni tradizionali (cinema, TV, fiabe) il corpo segnato è un testo scritto dagli eventi o dagli altri sul personaggio: il cattivo segnato dalla sfortuna o dalla violenza, la vittima marchiata. Chi guarda decodifica il segno con uno stereotipo preconfezionato.",
-    "notes": "Studio semiotico pubblicato nei Quaderni di Venezia Arti (2025); decostruzione della narrazione egemonica e dello sguardo oggettificante sul corpo imperfetto.",
-    "externalLink": "https://edizionicafoscari.unive.it/media/pdf/books/979-12-5742-001-7/979-12-5742-001-7-ch-10.pdf",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-087.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-087.jpg",
-    "galleryUrls": [],
-    "excerpt": "Nelle narrazioni tradizionali (cinema, TV, fiabe) il corpo segnato è un testo scritto dagli eventi o dagli altri sul personaggio: il cattivo segnato dalla sfortuna o dalla violenza...",
-    "microKeyword": "STEREOTIPO"
-  },
-  {
     "id": "caso-039",
     "number": "039",
     "title": "Cicatrici",
@@ -2334,43 +1700,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Serie fotografica che ritrae persone con cicatrici estese, ustioni e differenze corporee visibili, sovvertendo gli standard convenzionali di bellezza e promuovendo l'inclusione."
   },
   {
-    "id": "caso-088",
-    "number": "088",
-    "title": "RIBALTAMENTO SEMIOTICO DEL CORPO",
-    "authorOrSubject": "Asia Benedetti / Edizioni Ca' Foscari",
-    "year": "2025",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Semiotica del segno",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Poetico / Evocativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Sistemici"
-    ],
-    "stileVisivo": "Saggio critico e semiotica del corpo; teoria dell'enunciazione corporea, riappropriazione del testo cutaneo e autodeterminazione visiva.",
-    "sintesiConcettuale": "Quando il soggetto sceglie di non coprire la cicatrice, la semiotica del corpo si capovolge. Chi la porta diventa il soggetto dell'enunciazione: riprende in mano il proprio testo cutaneo e lo riscrive. Il segno smette di denotare la violenza subita (passato) e comincia a denotare la sovranità sul proprio corpo (presente e futuro).",
-    "notes": "Contributo in 'Reading the Void: Nil Yalter\\'s Semiotics of the Body' (2025); trasformazione del segno cutaneo da marchio passivo a testo attivo di sovranità identitaria.",
-    "externalLink": "https://edizionicafoscari.unive.it/media/pdf/books/979-12-5742-001-7/979-12-5742-001-7-ch-10.pdf",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-088.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-088.jpg",
-    "galleryUrls": [],
-    "excerpt": "Quando il soggetto sceglie di non coprire la cicatrice, la semiotica del corpo si capovolge. Chi la porta diventa il soggetto dell'enunciazione: riprende in mano il proprio testo c...",
-    "microKeyword": "RIBALTAMENTO"
-  },
-  {
     "id": "caso-041",
     "number": "041",
     "title": "Survivors",
@@ -2447,43 +1776,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Progetto ritrattistico dedicato alle donne pakistane sfigurate da attacchi con l'acido, volto a restituire dignità, identità e visibilità a chi viene emarginato dalla società per l..."
   },
   {
-    "id": "caso-089",
-    "number": "089",
-    "title": "PELLE COME SEGNO DI PRESTAZIONE",
-    "authorOrSubject": "Byung-Chul Han",
-    "year": "2010",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Sociologia & Biopolitica",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Politico / Rivendicativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Sistemici",
-    "clusterTags": [
-      "Sistemici",
-      "Trasformazione"
-    ],
-    "stileVisivo": "Saggio filosofico e teoria critica; analisi della società della prestazione, imperativo dell'autodisciplina e mercificazione del corpo liscio.",
-    "sintesiConcettuale": "La pelle contemporanea è caricata dell'obbligo di attestare efficienza e prestazione. L'epidermide liscia e tonica segnala giovinezza, disciplina morale e idoneità produttiva, mentre i segni dell'invecchiamento generano angoscia espellendo il corpo dalle dinamiche di mercato.",
-    "notes": "Riflessione filosofica ispirata a Byung-Chul Han e alla gaze theory; decostruzione del corpo neoliberale in cui l'epidermide levigata diviene feticcio di produttività e conformità sistemica.",
-    "externalLink": "https://www.edizioninottetempo.it/media/productattach/f/_/f._u._busan_alias_-_il_manifesto.pdf",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-089.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-089.jpg",
-    "galleryUrls": [],
-    "excerpt": "La pelle contemporanea è caricata dell'obbligo di attestare efficienza e prestazione. L'epidermide liscia e tonica segnala giovinezza, disciplina morale e idoneità produttiva, ment...",
-    "microKeyword": "PRESTAZIONE"
-  },
-  {
     "id": "caso-043",
     "number": "043",
     "title": "Sacred Transformations",
@@ -2558,43 +1850,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-044-2.jpg"
     ],
     "excerpt": "Campagna di sensibilizzazione di ASTi che utilizza il formato di un catalogo di moda per denunciare il legame tra l'uso di acido nell'industria tessile e gli attacchi con l'acido n..."
-  },
-  {
-    "id": "caso-090",
-    "number": "090",
-    "title": "IL DOPPIO STANDARD DELL'INVECCHIAMENTO",
-    "authorOrSubject": "Susan Sontag",
-    "year": "1972",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Sociologia & Biopolitica",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Politico / Rivendicativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Sistemici",
-    "clusterTags": [
-      "Sistemici",
-      "Trasformazione"
-    ],
-    "stileVisivo": "Saggio femminista e critica culturale; decostruzione della disparità di genere nei canoni estetici e nell'attribuzione di valore sociale al corpo che invecchia.",
-    "sintesiConcettuale": "La cultura occidentale applica un doppio standard al tempo sul corpo: nell'uomo i segni d'invecchiamento conferiscono autorità e fascino, mentre nella donna decretano un declino inaccettabile, subordinandone il valore alla sola giovinezza.",
-    "notes": "Saggio cardine 'The Double Standard of Aging' (1972); analisi critica sul legame tra patriarcato, sguardo sociale e svalutazione sistematica del corpo femminile maturo.",
-    "externalLink": "https://www.ebsco.com/research-starters/social-sciences-and-humanities/politics-appearance",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-090.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-090.jpg",
-    "galleryUrls": [],
-    "excerpt": "La cultura occidentale applica un doppio standard al tempo sul corpo: nell'uomo i segni d'invecchiamento conferiscono autorità e fascino, mentre nella donna decretano un declino in...",
-    "microKeyword": "INVECCHIAMENTO"
   },
   {
     "id": "caso-045",
@@ -2711,43 +1966,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Ritratto intimo di Carol Mayer, sopravvissuta con l'85% del corpo ustionato a un incendio domestico; l'opera celebra l'accettazione radicale come fonte di pura bellezza e forza vit..."
   },
   {
-    "id": "caso-091",
-    "number": "091",
-    "title": "MEDICALIZZAZIONE DELL'ESTETICA",
-    "authorOrSubject": "Dana Alsaialy & Dino Numerato",
-    "year": "2024",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Sociologia & Biopolitica",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Clinico / Scientifico",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Sistemici",
-    "clusterTags": [
-      "Sistemici",
-      "Medici"
-    ],
-    "stileVisivo": "Studio sociologico ed etnografia clinica; analisi critica dei confini tra dermatologia clinica ed estetica, autodiagnosi e agency del paziente consumatore.",
-    "sintesiConcettuale": "I normali processi fisiologici dell'invecchiamento e le variazioni cutanee vengono ridefiniti come patologie da trattare. I pazienti, guidati da guru dello skincare e trend digitali, assumono un ruolo attivo nell'autodiagnosi e nella richiesta di interventi correttivi.",
-    "notes": "Ricerca sociologica pubblicata su ResearchGate; indaga il paradosso tra la medicalizzazione della bellezza e l'autonomia decisionale del paziente nella dermatologia contemporanea.",
-    "externalLink": "https://www.researchgate.net/publication/390548602_Medicalizing_aesthetics_or_beautifying_illness_Exploring_the_absence_of_diagnosis_and_the_centrality_of_patient_autonomy_in_dermatology",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-091.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-091.jpg",
-    "galleryUrls": [],
-    "excerpt": "I normali processi fisiologici dell'invecchiamento e le variazioni cutanee vengono ridefiniti come patologie da trattare. I pazienti, guidati da guru dello skincare e trend digital...",
-    "microKeyword": "MEDICALIZZAZIONE"
-  },
-  {
     "id": "caso-048",
     "number": "048",
     "title": "New Icons: Portraits of Burn Survivors",
@@ -2829,43 +2047,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Serie fotografica e archivio narrativo che ritrae persone con cicatrici visibili, invitandole a documentare la propria esperienza: la cicatrice diviene portale di memoria e testimo..."
   },
   {
-    "id": "caso-092",
-    "number": "092",
-    "title": "LINGUAGGIO BELLICO NEL BEAUTY",
-    "authorOrSubject": "IntechOpen",
-    "year": "2025",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Sociologia & Biopolitica",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Politico / Rivendicativo",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Medici"
-    ],
-    "stileVisivo": "Saggio critico e analisi del discorso pubblicitario; decostruzione della metafora bellica applicata all'invecchiamento e all'imperfezione cutanea.",
-    "sintesiConcettuale": "Nei messaggi pubblicitari la pelle è narrata come un campo di battaglia: i segni dell'età, rughe e imperfezioni diventano nemici da combattere, attaccare ed eliminare.",
-    "notes": "Capitolo accademico su IntechOpen; analisi critica della retorica militarizzata nel marketing cosmetico e della stigmatizzazione delle tracce dell'età.",
-    "externalLink": "https://www.intechopen.com/online-first/1248819?",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-092.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-092.jpg",
-    "galleryUrls": [],
-    "excerpt": "Nei messaggi pubblicitari la pelle è narrata come un campo di battaglia: i segni dell'età, rughe e imperfezioni diventano nemici da combattere, attaccare ed eliminare.",
-    "microKeyword": "BELLICO"
-  },
-  {
     "id": "caso-050",
     "number": "050",
     "title": "Beauty Beyond Scars",
@@ -2944,43 +2125,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-051-4.jpg"
     ],
     "excerpt": "Installazione artistica che indaga le cicatrici cheloidi ereditarie nella storia familiare dell'autrice: il corpo diviene superficie memoriale e i rilievi dorati sublimano il traum..."
-  },
-  {
-    "id": "caso-093",
-    "number": "093",
-    "title": "LINGUAGGIO TECNICO-SCIENTIFICO NEL BEAUTY",
-    "authorOrSubject": "IntechOpen",
-    "year": "2025",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Sociologia & Biopolitica",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale",
-    "tono": "Clinico / Scientifico",
-    "tipoDiMedia": "Testo / Saggio",
-    "categorie": "Sistemici",
-    "clusterTags": [
-      "Sistemici",
-      "Medici"
-    ],
-    "stileVisivo": "Studio sociologico e semiotica della comunicazione scientifica; ibridazione tra retorica cosmetica, dati quantitativi e lessico clinico-dermatologico.",
-    "sintesiConcettuale": "La pubblicità cosmetica supera la sola promessa emotiva ibridando la cura con formule pseudoscientifiche (grafici, percentuali e termini clinici), trasformando l'invecchiamento cutaneo in un problema misurabile e risolvibile.",
-    "notes": "Contributo teorico su IntechOpen; disamina dei meccanismi di medicalizzazione e quantificazione pseudoscientifica della cute nel mercato beauty contemporaneo.",
-    "externalLink": "https://www.intechopen.com/online-first/1248819?",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-093.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-093.jpg",
-    "galleryUrls": [],
-    "excerpt": "La pubblicità cosmetica supera la sola promessa emotiva ibridando la cura con formule pseudoscientifiche (grafici, percentuali e termini clinici), trasformando l'invecchiamento cut...",
-    "microKeyword": "COSMESI"
   },
   {
     "id": "caso-052",
@@ -3099,43 +2243,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Monografia che documenta le conseguenze a lungo termine dell'esplosione nucleare: i corpi segnati e i cheloidi degli hibakusha testimoniano la tragedia e la memoria storica."
   },
   {
-    "id": "caso-094",
-    "number": "094",
-    "title": "LA CICATRICE VISTA DAGLI ALTRI",
-    "authorOrSubject": "The Guardian",
-    "year": "2020",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Trauma, Tempo & Agency",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale, Testimonianza personale",
-    "tono": "Intimo / Confessionale",
-    "tipoDiMedia": "Video",
-    "categorie": "Sistemici",
-    "clusterTags": [
-      "Sistemici",
-      "Traumi"
-    ],
-    "stileVisivo": "Video-documentario con interviste frontali e primi piani; luce naturale e narrazione confessionale focalizzata sulla relazione tra corpo segnato e visibilità pubblica.",
-    "sintesiConcettuale": "La cicatrice vive nello spazio pubblico ed è esposta allo sguardo giudicante o incuriosito degli altri. La visibilità del segno cutaneo attiva una dinamica relazionale in cui il soggetto fa esperienza della propria vulnerabilità: \"Vedo lo sguardo degli altri e non posso fare altro, forse farei lo stesso\".",
-    "notes": "Riflessione teorica ed esperienziale tratta dal documentario di The Guardian 'Scars: how our wounds make us who we are' (2020); indagine sulla percezione sociale del corpo imperfetto e sulla gestione dello sguardo altrui nello spazio pubblico.",
-    "externalLink": "https://www.theguardian.com/news/video/2020/apr/27/scars-how-our-wounds-make-us-who-we-are-video",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-094.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-094.jpg",
-    "galleryUrls": [],
-    "excerpt": "La cicatrice vive nello spazio pubblico ed è esposta allo sguardo giudicante o incuriosito degli altri. La visibilità del segno cutaneo attiva una dinamica relazionale in cui il so...",
-    "microKeyword": "SGUARDO"
-  },
-  {
     "id": "caso-055",
     "number": "055",
     "title": "Hiroshima",
@@ -3213,43 +2320,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Indagine visiva nei centri chirurgici di EMERGENCY a Kabul e Lashkargah: le ferite da arma da fuoco e le chirurgie d'urgenza testimoniano l'orrore quotidiano della guerra in Afghan..."
   },
   {
-    "id": "caso-095",
-    "number": "095",
-    "title": "DALLA PASSIVITÀ ALL'AGENCY",
-    "authorOrSubject": "The Guardian",
-    "year": "2020",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Trauma, Tempo & Agency",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale, Testimonianza personale",
-    "tono": "Intimo / Confessionale",
-    "tipoDiMedia": "Video",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Traumi"
-    ],
-    "stileVisivo": "Documentario testimoniale e ritrattistica video intima; inquadrature ravvicinate sulle cicatrici accompagnate da narrazione riflessiva sul superamento del trauma.",
-    "sintesiConcettuale": "La ferita costituisce il passaggio cruciale dalla passività della vittima all'agency del soggetto. Il segno sulla pelle cessa di essere ricordo del dolore per farsi testimonianza di liberazione e rinascita: \"La cicatrice mi fa pensare che sono libera... piu che il brutto periodo mi ricorda che mi sono liberata\".",
-    "notes": "Concettualizzazione teorica dal video di The Guardian 'Scars' (2020); analisi della riappropriazione biografica della ferita corporea come atto trasformativo di autodeterminazione e riscatto identitario.",
-    "externalLink": "https://www.theguardian.com/news/video/2020/apr/27/scars-how-our-wounds-make-us-who-we-are-video",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-095.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-095.jpg",
-    "galleryUrls": [],
-    "excerpt": "La ferita costituisce il passaggio cruciale dalla passività della vittima all'agency del soggetto. Il segno sulla pelle cessa di essere ricordo del dolore per farsi testimonianza d...",
-    "microKeyword": "AGENCY"
-  },
-  {
     "id": "caso-057",
     "number": "057",
     "title": "Sudan's War: A Nation Trapped",
@@ -3323,43 +2393,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "excerpt": "Reportage sulla mobilitazione pro-democrazia a Khartoum e Omdurman: i traumi e le lesioni dei manifestanti raccontano la tenacia e il sacrificio della resistenza civile."
   },
   {
-    "id": "caso-096",
-    "number": "096",
-    "title": "VERIDICITÀ DEL SEGNO CUTANEO",
-    "authorOrSubject": "The Guardian",
-    "year": "2020",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Trauma, Tempo & Agency",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale, Testimonianza personale",
-    "tono": "Intimo / Confessionale",
-    "tipoDiMedia": "Video",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Traumi"
-    ],
-    "stileVisivo": "Riprese macro e dettagli sull'epidermide segnata; estetica documentaria sincera e non mediata che esplora la carne come archivio visibile di verità.",
-    "sintesiConcettuale": "A differenza della parola o degli abiti, la pelle è una scrittura involontaria e incancellabile in cui il segno è intrinsecamente vero (veridicità del segno). Le tracce cutanee non mentono e definiscono l'identità: \"Sulle cicatrici non puoi davvero mentire, raccontano la storia per quello che sono\" e \"Le cicatrici contribuiscono a quello che sono io\".",
-    "notes": "Sviluppo teorico sul valore testimoniale della pelle dal reportage di The Guardian 'Scars' (2020); indagine sulla dimensione indicale e ontologica della cicatrice come testo veritiero e indelebile del vissuto.",
-    "externalLink": "https://www.theguardian.com/news/video/2020/apr/27/scars-how-our-wounds-make-us-who-we-are-video",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-096.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-096.jpg",
-    "galleryUrls": [],
-    "excerpt": "A differenza della parola o degli abiti, la pelle è una scrittura involontaria e incancellabile in cui il segno è intrinsecamente vero (veridicità del segno). Le tracce cutanee non...",
-    "microKeyword": "VERIDICITÀ"
-  },
-  {
     "id": "caso-059",
     "number": "059",
     "title": "With Their Bare Hands",
@@ -3431,43 +2464,6 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "thumbnailUrl": "/archive/thumbs/case-060.jpg",
     "galleryUrls": [],
     "excerpt": "Scatto simbolo della primavera araba nello Yemen che ritrae una madre velata mentre sostiene il figlio ferito dai gas e dalla repressione in una moschea-ospedale."
-  },
-  {
-    "id": "caso-097",
-    "number": "097",
-    "title": "SPACCATURA TEMPORALE",
-    "authorOrSubject": "The Guardian",
-    "year": "2020",
-    "type": "photo",
-    "segno": "Traccia teorica",
-    "ambitoTeorico": "Trauma, Tempo & Agency",
-    "segnoTags": [
-      "Traccia teorica"
-    ],
-    "tipologia": "Pubblicazione Editoriale, Testimonianza personale",
-    "tono": "Intimo / Confessionale",
-    "tipoDiMedia": "Video",
-    "categorie": "Trasformazione",
-    "clusterTags": [
-      "Trasformazione",
-      "Traumi"
-    ],
-    "stileVisivo": "Video-documentario e ritrattistica intima con inquadrature ravvicinate sulle cicatrici; narrazione riflessiva e testimoniale sulla cicatrice come cesura temporale e linea di demarcazione biografica.",
-    "sintesiConcettuale": "La cicatrice è, per sua natura, l'interfaccia temporale. Esiste un confine netto tra il prima (l'evento, il trauma, l'operazione) e il dopo (la vita che continua). Il segno cutaneo non è solo un elemento spaziale sul corpo, ma una condensazione di tempo: materializza l'istante in cui la biografia di una persona si è fratturata per poi ricucirsi in una forma nuova: \"Sempre un prima e un dopo\".",
-    "notes": "Riflessione teorica ed esperienziale dal reportage di The Guardian 'Scars: how our wounds make us who we are' (2020); indagine sulla cicatrice come interfaccia temporale, soglia biografica e condensazione materiale del tempo.",
-    "externalLink": "https://www.theguardian.com/news/video/2020/apr/27/scars-how-our-wounds-make-us-who-we-are-video",
-    "driveLink": "",
-    "mascherabilita": "—",
-    "accettabilitaSociale": "—",
-    "percezioneSociale": "—",
-    "percezioneEstetica": "—",
-    "valenzaDelRicordo": "—",
-    "sensoDiVergogna": "—",
-    "imageUrl": "/archive/case-097.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-097.jpg",
-    "galleryUrls": [],
-    "excerpt": "La cicatrice è, per sua natura, l'interfaccia temporale. Esiste un confine netto tra il prima (l'evento, il trauma, l'operazione) e il dopo (la vita che continua). Il segno cutaneo...",
-    "microKeyword": "SPACCATURA"
   },
   {
     "id": "caso-061",
