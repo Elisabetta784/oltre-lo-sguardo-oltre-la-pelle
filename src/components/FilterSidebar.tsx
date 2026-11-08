@@ -41,7 +41,7 @@ interface FilterSidebarProps {
 
 /**
  * Kinetic Typographic Echo component recreating the exact visual movement in inspo filtri.png:
- * Staggered text layers with offset horizontal/vertical positions and fading opacities.
+ * Staggered text layers with offset horizontal/vertical positions and fading opacities using Alte Haas Grotesk.
  */
 function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?: string }) {
   return (
@@ -84,11 +84,11 @@ function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?
         </h2>
         {categoryLabel && (
           <div className="mt-0.5 flex items-center gap-1.5">
-            <span className="font-body text-[8.5px] uppercase tracking-widest text-black/60 font-semibold">
+            <span className="font-display text-[9px] uppercase tracking-widest text-black/70 font-bold">
               [{categoryLabel}]
             </span>
-            <span className="w-3.5 h-[1px] bg-black/20" />
-            <span className="font-body text-[8px] uppercase tracking-wider text-black/45">
+            <span className="w-3.5 h-[1px] bg-black/25" />
+            <span className="font-display text-[8.5px] uppercase tracking-wider text-black/50 font-medium">
               FILTRO ATTIVO
             </span>
           </div>
@@ -207,7 +207,7 @@ export function FilterSidebar({
                 </button>
               </div>
 
-              {/* Integrated Search Input */}
+              {/* Integrated Search Input (Alte Haas Grotesk) */}
               <div className="relative flex items-center border border-black bg-white px-2.5 py-1.5 focus-within:ring-1 focus-within:ring-black transition-all">
                 <Search className="w-3.5 h-3.5 text-black/50 mr-2 shrink-0 select-none" />
                 <input
@@ -215,14 +215,14 @@ export function FilterSidebar({
                   placeholder="CERCA PER PAROLA, SEGNO O CASO..."
                   value={searchQuery}
                   onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-                  className="w-full bg-transparent font-body text-[11px] uppercase tracking-wider text-black placeholder-black/40 outline-none"
+                  className="w-full bg-transparent font-display text-[11px] font-medium uppercase tracking-wider text-black placeholder-black/40 outline-none"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => onSearchChange && onSearchChange("")}
                     title="Cancella ricerca"
-                    className="ml-1 text-[10px] font-body text-black/60 hover:text-black cursor-pointer uppercase shrink-0 font-bold"
+                    className="ml-1 text-[10px] font-display font-bold text-black/60 hover:text-black cursor-pointer uppercase shrink-0"
                   >
                     [X]
                   </button>
@@ -230,8 +230,8 @@ export function FilterSidebar({
               </div>
 
               {/* Status and Reset */}
-              <div className="flex items-center justify-between font-body text-[10px] text-black">
-                <span className="font-semibold text-black/80">
+              <div className="flex items-center justify-between font-display text-[10.5px] text-black">
+                <span className="font-medium text-black/80">
                   {searchQuery.trim() !== "" ? (
                     <>RICERCA: &ldquo;{searchQuery.trim().toUpperCase()}&rdquo; [{filteredCount}]</>
                   ) : (
@@ -247,7 +247,7 @@ export function FilterSidebar({
                       if (onSearchChange) onSearchChange("");
                       onHoverFilter(null);
                     }}
-                    className="font-display text-[9px] font-bold uppercase tracking-wider text-black underline hover:opacity-70 cursor-pointer"
+                    className="font-display text-[9.5px] font-bold uppercase tracking-wider text-black underline hover:opacity-70 cursor-pointer"
                   >
                     [ AZZERA FILTRI ]
                   </button>
@@ -255,8 +255,8 @@ export function FilterSidebar({
               </div>
             </div>
 
-            {/* B. CATEGORY TABS STRIP */}
-            <div className="px-3 py-2 border-b border-black/15 bg-black/5 flex items-center gap-1 overflow-x-auto custom-scrollbar shrink-0">
+            {/* B. CATEGORY TABS STRIP (Alte Haas Grotesk) */}
+            <div className="px-2.5 py-1.5 border-b border-black/15 bg-black/5 flex items-center gap-1 overflow-x-auto custom-scrollbar shrink-0">
               {categoryKeys.map((catKey) => {
                 const countInCat = selectedFilters[catKey].length;
                 const isActive = activeCategoryTab === catKey;
@@ -266,7 +266,7 @@ export function FilterSidebar({
                     key={catKey}
                     type="button"
                     onClick={() => setActiveCategoryTab(catKey)}
-                    className={`font-display text-[10px] px-2 py-1 uppercase tracking-wider transition-colors cursor-pointer shrink-0 border rounded-none ${
+                    className={`font-display text-[10px] font-bold px-2 py-1 uppercase tracking-wider transition-colors cursor-pointer shrink-0 border rounded-none ${
                       isActive
                         ? "bg-black text-[#F8F8F6] border-black font-bold shadow-xs"
                         : "border-black/20 text-black/70 hover:border-black hover:text-black bg-white"
@@ -280,7 +280,7 @@ export function FilterSidebar({
               <button
                 type="button"
                 onClick={() => setActiveCategoryTab("all")}
-                className={`font-display text-[10px] px-2 py-1 uppercase tracking-wider transition-colors cursor-pointer shrink-0 border rounded-none ${
+                className={`font-display text-[10px] font-bold px-2 py-1 uppercase tracking-wider transition-colors cursor-pointer shrink-0 border rounded-none ${
                   activeCategoryTab === "all"
                     ? "bg-black text-[#F8F8F6] border-black font-bold shadow-xs"
                     : "border-black/20 text-black/70 hover:border-black hover:text-black bg-white"
@@ -290,17 +290,17 @@ export function FilterSidebar({
               </button>
             </div>
 
-            {/* C. SCROLLABLE VERTICAL OPTIONS LIST */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
+            {/* C. SCROLLABLE VERTICAL OPTIONS LIST (Alte Haas Grotesk for titolotti and items) */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-2.5 space-y-1">
               {activeCategoryTab === "all" ? (
                 /* ALL CATEGORIES STACKED */
                 categoryKeys.map((catKey) => {
                   const catDef = FILTER_CATEGORIES[catKey];
                   return (
-                    <div key={catKey} className="mb-3">
-                      <div className="font-display font-bold text-[10px] uppercase tracking-wider text-black/70 mb-1 pb-0.5 border-b border-black/15 flex items-center justify-between">
+                    <div key={catKey} className="mb-2.5">
+                      <div className="font-display font-bold text-[10.5px] uppercase tracking-wider text-black mb-1 pb-0.5 border-b border-black/15 flex items-center justify-between">
                         <span>{catDef.label}</span>
-                        <span className="text-[9px] font-normal text-black/40">
+                        <span className="font-display text-[9px] font-medium text-black/50">
                           {catDef.options.length} OPZIONI
                         </span>
                       </div>
@@ -321,16 +321,16 @@ export function FilterSidebar({
                                 })
                               }
                               onMouseLeave={() => onHoverFilter(null)}
-                              className={`flex items-center justify-between py-1 px-2 cursor-pointer font-body text-xs tracking-wider transition-all duration-150 border ${
+                              className={`flex items-center justify-between py-1.5 px-2 cursor-pointer font-display text-xs font-medium tracking-wider transition-all duration-150 border ${
                                 isSelected
                                   ? "bg-black text-[#F8F8F6] font-bold border-black shadow-xs"
                                   : "border-transparent hover:border-black/30 hover:bg-black/5 text-black/85 hover:text-black"
                               }`}
                             >
-                              <span className="truncate mr-2">
+                              <span className="truncate mr-2 font-display">
                                 {isSelected ? `■ ${opt.toUpperCase()}` : `[ ${opt.toUpperCase()} ]`}
                               </span>
-                              <span className={`text-[10px] shrink-0 ${isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}`}>
+                              <span className={`font-display text-[10.5px] shrink-0 ${isSelected ? "text-[#F8F8F6]/80 font-bold" : "text-black/50 font-medium"}`}>
                                 [ {count} ]
                               </span>
                             </div>
@@ -342,9 +342,9 @@ export function FilterSidebar({
                 })
               ) : (
                 /* SINGLE CATEGORY OPTIONS */
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   <div className="flex items-center justify-between pb-1 mb-1 border-b border-black/10">
-                    <span className="font-body text-[10px] uppercase tracking-wider text-black/50">
+                    <span className="font-display text-[10px] font-bold uppercase tracking-wider text-black/60">
                       SELEZIONA PER FILTRARE:
                     </span>
                     <span className="font-display text-[10px] font-bold text-black">
@@ -367,20 +367,20 @@ export function FilterSidebar({
                           })
                         }
                         onMouseLeave={() => onHoverFilter(null)}
-                        className={`flex items-center justify-between py-1.5 px-2.5 cursor-pointer font-body text-xs tracking-wider transition-all duration-150 border rounded-none ${
+                        className={`flex items-center justify-between py-1.5 px-2 cursor-pointer font-display text-xs font-medium tracking-wider transition-all duration-150 border rounded-none ${
                           isSelected
                             ? "bg-black text-[#F8F8F6] font-bold border-black shadow-xs"
                             : "border-transparent hover:border-black/30 hover:bg-black/5 text-black/85 hover:text-black"
                         }`}
                       >
-                        <span className="flex items-center gap-1.5 truncate mr-2">
+                        <span className="flex items-center gap-1.5 truncate mr-2 font-display">
                           <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/40"}>[</span>
                           <span className={`truncate ${isSelected ? "font-bold text-[#F8F8F6]" : ""}`}>
                             {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
                           </span>
                           <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/40"}>]</span>
                         </span>
-                        <span className={`text-[11px] shrink-0 ${isSelected ? "text-[#F8F8F6]/80 font-semibold" : "text-black/50"}`}>
+                        <span className={`font-display text-[10.5px] shrink-0 ${isSelected ? "text-[#F8F8F6]/80 font-bold" : "text-black/50 font-medium"}`}>
                           [ {count} ]
                         </span>
                       </div>
@@ -390,15 +390,15 @@ export function FilterSidebar({
               )}
             </div>
 
-            {/* D. BOTTOM KINETIC TYPOGRAPHY ECHO (inspo filtri.png) */}
+            {/* D. BOTTOM KINETIC TYPOGRAPHY ECHO (inspo filtri.png with Alte Haas Grotesk) */}
             <div className="p-2 sm:p-2.5 border-t-2 border-black bg-[#F2F2EF] shrink-0">
               <KineticTypoEcho
                 text={currentEchoText}
                 categoryLabel={currentEchoCat}
               />
-              <div className="mt-1 font-body text-[8px] uppercase tracking-wider text-black/40 flex items-center justify-between">
+              <div className="mt-0.5 font-display text-[8.5px] uppercase tracking-wider text-black/45 flex items-center justify-between font-medium">
                 <span>[ REAZIONE IN TEMPO REALE SULLA PARETE ]</span>
-                <span>[ filtri.png ]</span>
+                <span>[ ALTE HAAS GROTESK ]</span>
               </div>
             </div>
           </motion.aside>

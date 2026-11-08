@@ -448,12 +448,12 @@ export function MacroGrid({
               <h3 className="font-display font-bold text-xs text-black uppercase tracking-tight line-clamp-1 group-hover:underline">
                 {hoveredTileItem.title}
               </h3>
-              <div className="flex items-center justify-between font-body text-[10px] text-black/60 uppercase">
+              <div className="flex items-center justify-between font-display text-[10px] text-black/70 uppercase">
                 <span>{hoveredTileItem.authorOrSubject}</span>
                 <span>{hoveredTileItem.year}</span>
               </div>
-              <div className="pt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-body text-black uppercase tracking-wider">
-                <span className="font-semibold text-black/80">{hoveredTileItem.segno}</span>
+              <div className="pt-1.5 border-t border-black/10 flex items-center justify-between text-[9.5px] font-display text-black uppercase tracking-wider">
+                <span className="font-bold text-black/80">{hoveredTileItem.segno}</span>
                 <span className="flex items-center gap-0.5 text-black font-bold group-hover:translate-x-0.5 transition-transform">
                   ESPLORA <ArrowUpRight className="w-3 h-3" />
                 </span>
@@ -531,7 +531,7 @@ export function MacroGrid({
               OLTRE
               <ArrowUpRight className="w-3.5 h-3.5 text-[#F8F8F6]/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </span>
-            <span className="font-body text-[9px] text-[#F8F8F6]/50 uppercase tracking-wider group-hover:text-[#F8F8F6]/80 transition-colors hidden sm:inline">
+            <span className="font-display text-[9.5px] font-medium text-[#F8F8F6]/60 uppercase tracking-wider group-hover:text-[#F8F8F6]/90 transition-colors hidden sm:inline">
               VISIONE SISTEMICA / 6 DIALETTICHE
             </span>
           </div>
@@ -559,11 +559,11 @@ export function MacroGrid({
               MACRO
               <span className="inline-block w-2 h-2 rounded-full bg-white shadow-sm shadow-white/80" />
             </span>
-            <span className="font-body text-[9px] text-[#F8F8F6]/60 uppercase tracking-wider hidden sm:inline">
+            <span className="font-display text-[9.5px] font-medium text-[#F8F8F6]/65 uppercase tracking-wider hidden sm:inline">
               ARCHIVIO VISIVO · {displayItems.length} CASI
             </span>
           </div>
-          <div className="hidden lg:block font-body text-[9px] uppercase tracking-widest text-[#F8F8F6]/50 border border-white/20 px-2 py-0.5">
+          <div className="hidden lg:block font-display text-[9.5px] font-bold uppercase tracking-widest text-[#F8F8F6]/60 border border-white/20 px-2 py-0.5">
             PANORAMICA
           </div>
         </button>
@@ -595,15 +595,15 @@ export function MacroGrid({
               />
             </span>
             <span
-              className={`font-body text-[9px] uppercase tracking-wider hidden sm:inline ${
-                isFilterOpen ? "text-black/70 font-semibold" : "text-[#F8F8F6]/50 group-hover:text-[#F8F8F6]/80"
+              className={`font-display text-[9.5px] uppercase tracking-wider hidden sm:inline ${
+                isFilterOpen ? "text-black/80 font-bold" : "text-[#F8F8F6]/60 group-hover:text-[#F8F8F6]/85"
               }`}
             >
               {isFilterOpen ? "CHIUDI PANNELLO" : "SELEZIONA PER SEGNO & CATEGORIA"}
             </span>
           </div>
           <div
-            className={`text-[9px] font-display font-bold uppercase tracking-wider px-2.5 py-1 border ${
+            className={`text-[9.5px] font-display font-bold uppercase tracking-wider px-2.5 py-1 border ${
               isFilterOpen
                 ? "border-black bg-black text-[#F8F8F6]"
                 : "border-white/30 text-[#F8F8F6]/80 group-hover:border-white group-hover:text-white"

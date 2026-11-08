@@ -7,7 +7,7 @@
        local('AlteHaasGroteskRegular'),
        local('Alte Haas Grotesk'),
        url('/fonts/AlteHaasGroteskRegular.ttf') format('truetype');
-  font-weight: 400;
+  font-weight: 300 500;
   font-style: normal;
   font-display: swap;
 }
@@ -17,7 +17,7 @@
   src: local('Alte Haas Grotesk Bold'),
        local('AlteHaasGroteskBold'),
        url('/fonts/AlteHaasGroteskBold.ttf') format('truetype');
-  font-weight: 700;
+  font-weight: 600 900;
   font-style: normal;
   font-display: swap;
 }
