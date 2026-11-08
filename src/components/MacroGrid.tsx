@@ -2,8 +2,8 @@
 
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, ArrowUpRight } from "lucide-react";
-import { ArchiveItem } from "@/data/archiveData";
+import { Volume2, ArrowUpRight, SlidersHorizontal } from "lucide-react";
+import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 
 interface MacroGridProps {
   items: ArchiveItem[];
@@ -13,36 +13,47 @@ interface MacroGridProps {
   onSelectItem: (item: ArchiveItem) => void;
   isFilterOpen?: boolean;
   onCloseFilter?: () => void;
+  onToggleFilter?: () => void;
   onGoToBeyond?: () => void;
 }
 
 /**
- * Computes deterministic, balanced grid positions for the 76 case studies.
- * Uses 11 columns x 7 rows (= 77 slots), perfect for 76 visual cases.
- * All tiles strictly have equal dimensions ("sempre tutte uguali tra loro come dimensioni").
+ * Computes deterministic grid positions for visual cases and inserts the interactive ribbon
+ * directly above the penultimate row, faithfully recreating inspo/nuova home.png.
  */
 function getGridConfig(totalCount: number) {
   if (totalCount > 50) {
     const cols = 11;
-    const rows = Math.ceil(totalCount / cols);
+    const numImageRows = Math.ceil(totalCount / cols); // 7 image rows
+    // Penultimate image row is row (numImageRows - 1) = row 6.
+    // The interactive bar sits right above the penultimate row => gridRow = 6.
+    // Rows 1..5: images (55 cases)
+    // Row 6: INTERACTIVE NAVIGATION RIBBON (OLTRE | MACRO | FILTRI)
+    // Row 7: images (penultimate row of images, 11 cases)
+    // Row 8: images (last row of images, 10 cases)
+    const barRow = numImageRows - 1; // 6
+    const totalRows = numImageRows + 1; // 8
     const positions: { row: number; col: number; offsetX: number; offsetY: number }[] = [];
     
-    // Subtle rhythmic offsets for the scattered organic gallery feel seen in inspo home.png
+    // Subtle organic rhythm for exhibition wall
     const offsets = [
       { x: 0, y: 0 },
-      { x: 4, y: -6 },
-      { x: -5, y: 4 },
-      { x: 3, y: 5 },
-      { x: -4, y: -3 },
-      { x: 6, y: 2 },
-      { x: -2, y: -5 },
+      { x: 3, y: -4 },
+      { x: -4, y: 3 },
+      { x: 2, y: 3 },
+      { x: -3, y: -2 },
+      { x: 4, y: 2 },
+      { x: -2, y: -3 },
     ];
 
     for (let i = 0; i < totalCount; i++) {
       const off = offsets[i % offsets.length];
+      const imageRow = Math.floor(i / cols) + 1;
+      const row = imageRow >= barRow ? imageRow + 1 : imageRow;
+      const col = (i % cols) + 1;
       positions.push({
-        row: Math.floor(i / cols) + 1,
-        col: (i % cols) + 1,
+        row,
+        col,
         offsetX: off.x,
         offsetY: off.y,
       });
@@ -50,22 +61,28 @@ function getGridConfig(totalCount: number) {
 
     return {
       cols,
-      rows,
+      totalRows,
+      barRow,
       positions,
-      baseTilePx: 104, // Generous tile size for 76 items
+      baseTilePx: 104, // Area reference dimension
       maxTilePx: 210,
     };
   }
 
-  // Filtered state with fewer items (e.g. 10-30 items)
+  // Filtered state with fewer items (e.g. 5-30 items)
   const cols = Math.max(4, Math.min(8, Math.ceil(Math.sqrt(totalCount * 1.5))));
-  const rows = Math.ceil(totalCount / cols);
+  const numImageRows = Math.ceil(totalCount / cols);
+  const barRow = numImageRows >= 3 ? numImageRows - 1 : Math.max(1, numImageRows);
+  const totalRows = numImageRows >= 2 ? numImageRows + 1 : 2;
   const positions: { row: number; col: number; offsetX: number; offsetY: number }[] = [];
 
   for (let i = 0; i < totalCount; i++) {
+    const imageRow = Math.floor(i / cols) + 1;
+    const row = imageRow >= barRow ? imageRow + 1 : imageRow;
+    const col = (i % cols) + 1;
     positions.push({
-      row: Math.floor(i / cols) + 1,
-      col: (i % cols) + 1,
+      row,
+      col,
       offsetX: 0,
       offsetY: 0,
     });
@@ -73,9 +90,10 @@ function getGridConfig(totalCount: number) {
 
   return {
     cols,
-    rows,
+    totalRows,
+    barRow,
     positions,
-    baseTilePx: 128,
+    baseTilePx: 124,
     maxTilePx: 240,
   };
 }
@@ -118,6 +136,14 @@ const MacroTile = React.memo(function MacroTile({
     ? 0.45
     : 1;
 
+  // Retrieve natural pixel aspect ratio to strictly preserve original proportions:
+  const dim = ARCHIVE_ASPECT_RATIOS[item.id] || { w: 100, h: 100, ratio: item.aspectRatio || 1.33 };
+  const ratio = dim.ratio;
+  // Area-normalized scale factor:
+  // width = base * sqrt(ratio), height = base / sqrt(ratio)
+  // Guarantees balanced visual surface area while perfectly respecting original proportions.
+  const sqrtRatio = Math.sqrt(Math.max(0.5, Math.min(2.1, ratio)));
+
   return (
     <div
       onClick={(e) => {
@@ -138,8 +164,8 @@ const MacroTile = React.memo(function MacroTile({
       style={{
         gridRow: row,
         gridColumn: col,
-        width: "var(--tile-size)",
-        height: "var(--tile-size)",
+        width: `calc(var(--tile-size) * ${sqrtRatio.toFixed(3)})`,
+        height: `calc(var(--tile-size) / ${sqrtRatio.toFixed(3)})`,
         transform: `translate(${offsetX}px, ${offsetY}px)`,
         opacity: tileOpacity,
       }}
@@ -150,22 +176,23 @@ const MacroTile = React.memo(function MacroTile({
       <motion.div
         layoutId={`item-media-${item.id}`}
         animate={{
-          scale: isHovered ? 1.09 : 1,
+          scale: isHovered ? 1.08 : 1,
         }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         style={{
           width: "100%",
           height: "100%",
+          aspectRatio: `${dim.w} / ${dim.h}`,
         }}
-        className={`w-full h-full aspect-square rounded-none overflow-hidden bg-white transition-all duration-200 cursor-pointer ${
+        className={`w-full h-full rounded-none overflow-hidden bg-white transition-all duration-200 cursor-pointer ${
           isHovered
             ? "border-2 border-black shadow-xl shadow-black/25"
             : isActive
             ? "border-2 border-black shadow-md shadow-black/15"
-            : "border border-black/20 hover:border-black"
+            : "border border-black/25 hover:border-black"
         }`}
       >
-        {/* 1. PHOTO - Sharp, in focus, high contrast */}
+        {/* 1. PHOTO - Sharp, in focus, 100% natural proportions */}
         {item.type === "photo" && (
           <img
             src={item.thumbnailUrl || item.imageUrl || ""}
@@ -219,6 +246,7 @@ export function MacroGrid({
   onSelectItem,
   isFilterOpen = false,
   onCloseFilter,
+  onToggleFilter,
   onGoToBeyond,
 }: MacroGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -231,7 +259,7 @@ export function MacroGrid({
     () => getGridConfig(displayItems.length),
     [displayItems.length]
   );
-  const { cols, rows, positions, baseTilePx, maxTilePx } = gridConfig;
+  const { cols, totalRows, barRow, positions, baseTilePx, maxTilePx } = gridConfig;
 
   // Max scale at 100% zoom
   const maxScale = 2.8;
@@ -419,8 +447,14 @@ export function MacroGrid({
     transformOrigin: "center center",
     willChange: "transform",
     gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-    gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
-    gap: "18px",
+    gridTemplateRows: Array.from({ length: totalRows }, (_, idx) => {
+      const rowNum = idx + 1;
+      if (rowNum === barRow) {
+        return "auto";
+      }
+      return "minmax(0, 1fr)";
+    }).join(" "),
+    gap: "16px",
   } as React.CSSProperties;
 
   return (
@@ -512,26 +546,136 @@ export function MacroGrid({
             </p>
           </div>
         ) : (
-          displayItems.map((item, idx) => {
-            const pos = positions[idx] || { row: 1, col: 1, offsetX: 0, offsetY: 0 };
-            const isHovered = hoveredTileItem?.id === item.id;
-            return (
-              <MacroTile
-                key={item.id}
-                item={item}
-                isActive={activeItemId === item.id}
-                isHovered={isHovered}
-                hasHoveredSibling={hoveredTileItem !== null && !isHovered}
-                isFilterOpen={isFilterOpen}
-                row={pos.row}
-                col={pos.col}
-                offsetX={pos.offsetX}
-                offsetY={pos.offsetY}
-                onSelect={onSelectItem}
-                onHover={setHoveredTileItem}
-              />
-            );
-          })
+          <>
+            {displayItems.map((item, idx) => {
+              const pos = positions[idx] || { row: 1, col: 1, offsetX: 0, offsetY: 0 };
+              const isHovered = hoveredTileItem?.id === item.id;
+              return (
+                <MacroTile
+                  key={item.id}
+                  item={item}
+                  isActive={activeItemId === item.id}
+                  isHovered={isHovered}
+                  hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                  isFilterOpen={isFilterOpen}
+                  row={pos.row}
+                  col={pos.col}
+                  offsetX={pos.offsetX}
+                  offsetY={pos.offsetY}
+                  onSelect={onSelectItem}
+                  onHover={setHoveredTileItem}
+                />
+              );
+            })}
+
+            {/* 5. INTERACTIVE HORIZONTAL RIBBON ABOVE PENULTIMATE ROW (INSPO NUOVA HOME.PNG) */}
+            <div
+              style={{
+                gridRow: barRow,
+                gridColumn: "1 / -1",
+              }}
+              className="w-full my-1 pointer-events-auto z-20"
+            >
+              <div className="w-full bg-[#0D0D0D] text-[#F8F8F6] border-y border-black/50 shadow-xl shadow-black/25 flex flex-col sm:flex-row items-stretch justify-between divide-y sm:divide-y-0 sm:divide-x divide-white/15">
+                {/* SECTION 1: OLTRE */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onGoToBeyond?.();
+                  }}
+                  className="group flex-1 flex items-center justify-between px-5 py-3.5 hover:bg-[#1A1A1A] transition-colors cursor-pointer text-left"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] group-hover:text-white flex items-center gap-2">
+                      OLTRE
+                      <ArrowUpRight className="w-3.5 h-3.5 text-[#F8F8F6]/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    </span>
+                    <span className="font-body text-[9px] text-[#F8F8F6]/50 uppercase tracking-wider group-hover:text-[#F8F8F6]/80 transition-colors">
+                      VISIONE SISTEMICA / 6 DIALETTICHE
+                    </span>
+                  </div>
+                  <div className="hidden md:flex items-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
+                    <span className="w-1.5 h-1.5 rounded-full border border-white" />
+                    <span className="w-1.5 h-1.5 rounded-full border border-white" />
+                    <span className="w-1.5 h-1.5 rounded-full border border-white" />
+                  </div>
+                </button>
+
+                {/* SECTION 2: MACRO */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    targetZoomRef.current = 0.24;
+                    currentZoomRef.current = 0.24;
+                    targetFocusRef.current = { u: 0.5, v: 0.5 };
+                    currentFocusRef.current = { u: 0.5, v: 0.5 };
+                    onZoomChange?.(0.24);
+                  }}
+                  className="group flex-1 flex items-center justify-between px-5 py-3.5 hover:bg-[#161616] transition-colors cursor-pointer text-left bg-[#141414]"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] flex items-center gap-2">
+                      MACRO
+                      <span className="inline-block w-2 h-2 rounded-full bg-white shadow-sm shadow-white/80" />
+                    </span>
+                    <span className="font-body text-[9px] text-[#F8F8F6]/60 uppercase tracking-wider">
+                      ARCHIVIO VISIVO · {displayItems.length} CASI
+                    </span>
+                  </div>
+                  <div className="hidden lg:block font-body text-[9px] uppercase tracking-widest text-[#F8F8F6]/50 border border-white/20 px-2 py-0.5">
+                    PANORAMICA
+                  </div>
+                </button>
+
+                {/* SECTION 3: FILTRI */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFilter?.();
+                  }}
+                  className={`group flex-1 flex items-center justify-between px-5 py-3.5 transition-colors cursor-pointer text-left ${
+                    isFilterOpen
+                      ? "bg-[#F8F8F6] text-black hover:bg-white"
+                      : "hover:bg-[#1A1A1A] text-[#F8F8F6]"
+                  }`}
+                >
+                  <div className="flex flex-col">
+                    <span
+                      className={`font-display font-bold text-xs sm:text-sm tracking-widest flex items-center gap-2 ${
+                        isFilterOpen ? "text-black" : "text-[#F8F8F6] group-hover:text-white"
+                      }`}
+                    >
+                      FILTRI
+                      <SlidersHorizontal
+                        className={`w-3.5 h-3.5 ${
+                          isFilterOpen ? "text-black" : "text-[#F8F8F6]/70 group-hover:text-white"
+                        }`}
+                      />
+                    </span>
+                    <span
+                      className={`font-body text-[9px] uppercase tracking-wider ${
+                        isFilterOpen ? "text-black/70 font-semibold" : "text-[#F8F8F6]/50 group-hover:text-[#F8F8F6]/80"
+                      }`}
+                    >
+                      {isFilterOpen ? "CHIUDI PANNELLO FILTRI" : "SELEZIONA PER SEGNO & CATEGORIA"}
+                    </span>
+                  </div>
+                  <div
+                    className={`text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 border ${
+                      isFilterOpen
+                        ? "border-black bg-black text-[#F8F8F6]"
+                        : "border-white/30 text-[#F8F8F6]/80 group-hover:border-white group-hover:text-white"
+                    }`}
+                  >
+                    {isFilterOpen ? "ATTIVO" : "APRI"}
+                  </div>
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>

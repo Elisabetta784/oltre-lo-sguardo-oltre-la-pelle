@@ -1,3 +1,5 @@
+export { ARCHIVE_ASPECT_RATIOS } from "./archiveDimensions";
+
 export interface ArchiveItem {
   id: string;
   number: string;
@@ -23,6 +25,7 @@ export interface ArchiveItem {
   percezioneEstetica: string;
   valenzaDelRicordo: string;
   sensoDiVergogna: string;
+  aspectRatio?: number;
   imageUrl?: string;
   thumbnailUrl?: string;
   galleryUrls?: string[];
