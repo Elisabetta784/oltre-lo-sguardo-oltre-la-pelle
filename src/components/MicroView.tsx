@@ -329,29 +329,29 @@ export function MicroView({
                   </div>
                 )}
 
-                {/* Row 6 - Sociological Indicators with New Categories */}
+                {/* Row 6 - Sociological Indicators with Original Categories */}
                 {(item.mascherabilita !== "—" || item.accettabilitaSociale !== "—") && (
                   <div className="grid grid-cols-2 py-2 bg-black/[0.03] px-2.5 mt-1 border border-black/10">
                     <div className="pr-2 border-r border-black/10 space-y-1">
                       <div className="text-[9.5px] text-black/60 uppercase">
-                        COPERTO / SCOPERTO: <span className="font-display font-bold text-black">{item.mascherabilita}</span>
+                        MASCHERABILITÀ: <span className="font-display font-bold text-black">{item.mascherabilita}</span>
                       </div>
                       <div className="text-[9.5px] text-black/60 uppercase">
-                        SOTTRAZIONE: <span className="font-display font-bold text-black">{item.percezioneSociale}</span>
+                        PERCEZIONE SOCIALE: <span className="font-display font-bold text-black">{item.percezioneSociale}</span>
                       </div>
                       <div className="text-[9.5px] text-black/60 uppercase">
-                        TRACCIATO: <span className="font-display font-bold text-black">{item.valenzaDelRicordo}</span>
+                        VALENZA DEL RICORDO: <span className="font-display font-bold text-black">{item.valenzaDelRicordo}</span>
                       </div>
                     </div>
                     <div className="pl-2 space-y-1">
                       <div className="text-[9.5px] text-black/60 uppercase">
-                        EROICIZZAZIONE: <span className="font-display font-bold text-black">{item.accettabilitaSociale}</span>
+                        ACCETTABILITÀ SOCIALE: <span className="font-display font-bold text-black">{item.accettabilitaSociale}</span>
                       </div>
                       <div className="text-[9.5px] text-black/60 uppercase">
-                        CONFIGURAZIONE: <span className="font-display font-bold text-black">{item.percezioneEstetica}</span>
+                        PERCEZIONE ESTETICA: <span className="font-display font-bold text-black">{item.percezioneEstetica}</span>
                       </div>
                       <div className="text-[9.5px] text-black/60 uppercase">
-                        ATTRITO: <span className="font-display font-bold text-black">{item.sensoDiVergogna}</span>
+                        SENSO DI VERGOGNA: <span className="font-display font-bold text-black">{item.sensoDiVergogna}</span>
                       </div>
                     </div>
                   </div>

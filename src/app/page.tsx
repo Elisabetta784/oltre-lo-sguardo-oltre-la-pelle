@@ -7,7 +7,6 @@ import { HeaderNav } from "@/components/HeaderNav";
 import { BeyondView } from "@/components/BeyondView";
 import { MacroGrid } from "@/components/MacroGrid";
 import { MicroView } from "@/components/MicroView";
-import { VerticalTimeline } from "@/components/VerticalTimeline";
 import {
   FilterSidebar,
   SelectedFiltersState,
@@ -214,18 +213,7 @@ export default function Home() {
         />
       )}
 
-      {/* 3. Right Vertical Timeline: prominent, with Kellerstöckl ticks and live slider zoom */}
-      <VerticalTimeline
-        currentView={view}
-        items={filteredItems.length > 0 ? filteredItems : ARCHIVE_ITEMS}
-        activeItemId={activeItemId}
-        zoomLevel={zoomLevel}
-        onZoomChange={(newZoom) => setZoomLevel(newZoom)}
-        onSelectItem={handleSelectItem}
-        onToggleView={(targetView) => setView(targetView)}
-      />
-
-      {/* 4. Main Views: BEYOND (Circular Macro Groups), MACRO (Aligned Miniature Grid), MICRO (Detail View) */}
+      {/* 3. Main Views: BEYOND (Circular Macro Groups), MACRO (Aligned Miniature Grid), MICRO (Detail View) */}
       <div className="relative w-full h-[calc(100vh-52px)] mt-[52px] overflow-hidden">
         <AnimatePresence>
           {view === "beyond" && (

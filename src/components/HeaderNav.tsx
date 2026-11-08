@@ -53,17 +53,6 @@ export function HeaderNav({
           </button>
         </div>
 
-        {/* Center: Title & Subtitle in Alte Haas Grotesk and Indivisible */}
-        <div className="flex items-center gap-3 sm:gap-5 text-center px-2 truncate">
-          <span className="font-display font-bold text-xs sm:text-[14px] text-black tracking-tight">
-            OLTRE LO SGUARDO OLTRE LA PELLE
-          </span>
-          <span className="hidden md:inline w-5 h-[1px] bg-black/20" />
-          <span className="hidden sm:inline font-body text-[11px] sm:text-xs text-black/55 tracking-widest uppercase">
-            SEGNI E TESTIMONIANZE
-          </span>
-        </div>
-
         {/* Right: Clean minimal count / status */}
         <div className="flex items-center justify-end flex-shrink-0 font-body text-[10px] sm:text-[11px] text-black/50 tracking-wider">
           <span>76 CASI STUDIO</span>

@@ -428,30 +428,18 @@ export function MacroGrid({
       ref={containerRef}
       className="relative w-full h-full overflow-hidden flex items-center justify-center select-none bg-[#F8F8F6]"
     >
-      {/* 1. EDITORIAL CENTER TITLE WATERMARK */}
-      <div className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-4">
-        <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-black/25 uppercase tracking-tighter leading-tight max-w-3xl">
-          OLTRE LO SGUARDO
-          <br />
-          OLTRE LA PELLE
-        </h1>
-        <p className="font-body text-xs sm:text-sm text-black/35 uppercase tracking-widest mt-2 font-medium">
-          SEGNI E TESTIMONIANZE ({displayItems.length} CASI ARCHIVIATI)
-        </p>
-      </div>
-
-      {/* 2. CORNER LABELS & CONTROLS */}
+      {/* 1. CORNER LABELS & CONTROLS */}
       {/* Top Left metadata */}
       <div className="fixed top-[64px] left-6 z-20 font-body text-[10px] text-black/40 uppercase tracking-widest hidden sm:block pointer-events-none">
         ©2024 ARCHIVIO / CORPO & MEMORIA
       </div>
 
-      {/* Bottom Left: Trackpad hint only (FILTRI button is strictly at top left) */}
+      {/* Bottom Left: Trackpad hint only */}
       <div className="fixed bottom-6 left-6 z-20 font-body text-[10px] text-black/40 uppercase tracking-wider hidden sm:block pointer-events-none">
         PINCH / SCROLL PER ZOOMARE
       </div>
 
-      {/* 3. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER */}
+      {/* 2. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER */}
       <AnimatePresence>
         {hoveredTileItem && (
           <motion.div
@@ -464,7 +452,7 @@ export function MacroGrid({
               e.stopPropagation();
               onSelectItem(hoveredTileItem);
             }}
-            className="fixed bottom-6 right-16 sm:right-24 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
+            className="fixed bottom-6 right-6 sm:right-8 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
           >
             <div className="relative w-full aspect-[4/3] bg-white overflow-hidden mb-2.5 border border-black/15">
               <img
@@ -498,20 +486,20 @@ export function MacroGrid({
         )}
       </AnimatePresence>
 
-      {/* 4. EDGE DISSOLVES IN #F8F8F6 */}
+      {/* 3. EDGE DISSOLVES IN #F8F8F6 */}
       <div className="fixed top-[52px] left-0 right-0 h-16 edge-fade-top z-20 pointer-events-none" />
       <div className="fixed bottom-0 left-0 right-0 h-16 edge-fade-bottom z-20 pointer-events-none" />
       <div className="fixed top-[52px] bottom-0 left-0 w-16 sm:w-28 edge-fade-left z-20 pointer-events-none" />
-      <div className="fixed top-[52px] bottom-0 right-14 sm:right-24 w-16 sm:w-28 edge-fade-right z-20 pointer-events-none" />
+      <div className="fixed top-[52px] bottom-0 right-0 w-16 sm:w-28 edge-fade-right z-20 pointer-events-none" />
 
-      {/* 5. SYMMETRICALLY CENTERED CSS GRID WITH FULL CLICKABILITY AND ZERO BLUR */}
+      {/* 4. SYMMETRICALLY CENTERED CSS GRID WITH FULL CLICKABILITY AND ZERO BLUR */}
       <div
         ref={gridRef}
         style={containerStyle}
         className={`relative z-20 w-full h-full max-w-[96vw] max-h-[88vh] p-4 transition-[padding] duration-300 grid items-center justify-items-center pointer-events-auto ${
           isFilterOpen
             ? "pl-80 sm:pl-96 lg:pl-[440px] pr-8 sm:pr-12"
-            : "pl-6 sm:pl-16 pr-16 sm:pr-24"
+            : "px-6 sm:px-12"
         }`}
       >
         {displayItems.length === 0 ? (

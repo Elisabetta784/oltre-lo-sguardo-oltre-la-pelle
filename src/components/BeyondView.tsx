@@ -38,133 +38,133 @@ export interface BeyondCategoryMeta {
 export const BEYOND_CATEGORIES: BeyondCategoryMeta[] = [
   {
     id: "mascherabilita",
-    label: "COPERTO / SCOPERTO",
-    excelHeader: "Coperto / Scoperto",
+    label: "MASCHERABILITÀ",
+    excelHeader: "Mascherabilità",
     subtitle: "Visibilità corporea: occultamento vs esposizione del segno",
     considerations:
-      "La dicotomia Coperto / Scoperto definisce la misura in cui un segno cutaneo può essere preservato nello spazio intimo o esposto necessariamente allo sguardo sociale. Nei casi archiviati, la maggior parte tratta di segni situati in aree ordinariamente coperte (tronco, addome, cosce, seno), consentendo all'individuo di esercitare un controllo biografico sulla propria storia. Al contrario, quando il segno risiede in aree scoperte (viso, mani, collo), esso si impone immediatamente allo sguardo altrui, sfuggendo al controllo del soggetto e determinando un impatto relazionale immediato.",
+      "La mascherabilità definisce la misura per cui un segno può essere nascosto deliberatamente o esposto allo sguardo esterno. Nei casi studio analizzati la maggior parte tratta di segni camuffabili, perché presenti in aree del corpo quali addome, seno e cosce. I segni mascherabili consentono di mantenere un controllo biografico, l'individuo sceglie volontariamente a chi mostrare i propri segni cutanei e a chi rivelarne la storia. I segni più mascherabili che vengono mostrati in opere e campagne hanno più comunemente lo scopo di sensibilizzare e normalizzare.\n\nQuando invece un segno è impossibile da nascondere, diventa soggetto ad esposizioni a reazioni sociali spesso penalizzanti. Vengono ritenuti maggiormente come non accettati socialmente e come esteticamente respingenti.",
     groups: [
       {
-        value: "Coperto",
-        aliases: ["Mascherabile"],
-        label: "COPERTO",
-        subLabel: "Occultabile con abiti ordinari o collocato in aree intime",
+        value: "Mascherabile",
+        aliases: ["Coperto"],
+        label: "MASCHERABILE",
+        subLabel: "Occultabile con abiti ordinari o make-up",
       },
       {
-        value: "Scoperto",
-        aliases: ["Non mascherabile"],
-        label: "SCOPERTO",
-        subLabel: "Costantemente manifesto ed esposto su viso, collo o mani",
+        value: "Non mascherabile",
+        aliases: ["Scoperto"],
+        label: "NON MASCHERABILE",
+        subLabel: "Esposto su viso, mani o estensione totale",
       },
     ],
   },
   {
     id: "accettabilitaSociale",
-    label: "EROICIZZAZIONE",
-    excelHeader: "Eroicizzazione",
-    subtitle: "Discorso pubblico: narrazione eroica vs mancato riscatto e stigma",
+    label: "ACCETTABILITÀ SOCIALE",
+    excelHeader: "Accettabilità Sociale",
+    subtitle: "Integrazione pubblica: normalizzazione vs stigma",
     considerations:
-      "La categoria dell'Eroicizzazione esamina la trasfigurazione del segno da ferita a trofeo sociale. Una porzione dei casi studio viene accolta mediaticamente attraverso la retorica del 'corpo combattente', della rinascita o della maternità eroicizzata (smagliature come 'fiumi d'oro', cicatrici di mastectomia come stemmi di vittoria). La maggior parte dei casi archiviati, tuttavia, rimane non eroicizzata: segni di traumi crudi, ustioni o violenze che rifiutano o non trovano spazio nella spettacolarizzazione positiva del dolore, permanendo in una condizione di attrito e marginalità visiva.",
+      "Più della metà dei casi archiviati ricade nel tabù visivo del non socialmente accettato, evidenziando come le alterazioni cutanee siano soggette a giudizio esterno. Ustioni, cicatrici da traumi violenti o chirurgici sono segni che se visti da un'occhio esterno si fermano ad un giudizio estetico e non riescono ad essere empatizzati da chi non li ha vissuti. I casi socialmente accettati vedono principalmente smagliature o cicatrici da parto, segni generalmente legati a ricordi positivi e normalizzabili grazie a estetizzazione attraverso campagne di body positivity.",
     groups: [
       {
-        value: "Eroicizzato",
-        aliases: ["Socialmente accettato"],
-        label: "EROICIZZATO",
-        subLabel: "Segni normalizzati, celebrati mediaticamente o sublimati come trofei",
+        value: "Socialmente accettato",
+        aliases: ["Eroicizzato"],
+        label: "SOCIALMENTE ACCETTATO",
+        subLabel: "Segni normalizzati o celebrati mediaticamente",
       },
       {
-        value: "Non eroicizzato",
-        aliases: ["Socialmente non accettato"],
-        label: "NON EROICIZZATO",
-        subLabel: "Segni non riscattati dal discorso pubblico: tabù, violenza o trauma crudo",
+        value: "Socialmente non accettato",
+        aliases: ["Non eroicizzato"],
+        label: "NON ACCETTATO",
+        subLabel: "Segni marginalizzati, tabù o censurati",
       },
     ],
   },
   {
     id: "percezioneSociale",
-    label: "SOTTRAZIONE",
-    excelHeader: "Sottrazione",
-    subtitle: "Dinamica corporea: asportazione/perdita somatica vs alterità",
+    label: "PERCEZIONE SOCIALE",
+    excelHeader: "Percezione Sociale",
+    subtitle: "Reazione empatica collettiva: compassione vs allarme",
     considerations:
-      "La Sottrazione indaga la cicatrice come indice di una materia corporea o di una condizione somatica sottratta: asportazioni chirurgiche, distruzioni cutanee da ustione, ablazioni e vuoti lasciati dalla patologia. Di fronte alla sottrazione, la reazione collettiva oscilla tra la risposta assistenziale/compassionevole per la perdita subita e il disorientamento. Quando il segno si manifesta come rottura violenta dell'ordine visivo, esso si trasforma in alterità radicale che scuote i canoni normativi della comunità.",
+      "Nella quasi totalità dei casi, lo sguardo collettivo percepisce un segno cutaneo come compassionevole. Questo non indica direttamente la capacità del pubblico di empatizzare, anzi, spesso si ricade nell'ambivalenza tra pietà ed emarginazione estetica. La società tenta di provare empatia per la sofferenza o la maternità, ma mantiene una distanza normativa ed estetica dal corpo \"imperfetto\". La percezione del segno come minaccia si attiva in contesti ben specifici legati alla violenza sistemica, alla devianza percepita o al trauma bellico. Ancor'più se i segni sono presenti sul volto, per via di un rimando a uno stereotipo iconografico.",
     groups: [
       {
-        value: "Sottrazione",
-        aliases: ["Visto in modo compassionevole"],
-        label: "SOTTRAZIONE",
-        subLabel: "Perdita di integrità, asportazione o cesura somatica",
+        value: "Visto in modo compassionevole",
+        aliases: ["Sottrazione"],
+        label: "COMPASSIONEVOLE",
+        subLabel: "Sguardo empatico, assistenziale o di cura",
       },
       {
-        value: "Alterità",
-        aliases: ["Non sottrazione", "Visto come minaccia"],
-        label: "ALTERITÀ / ROTTURA",
-        subLabel: "Presenza visiva allarmante che infrange l'ordine e suscita diffidenza",
+        value: "Visto come minaccia",
+        aliases: ["Alterità"],
+        label: "MINACCIA",
+        subLabel: "Sguardo allarmato, timore o diffidenza",
       },
     ],
   },
   {
     id: "percezioneEstetica",
-    label: "CONFIGURAZIONE",
-    excelHeader: "Configurazione",
-    subtitle: "Morfologia visiva: risignificazione scultorea vs deconfigurazione",
+    label: "PERCEZIONE ESTETICA",
+    excelHeader: "Percezione Estetica",
+    subtitle: "Canone visivo: rottura vs risemantizzazione dell'attrazione",
     considerations:
-      "La Configurazione analizza la qualità morfologica e la presenza formale del segno sulla cute. L'egemonia del canone della levigatezza tende a catalogare ogni cicatrice o rilievo anomalo come deconfigurazione della superficie ideale. Tuttavia, nei progetti fotografici e artistici archiviati, una selezione rilevante di segni viene riconfigurata: la pelle cessa di essere 'difettosa' per farsi territorio plastico, topografia scultorea dotata di straordinaria densità visiva e bellezza non convenzionale.",
+      "Dall'analisi emerge che per la maggior parte dei casi il canone estetico della pelle liscia e levigata influisce nella percezione visiva dei segni come una caratteristica respingente, imperfetta e da correggere. Per la maggior parte si tratta di segni derivati da traumi e cure mediche. La piccola percentuale dei casi percepiti come attraenti trattano i segni cutanei come mezzo di unicità e potenza scultorea. In questi pochi casi la pelle diventa topografia viva, dotata di sensualità e bellezza non convenzionale.",
     groups: [
       {
-        value: "Deconfigurazione",
-        aliases: ["Visto come respingente"],
-        label: "DECONFIGURAZIONE",
-        subLabel: "Alterazione della norma levigata, avvallamento o discromia imperfetta",
+        value: "Visto come respingente",
+        aliases: ["Deconfigurazione"],
+        label: "RESPINGENTE",
+        subLabel: "Rottura del canone di levigatezza e simmetria",
       },
       {
-        value: "Riconfigurazione",
-        aliases: ["Visto come attraente"],
-        label: "RICONFIGURAZIONE",
-        subLabel: "Fascino scultoreo, unicità topografica e risignificazione plastica",
+        value: "Visto come attraente",
+        aliases: ["Riconfigurazione"],
+        label: "ATTRAENTE",
+        subLabel: "Fascino scultoreo, unicità e sensualità",
       },
     ],
   },
   {
     id: "valenzaDelRicordo",
-    label: "TRACCIATO",
-    excelHeader: "Tracciato",
-    subtitle: "Memoria incisa: tracciato generativo vs tracciato traumatico",
+    label: "VALENZA DEL RICORDO",
+    excelHeader: "Valenza del Ricordo",
+    subtitle: "Memoria biografica: cicatrice come trauma vs testimonianza",
     considerations:
-      "Il Tracciato concepisce l'epidermide come piano di registrazione materiale e memoria viva del tempo. I tracciati generativi segnano eventi di transizione e crescita vitale (la maternità, il cambiamento corporeo scelto, la guarigione metabolizzata), dove il segno cutaneo è mappa del proprio divenire. I tracciati traumatici, al contrario, conservano indelebile la violenza dell'impatto originario: l'incidente, la mutilazione, la terapia forzata o il conflitto, condensando il trauma in un punto fisico non cancellabile.",
+      "La maggioranza dei casi presi in considerazione sono legati a segni provocati da un atto traumatico: violenze, incidenti, imposizioni sistemiche. Dei casi che sono legati ad un ricordo a valenza positiva la totalità si trova al di sotto della tematica trasformazione (quindi smagliature, segni del parto, riappropriazione corporea) vengono rivendicate come simboli di vita, maternità e crescita individuale. I segni indelebili sulla pelle sono le testimonianze del nostro vissuto e la pelle agisce involontariamente come archivio di traumi e trasformazioni. Questi segni spesso non possono essere cancellati ma possono diventare testimonianze identitarie.",
     groups: [
       {
-        value: "Tracciato generativo",
-        aliases: ["legato a un ricordo positivo"],
-        label: "TRACCIATO GENERATIVO",
-        subLabel: "Memoria di trasformazione vitale: nascita, rinascita e metamorfosi",
+        value: "legato a un ricordo positivo",
+        aliases: ["Tracciato generativo"],
+        label: "RICORDO POSITIVO",
+        subLabel: "Nascita, guarigione, rinascita o forza",
       },
       {
-        value: "Tracciato traumatico",
-        aliases: ["legato a un ricordo negativo"],
-        label: "TRACCIATO TRAUMATICO",
-        subLabel: "Memoria di impatto doloroso: incidente, malattia, violenza o perdita",
+        value: "legato a un ricordo negativo",
+        aliases: ["Tracciato traumatico"],
+        label: "RICORDO NEGATIVO",
+        subLabel: "Incidente, violenza, patologia o perdita",
       },
     ],
   },
   {
     id: "sensoDiVergogna",
-    label: "ATTRITO",
-    excelHeader: "Attrito",
-    subtitle: "Relazione col mondo: attrito sociale vs riconciliazione e agency",
+    label: "SENSO DI VERGOGNA",
+    excelHeader: "Senso di Vergogna",
+    subtitle: "Relazione intima col sé: vergogna vs rivendicazione d'agency",
     considerations:
-      "L'Attrito misura il grado di conflitto fenomenologico e psicologico nell'esposizione del segno verso il mondo esterno. Nei casi connotati da attrito, il soggetto prova vergogna, imbarazzo e l'istinto all'isolamento o all'occultamento forzato sotto il peso dello sguardo altrui. Nei casi senza attrito, l'individuo trasforma la cicatrice in atto di presenza e piena agency: la vulnerabilità viene rivendicata apertamente, annullando la frizione sociale in favore della fierezza identitaria.",
+      "Da questa categoria emerge un dato interessante: il sentimento della vergogna è proprio solo della metà dei casi trattati. Da tenere in considerazione che la maggior parte dei casi studi trattano di segni mascherabili, quindi meno esposti al giudizio. Nonostante questo, l'equilibrio mette a confronto il senso di inadeguatezza e la riconquista dell'agency corporea. Se nel primo caso la vergogna porta all'impulso di nascondere i segni cutanei per il peso del giudizio altrui, nel secondo caso si cerca di trasformare la propria pelle in atto di presenza, come una testimonianza del proprio vissuto e convertendo la vulnerabilità in orgoglio.",
     groups: [
       {
-        value: "Con attrito",
-        aliases: ["ne provo vergogna"],
-        label: "CON ATTRITO",
-        subLabel: "Tensione con lo sguardo sociale, pudore, disagio o autocensura",
+        value: "non ne provo vergogna",
+        aliases: ["Senza attrito"],
+        label: "NESSUNA VERGOGNA",
+        subLabel: "Orgoglio, accettazione e presenza pubblica",
       },
       {
-        value: "Senza attrito",
-        aliases: ["non ne provo vergogna"],
-        label: "SENZA ATTRITO",
-        subLabel: "Riconciliazione, piena agency corporea e assenza di conflitto",
+        value: "ne provo vergogna",
+        aliases: ["Con attrito"],
+        label: "SENSO DI VERGOGNA",
+        subLabel: "Disagio, pudore, occultamento o isolamento",
       },
     ],
   },
@@ -261,7 +261,7 @@ export function BeyondView({
       className="relative w-full h-full overflow-hidden flex flex-col justify-between bg-[#F8F8F6] text-black font-body select-none"
     >
       {/* 1. TOP CONTROL BAR */}
-      <div className="w-full z-20 px-4 sm:px-8 pr-28 sm:pr-36 pt-3.5 pb-2.5 border-b border-black/15 bg-[#F8F8F6]/95 backdrop-blur-sm">
+      <div className="w-full z-20 px-4 sm:px-8 pt-3.5 pb-2.5 border-b border-black/15 bg-[#F8F8F6]/95 backdrop-blur-sm">
         <div className="w-full flex flex-col md:flex-row md:items-center justify-start gap-4 sm:gap-8">
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
@@ -324,7 +324,7 @@ export function BeyondView({
       </div>
 
       {/* 2. MAIN CANVAS: Symmetrical 3-Column Layout */}
-      <div className="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center p-3 sm:p-6 pr-16 sm:pr-24">
+      <div className="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center p-3 sm:p-6 px-4 sm:px-8">
         <div className="absolute top-0 left-0 right-0 h-8 edge-fade-top pointer-events-none z-10" />
         <div className="absolute bottom-0 left-0 right-0 h-8 edge-fade-bottom pointer-events-none z-10" />
 
@@ -560,7 +560,7 @@ export function BeyondView({
       {/* 3. BOTTOM FOOTER HINT */}
       <div className="w-full z-20 px-6 py-2 border-t border-black/15 bg-[#F8F8F6]/95 flex items-center justify-between font-body text-[10px] text-black/60">
         <span>
-          SCORRI IN GIÙ O TRASCINA LA LINEA DESTRA PER TORNARE A{" "}
+          SCORRI IN GIÙ PER TORNARE A{" "}
           <button
             type="button"
             onClick={onBackToMacro}
