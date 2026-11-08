@@ -18,83 +18,45 @@ interface MacroGridProps {
 }
 
 /**
- * Computes deterministic grid positions for visual cases and inserts the interactive ribbon
- * directly above the penultimate row, faithfully recreating inspo/nuova home.png.
+ * Computes deterministic, non-overlapping grid positions for all cases.
+ * Strictly avoids overlaps by allocating dedicated rows and columns for each case.
  */
 function getGridConfig(totalCount: number) {
   if (totalCount > 50) {
     const cols = 11;
-    const numImageRows = Math.ceil(totalCount / cols); // 7 image rows
-    // Penultimate image row is row (numImageRows - 1) = row 6.
-    // The interactive bar sits right above the penultimate row => gridRow = 6.
-    // Rows 1..5: images (55 cases)
-    // Row 6: INTERACTIVE NAVIGATION RIBBON (OLTRE | MACRO | FILTRI)
-    // Row 7: images (penultimate row of images, 11 cases)
-    // Row 8: images (last row of images, 10 cases)
-    const barRow = numImageRows - 1; // 6
-    const totalRows = numImageRows + 1; // 8
-    const positions: { row: number; col: number; offsetX: number; offsetY: number }[] = [];
-    
-    // Subtle organic rhythm for exhibition wall
-    const offsets = [
-      { x: 0, y: 0 },
-      { x: 3, y: -4 },
-      { x: -4, y: 3 },
-      { x: 2, y: 3 },
-      { x: -3, y: -2 },
-      { x: 4, y: 2 },
-      { x: -2, y: -3 },
-    ];
+    const rows = Math.ceil(totalCount / cols); // 7 rows for 76 items (11 * 7 = 77 slots)
+    const positions: { row: number; col: number }[] = [];
 
     for (let i = 0; i < totalCount; i++) {
-      const off = offsets[i % offsets.length];
-      const imageRow = Math.floor(i / cols) + 1;
-      const row = imageRow >= barRow ? imageRow + 1 : imageRow;
-      const col = (i % cols) + 1;
       positions.push({
-        row,
-        col,
-        offsetX: off.x,
-        offsetY: off.y,
+        row: Math.floor(i / cols) + 1,
+        col: (i % cols) + 1,
       });
     }
 
     return {
       cols,
-      totalRows,
-      barRow,
+      rows,
       positions,
-      baseTilePx: 104, // Area reference dimension
-      maxTilePx: 210,
     };
   }
 
-  // Filtered state with fewer items (e.g. 5-30 items)
-  const cols = Math.max(4, Math.min(8, Math.ceil(Math.sqrt(totalCount * 1.5))));
-  const numImageRows = Math.ceil(totalCount / cols);
-  const barRow = numImageRows >= 3 ? numImageRows - 1 : Math.max(1, numImageRows);
-  const totalRows = numImageRows >= 2 ? numImageRows + 1 : 2;
-  const positions: { row: number; col: number; offsetX: number; offsetY: number }[] = [];
+  // Filtered state with fewer items (e.g. 1-40 items)
+  const cols = Math.max(3, Math.min(8, Math.ceil(Math.sqrt(totalCount * 1.5))));
+  const rows = Math.ceil(totalCount / cols);
+  const positions: { row: number; col: number }[] = [];
 
   for (let i = 0; i < totalCount; i++) {
-    const imageRow = Math.floor(i / cols) + 1;
-    const row = imageRow >= barRow ? imageRow + 1 : imageRow;
-    const col = (i % cols) + 1;
     positions.push({
-      row,
-      col,
-      offsetX: 0,
-      offsetY: 0,
+      row: Math.floor(i / cols) + 1,
+      col: (i % cols) + 1,
     });
   }
 
   return {
     cols,
-    totalRows,
-    barRow,
+    rows,
     positions,
-    baseTilePx: 124,
-    maxTilePx: 240,
   };
 }
 
@@ -106,8 +68,6 @@ interface MacroTileProps {
   isFilterOpen: boolean;
   row: number;
   col: number;
-  offsetX: number;
-  offsetY: number;
   onSelect: (item: ArchiveItem) => void;
   onHover: (item: ArchiveItem | null) => void;
 }
@@ -120,8 +80,6 @@ const MacroTile = React.memo(function MacroTile({
   isFilterOpen,
   row,
   col,
-  offsetX,
-  offsetY,
   onSelect,
   onHover,
 }: MacroTileProps) {
@@ -136,13 +94,8 @@ const MacroTile = React.memo(function MacroTile({
     ? 0.45
     : 1;
 
-  // Retrieve natural pixel aspect ratio to strictly preserve original proportions:
+  // Retrieve natural pixel dimensions & aspect ratio:
   const dim = ARCHIVE_ASPECT_RATIOS[item.id] || { w: 100, h: 100, ratio: item.aspectRatio || 1.33 };
-  const ratio = dim.ratio;
-  // Area-normalized scale factor:
-  // width = base * sqrt(ratio), height = base / sqrt(ratio)
-  // Guarantees balanced visual surface area while perfectly respecting original proportions.
-  const sqrtRatio = Math.sqrt(Math.max(0.5, Math.min(2.1, ratio)));
 
   return (
     <div
@@ -164,35 +117,32 @@ const MacroTile = React.memo(function MacroTile({
       style={{
         gridRow: row,
         gridColumn: col,
-        width: `calc(var(--tile-size) * ${sqrtRatio.toFixed(3)})`,
-        height: `calc(var(--tile-size) / ${sqrtRatio.toFixed(3)})`,
-        transform: `translate(${offsetX}px, ${offsetY}px)`,
         opacity: tileOpacity,
       }}
-      className={`pointer-events-auto flex items-center justify-center cursor-pointer relative group transition-opacity duration-150 ${
+      className={`pointer-events-auto w-full h-full flex items-center justify-center cursor-pointer relative group transition-opacity duration-150 ${
         isHovered ? "z-30" : "z-10"
       }`}
     >
       <motion.div
         layoutId={`item-media-${item.id}`}
         animate={{
-          scale: isHovered ? 1.08 : 1,
+          scale: isHovered ? 1.1 : 1,
         }}
-        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          width: "100%",
-          height: "100%",
           aspectRatio: `${dim.w} / ${dim.h}`,
+          maxWidth: "100%",
+          maxHeight: "100%",
         }}
-        className={`w-full h-full rounded-none overflow-hidden bg-white transition-all duration-200 cursor-pointer ${
+        className={`w-auto h-auto rounded-none overflow-hidden bg-white transition-all duration-200 cursor-pointer flex items-center justify-center ${
           isHovered
-            ? "border-2 border-black shadow-xl shadow-black/25"
+            ? "border-2 border-black shadow-xl shadow-black/30"
             : isActive
             ? "border-2 border-black shadow-md shadow-black/15"
             : "border border-black/25 hover:border-black"
         }`}
       >
-        {/* 1. PHOTO - Sharp, in focus, 100% natural proportions */}
+        {/* 1. PHOTO - Sharp, 100% natural proportions, zero cropping and strictly NO overlap */}
         {item.type === "photo" && (
           <img
             src={item.thumbnailUrl || item.imageUrl || ""}
@@ -203,7 +153,7 @@ const MacroTile = React.memo(function MacroTile({
             style={{
               imageRendering: "-webkit-optimize-contrast",
             }}
-            className="w-full h-full object-cover rounded-none block pointer-events-none select-none filter-none"
+            className="w-full h-full object-contain block pointer-events-none select-none filter-none"
           />
         )}
 
@@ -225,7 +175,7 @@ const MacroTile = React.memo(function MacroTile({
           </div>
         )}
 
-        {/* 3. TEXT / THEORETICAL ESSAY */}
+        {/* 3. TEXT / ESSAY */}
         {item.type === "text" && (
           <div className="w-full h-full p-2 flex flex-col justify-center items-center bg-[#EAEAE5] overflow-hidden text-center select-none">
             <span className="font-display text-[9px] font-bold text-black tracking-wider uppercase leading-tight line-clamp-2">
@@ -259,14 +209,13 @@ export function MacroGrid({
     () => getGridConfig(displayItems.length),
     [displayItems.length]
   );
-  const { cols, totalRows, barRow, positions, baseTilePx, maxTilePx } = gridConfig;
+  const { cols, rows, positions } = gridConfig;
 
   // Max scale at 100% zoom
   const maxScale = 2.8;
 
   const targetZoomRef = useRef(zoomLevel);
   const currentZoomRef = useRef(zoomLevel);
-  const lastTilePxRef = useRef(baseTilePx);
   const rafRef = useRef<number | null>(null);
   const lastReportedZoomRef = useRef(zoomLevel);
   const lastReportTimeRef = useRef(0);
@@ -297,7 +246,7 @@ export function MacroGrid({
     return () => el.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // RAF loop for silky smooth zoom and panning
+  // RAF loop for smooth zoom and panning within the media wall
   useEffect(() => {
     let isRunning = true;
 
@@ -322,8 +271,6 @@ export function MacroGrid({
       const zoomProgress = curZoom >= 0.24
         ? Math.min(1, (curZoom - 0.24) / (1 - 0.24))
         : 0;
-
-      const curTilePx = Math.round(baseTilePx + Math.pow(zoomProgress, 1.1) * (maxTilePx - baseTilePx));
 
       let scale = 1.0;
       if (curZoom >= 0.24) {
@@ -356,11 +303,6 @@ export function MacroGrid({
         tx = Math.max(-maxTx, Math.min(maxTx, tx));
         ty = Math.max(-maxTy, Math.min(maxTy, ty));
 
-        if (lastTilePxRef.current !== curTilePx) {
-          lastTilePxRef.current = curTilePx;
-          gridRef.current.style.setProperty("--tile-size", `${curTilePx}px`);
-        }
-
         gridRef.current.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0px) scale(${scale.toFixed(4)})`;
       }
 
@@ -386,7 +328,7 @@ export function MacroGrid({
       isRunning = false;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [baseTilePx, maxTilePx, maxScale, onZoomChange, onGoToBeyond]);
+  }, [maxScale, onZoomChange, onGoToBeyond]);
 
   // Trackpad pinch/wheel
   useEffect(() => {
@@ -442,30 +384,15 @@ export function MacroGrid({
     };
   }, [onGoToBeyond]);
 
-  const containerStyle = {
-    "--tile-size": `${baseTilePx}px`,
-    transformOrigin: "center center",
-    willChange: "transform",
-    gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-    gridTemplateRows: Array.from({ length: totalRows }, (_, idx) => {
-      const rowNum = idx + 1;
-      if (rowNum === barRow) {
-        return "auto";
-      }
-      return "minmax(0, 1fr)";
-    }).join(" "),
-    gap: "16px",
-  } as React.CSSProperties;
-
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden flex items-center justify-center select-none bg-[#F8F8F6]"
+      className="relative w-full h-full overflow-hidden flex flex-col justify-between select-none bg-[#F8F8F6]"
     >
-      {/* 1. BOTTOM LEFT: Trackpad hint only */}
-      <div className="fixed bottom-6 left-6 z-20 font-body text-[10px] text-black/40 uppercase tracking-wider hidden sm:block pointer-events-none">
-        PINCH / SCROLL PER ZOOMARE
-      </div>
+      {/* 1. EDGE DISSOLVES */}
+      <div className="fixed top-0 left-0 right-0 h-8 edge-fade-top z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-[52px] left-0 w-8 sm:w-16 edge-fade-left z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-[52px] right-0 w-8 sm:w-16 edge-fade-right z-20 pointer-events-none" />
 
       {/* 2. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER (WHEN FILTERS ARE CLOSED) */}
       <AnimatePresence>
@@ -480,7 +407,7 @@ export function MacroGrid({
               e.stopPropagation();
               onSelectItem(hoveredTileItem);
             }}
-            className="fixed bottom-6 right-6 sm:right-8 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
+            className="fixed bottom-[60px] right-4 sm:right-6 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
           >
             <div className="relative w-full aspect-[4/3] bg-white overflow-hidden mb-2.5 border border-black/15">
               <img
@@ -514,31 +441,36 @@ export function MacroGrid({
         )}
       </AnimatePresence>
 
-      {/* 3. EDGE DISSOLVES IN #F8F8F6 */}
-      <div className="fixed top-0 left-0 right-0 h-16 edge-fade-top z-20 pointer-events-none" />
-      <div className="fixed bottom-0 left-0 right-0 h-16 edge-fade-bottom z-20 pointer-events-none" />
-      <div className="fixed top-0 bottom-0 left-0 w-16 sm:w-28 edge-fade-left z-20 pointer-events-none" />
-      <div className="fixed top-0 bottom-0 right-0 w-16 sm:w-28 edge-fade-right z-20 pointer-events-none" />
-
-      {/* 4. SYMMETRICALLY CENTERED CSS GRID WITH FULL CLICKABILITY AND ZERO BLUR */}
-      <div
-        ref={gridRef}
-        style={containerStyle}
-        className="relative z-20 w-full h-full max-w-[96vw] max-h-[90vh] p-4 px-6 sm:px-12 transition-all duration-300 grid items-center justify-items-center pointer-events-auto"
-      >
-        {displayItems.length === 0 ? (
-          <div className="col-span-full row-span-full pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
-            <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
-              NESSUN SEGNO CORRISPONDENTE
-            </p>
-            <p className="font-body text-xs text-black/60 max-w-xs">
-              Prova a reimpostare o combinare diversamente i filtri selezionati.
-            </p>
-          </div>
-        ) : (
-          <>
-            {displayItems.map((item, idx) => {
-              const pos = positions[idx] || { row: 1, col: 1, offsetX: 0, offsetY: 0 };
+      {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES HARMONIOUSLY VISIBLE WITHOUT OVERLAPS */}
+      <div className="relative flex-1 w-full h-[calc(100%-52px)] overflow-hidden flex items-center justify-center p-2 sm:p-4 pb-1">
+        <div
+          ref={gridRef}
+          style={{
+            transformOrigin: "center center",
+            willChange: "transform",
+            display: "grid",
+            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+            gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+            gap: "8px",
+            width: "100%",
+            height: "100%",
+            maxWidth: "98vw",
+            maxHeight: "calc(100vh - 68px)",
+          }}
+          className="items-center justify-items-center"
+        >
+          {displayItems.length === 0 ? (
+            <div className="col-span-full row-span-full pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
+              <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
+                NESSUN SEGNO CORRISPONDENTE
+              </p>
+              <p className="font-body text-xs text-black/60 max-w-xs">
+                Prova a reimpostare o combinare diversamente i filtri selezionati.
+              </p>
+            </div>
+          ) : (
+            displayItems.map((item, idx) => {
+              const pos = positions[idx] || { row: 1, col: 1 };
               const isHovered = hoveredTileItem?.id === item.id;
               return (
                 <MacroTile
@@ -550,123 +482,112 @@ export function MacroGrid({
                   isFilterOpen={isFilterOpen}
                   row={pos.row}
                   col={pos.col}
-                  offsetX={pos.offsetX}
-                  offsetY={pos.offsetY}
                   onSelect={onSelectItem}
                   onHover={setHoveredTileItem}
                 />
               );
-            })}
+            })
+          )}
+        </div>
+      </div>
 
-            {/* 5. INTERACTIVE HORIZONTAL RIBBON ABOVE PENULTIMATE ROW (INSPO NUOVA HOME.PNG) */}
-            <div
-              style={{
-                gridRow: barRow,
-                gridColumn: "1 / -1",
-              }}
-              className="w-full my-1 pointer-events-auto z-20"
+      {/* 4. BLACK HORIZONTAL BAR: POSITIONED AT THE VERY BOTTOM OF ALL IMAGES */}
+      <div className="relative w-full h-[52px] bg-[#0D0D0D] text-[#F8F8F6] border-t-2 border-black z-30 shrink-0 flex items-stretch justify-between shadow-2xl">
+        {/* SECTION 1: OLTRE */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onGoToBeyond?.();
+          }}
+          className="group flex-1 flex items-center justify-between px-4 sm:px-6 hover:bg-[#1C1C1C] transition-colors cursor-pointer text-left border-r border-white/15"
+        >
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] group-hover:text-white flex items-center gap-1.5">
+              OLTRE
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#F8F8F6]/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            </span>
+            <span className="font-body text-[9px] text-[#F8F8F6]/50 uppercase tracking-wider group-hover:text-[#F8F8F6]/80 transition-colors hidden sm:inline">
+              VISIONE SISTEMICA / 6 DIALETTICHE
+            </span>
+          </div>
+          <div className="hidden md:flex items-center gap-1 opacity-30 group-hover:opacity-100 transition-opacity">
+            <span className="w-1.5 h-1.5 rounded-full border border-white" />
+            <span className="w-1.5 h-1.5 rounded-full border border-white" />
+          </div>
+        </button>
+
+        {/* SECTION 2: MACRO */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            targetZoomRef.current = 0.24;
+            currentZoomRef.current = 0.24;
+            targetFocusRef.current = { u: 0.5, v: 0.5 };
+            currentFocusRef.current = { u: 0.5, v: 0.5 };
+            onZoomChange?.(0.24);
+          }}
+          className="group flex-1 flex items-center justify-between px-4 sm:px-6 hover:bg-[#161616] transition-colors cursor-pointer text-left bg-[#141414] border-r border-white/15"
+        >
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] flex items-center gap-2">
+              MACRO
+              <span className="inline-block w-2 h-2 rounded-full bg-white shadow-sm shadow-white/80" />
+            </span>
+            <span className="font-body text-[9px] text-[#F8F8F6]/60 uppercase tracking-wider hidden sm:inline">
+              ARCHIVIO VISIVO · {displayItems.length} CASI
+            </span>
+          </div>
+          <div className="hidden lg:block font-body text-[9px] uppercase tracking-widest text-[#F8F8F6]/50 border border-white/20 px-2 py-0.5">
+            PANORAMICA
+          </div>
+        </button>
+
+        {/* SECTION 3: FILTRI */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFilter?.();
+          }}
+          className={`group flex-1 flex items-center justify-between px-4 sm:px-6 transition-colors cursor-pointer text-left ${
+            isFilterOpen
+              ? "bg-[#F8F8F6] text-black hover:bg-white"
+              : "hover:bg-[#1C1C1C] text-[#F8F8F6]"
+          }`}
+        >
+          <div className="flex flex-col">
+            <span
+              className={`font-display font-bold text-xs sm:text-sm tracking-widest flex items-center gap-2 ${
+                isFilterOpen ? "text-black" : "text-[#F8F8F6] group-hover:text-white"
+              }`}
             >
-              <div className="w-full bg-[#0D0D0D] text-[#F8F8F6] border-y border-black/50 shadow-xl shadow-black/25 flex flex-col sm:flex-row items-stretch justify-between divide-y sm:divide-y-0 sm:divide-x divide-white/15">
-                {/* SECTION 1: OLTRE */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onGoToBeyond?.();
-                  }}
-                  className="group flex-1 flex items-center justify-between px-5 py-3.5 hover:bg-[#1A1A1A] transition-colors cursor-pointer text-left"
-                >
-                  <div className="flex flex-col">
-                    <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] group-hover:text-white flex items-center gap-2">
-                      OLTRE
-                      <ArrowUpRight className="w-3.5 h-3.5 text-[#F8F8F6]/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                    </span>
-                    <span className="font-body text-[9px] text-[#F8F8F6]/50 uppercase tracking-wider group-hover:text-[#F8F8F6]/80 transition-colors">
-                      VISIONE SISTEMICA / 6 DIALETTICHE
-                    </span>
-                  </div>
-                  <div className="hidden md:flex items-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                    <span className="w-1.5 h-1.5 rounded-full border border-white" />
-                    <span className="w-1.5 h-1.5 rounded-full border border-white" />
-                    <span className="w-1.5 h-1.5 rounded-full border border-white" />
-                  </div>
-                </button>
-
-                {/* SECTION 2: MACRO */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    targetZoomRef.current = 0.24;
-                    currentZoomRef.current = 0.24;
-                    targetFocusRef.current = { u: 0.5, v: 0.5 };
-                    currentFocusRef.current = { u: 0.5, v: 0.5 };
-                    onZoomChange?.(0.24);
-                  }}
-                  className="group flex-1 flex items-center justify-between px-5 py-3.5 hover:bg-[#161616] transition-colors cursor-pointer text-left bg-[#141414]"
-                >
-                  <div className="flex flex-col">
-                    <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] flex items-center gap-2">
-                      MACRO
-                      <span className="inline-block w-2 h-2 rounded-full bg-white shadow-sm shadow-white/80" />
-                    </span>
-                    <span className="font-body text-[9px] text-[#F8F8F6]/60 uppercase tracking-wider">
-                      ARCHIVIO VISIVO · {displayItems.length} CASI
-                    </span>
-                  </div>
-                  <div className="hidden lg:block font-body text-[9px] uppercase tracking-widest text-[#F8F8F6]/50 border border-white/20 px-2 py-0.5">
-                    PANORAMICA
-                  </div>
-                </button>
-
-                {/* SECTION 3: FILTRI */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleFilter?.();
-                  }}
-                  className={`group flex-1 flex items-center justify-between px-5 py-3.5 transition-colors cursor-pointer text-left ${
-                    isFilterOpen
-                      ? "bg-[#F8F8F6] text-black hover:bg-white"
-                      : "hover:bg-[#1A1A1A] text-[#F8F8F6]"
-                  }`}
-                >
-                  <div className="flex flex-col">
-                    <span
-                      className={`font-display font-bold text-xs sm:text-sm tracking-widest flex items-center gap-2 ${
-                        isFilterOpen ? "text-black" : "text-[#F8F8F6] group-hover:text-white"
-                      }`}
-                    >
-                      FILTRI
-                      <SlidersHorizontal
-                        className={`w-3.5 h-3.5 ${
-                          isFilterOpen ? "text-black" : "text-[#F8F8F6]/70 group-hover:text-white"
-                        }`}
-                      />
-                    </span>
-                    <span
-                      className={`font-body text-[9px] uppercase tracking-wider ${
-                        isFilterOpen ? "text-black/70 font-semibold" : "text-[#F8F8F6]/50 group-hover:text-[#F8F8F6]/80"
-                      }`}
-                    >
-                      {isFilterOpen ? "CHIUDI PANNELLO FILTRI" : "SELEZIONA PER SEGNO & CATEGORIA"}
-                    </span>
-                  </div>
-                  <div
-                    className={`text-[9px] font-display font-bold uppercase tracking-wider px-2 py-0.5 border ${
-                      isFilterOpen
-                        ? "border-black bg-black text-[#F8F8F6]"
-                        : "border-white/30 text-[#F8F8F6]/80 group-hover:border-white group-hover:text-white"
-                    }`}
-                  >
-                    {isFilterOpen ? "ATTIVO" : "APRI"}
-                  </div>
-                </button>
-              </div>
-            </div>
-          </>
-        )}
+              FILTRI
+              <SlidersHorizontal
+                className={`w-3.5 h-3.5 ${
+                  isFilterOpen ? "text-black" : "text-[#F8F8F6]/70 group-hover:text-white"
+                }`}
+              />
+            </span>
+            <span
+              className={`font-body text-[9px] uppercase tracking-wider hidden sm:inline ${
+                isFilterOpen ? "text-black/70 font-semibold" : "text-[#F8F8F6]/50 group-hover:text-[#F8F8F6]/80"
+              }`}
+            >
+              {isFilterOpen ? "CHIUDI PANNELLO" : "SELEZIONA PER SEGNO & CATEGORIA"}
+            </span>
+          </div>
+          <div
+            className={`text-[9px] font-display font-bold uppercase tracking-wider px-2.5 py-1 border ${
+              isFilterOpen
+                ? "border-black bg-black text-[#F8F8F6]"
+                : "border-white/30 text-[#F8F8F6]/80 group-hover:border-white group-hover:text-white"
+            }`}
+          >
+            {isFilterOpen ? "ATTIVO" : "APRI"}
+          </div>
+        </button>
       </div>
     </div>
   );
