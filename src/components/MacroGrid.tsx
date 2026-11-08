@@ -18,19 +18,31 @@ interface MacroGridProps {
 }
 
 /**
- * Computes deterministic, non-overlapping grid positions for all cases.
- * Strictly avoids overlaps by allocating dedicated rows and columns for each case.
+ * Computes deterministic, non-overlapping staggered grid positions for all cases.
+ * Allows varied natural sizes and alternating rhythmic vertical offsets without any collisions.
  */
 function getGridConfig(totalCount: number) {
   if (totalCount > 50) {
     const cols = 11;
     const rows = Math.ceil(totalCount / cols); // 7 rows for 76 items (11 * 7 = 77 slots)
-    const positions: { row: number; col: number }[] = [];
+    const positions: { row: number; col: number; staggerY: number; sizeFactor: number }[] = [];
+
+    // Organic staggered cadence that strictly never collides:
+    // Columns alternate slightly up and down (-5px / +5px) creating a beautiful gallery stagger.
+    // Varied sizes: some slightly larger (1.04), some slightly smaller (0.90) for natural variety.
+    const sizePattern = [1.02, 0.92, 0.98, 1.04, 0.93, 1.0, 0.91];
 
     for (let i = 0; i < totalCount; i++) {
+      const col = (i % cols) + 1;
+      const row = Math.floor(i / cols) + 1;
+      const staggerY = col % 2 === 0 ? 5 : -5;
+      const sizeFactor = sizePattern[i % sizePattern.length];
+
       positions.push({
-        row: Math.floor(i / cols) + 1,
-        col: (i % cols) + 1,
+        row,
+        col,
+        staggerY,
+        sizeFactor,
       });
     }
 
@@ -44,12 +56,17 @@ function getGridConfig(totalCount: number) {
   // Filtered state with fewer items (e.g. 1-40 items)
   const cols = Math.max(3, Math.min(8, Math.ceil(Math.sqrt(totalCount * 1.5))));
   const rows = Math.ceil(totalCount / cols);
-  const positions: { row: number; col: number }[] = [];
+  const positions: { row: number; col: number; staggerY: number; sizeFactor: number }[] = [];
 
   for (let i = 0; i < totalCount; i++) {
+    const col = (i % cols) + 1;
+    const row = Math.floor(i / cols) + 1;
+    const staggerY = col % 2 === 0 ? 4 : -4;
     positions.push({
-      row: Math.floor(i / cols) + 1,
-      col: (i % cols) + 1,
+      row,
+      col,
+      staggerY,
+      sizeFactor: 0.96,
     });
   }
 
@@ -68,6 +85,8 @@ interface MacroTileProps {
   isFilterOpen: boolean;
   row: number;
   col: number;
+  staggerY: number;
+  sizeFactor: number;
   onSelect: (item: ArchiveItem) => void;
   onHover: (item: ArchiveItem | null) => void;
 }
@@ -80,6 +99,8 @@ const MacroTile = React.memo(function MacroTile({
   isFilterOpen,
   row,
   col,
+  staggerY,
+  sizeFactor,
   onSelect,
   onHover,
 }: MacroTileProps) {
@@ -117,6 +138,7 @@ const MacroTile = React.memo(function MacroTile({
       style={{
         gridRow: row,
         gridColumn: col,
+        transform: `translateY(${staggerY}px)`,
         opacity: tileOpacity,
       }}
       className={`pointer-events-auto w-full h-full flex items-center justify-center cursor-pointer relative group transition-opacity duration-150 ${
@@ -126,23 +148,23 @@ const MacroTile = React.memo(function MacroTile({
       <motion.div
         layoutId={`item-media-${item.id}`}
         animate={{
-          scale: isHovered ? 1.1 : 1,
+          scale: isHovered ? 1.12 : 1,
         }}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         style={{
           aspectRatio: `${dim.w} / ${dim.h}`,
-          maxWidth: "100%",
-          maxHeight: "100%",
+          maxWidth: `${Math.round(92 * sizeFactor)}%`,
+          maxHeight: `${Math.round(88 * sizeFactor)}%`,
         }}
-        className={`w-auto h-auto rounded-none overflow-hidden bg-white transition-all duration-200 cursor-pointer flex items-center justify-center ${
+        className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center ${
           isHovered
-            ? "border-2 border-black shadow-xl shadow-black/30"
+            ? "border-2 border-black shadow-2xl shadow-black/35"
             : isActive
             ? "border-2 border-black shadow-md shadow-black/15"
-            : "border border-black/25 hover:border-black"
+            : "border border-black/35 hover:border-black"
         }`}
       >
-        {/* 1. PHOTO - Sharp, 100% natural proportions, zero cropping and strictly NO overlap */}
+        {/* 1. PHOTO - 100% natural shape, NO white borders, full edge-to-edge coverage */}
         {item.type === "photo" && (
           <img
             src={item.thumbnailUrl || item.imageUrl || ""}
@@ -153,13 +175,13 @@ const MacroTile = React.memo(function MacroTile({
             style={{
               imageRendering: "-webkit-optimize-contrast",
             }}
-            className="w-full h-full object-contain block pointer-events-none select-none filter-none"
+            className="w-full h-full object-cover block pointer-events-none select-none filter-none"
           />
         )}
 
         {/* 2. AUDIO */}
         {item.type === "audio" && (
-          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#F2F2EF]">
+          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#EAEAE5]">
             <div className="flex items-center gap-1 h-6 w-full justify-center overflow-hidden">
               {(item.audioWaveform || [40, 70, 90, 50, 80, 100, 60, 40])
                 .slice(0, 8)
@@ -177,7 +199,7 @@ const MacroTile = React.memo(function MacroTile({
 
         {/* 3. TEXT / ESSAY */}
         {item.type === "text" && (
-          <div className="w-full h-full p-2 flex flex-col justify-center items-center bg-[#EAEAE5] overflow-hidden text-center select-none">
+          <div className="w-full h-full p-2 flex flex-col justify-center items-center bg-[#E5E5DE] overflow-hidden text-center select-none">
             <span className="font-display text-[9px] font-bold text-black tracking-wider uppercase leading-tight line-clamp-2">
               {item.microKeyword || item.title}
             </span>
@@ -470,7 +492,7 @@ export function MacroGrid({
             </div>
           ) : (
             displayItems.map((item, idx) => {
-              const pos = positions[idx] || { row: 1, col: 1 };
+              const pos = positions[idx] || { row: 1, col: 1, staggerY: 0, sizeFactor: 1.0 };
               const isHovered = hoveredTileItem?.id === item.id;
               return (
                 <MacroTile
@@ -482,6 +504,8 @@ export function MacroGrid({
                   isFilterOpen={isFilterOpen}
                   row={pos.row}
                   col={pos.col}
+                  staggerY={pos.staggerY}
+                  sizeFactor={pos.sizeFactor}
                   onSelect={onSelectItem}
                   onHover={setHoveredTileItem}
                 />

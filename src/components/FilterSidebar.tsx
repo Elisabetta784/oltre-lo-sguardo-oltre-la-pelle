@@ -45,15 +45,15 @@ interface FilterSidebarProps {
  */
 function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?: string }) {
   return (
-    <div className="relative py-1.5 overflow-hidden select-none">
+    <div className="relative py-1 overflow-hidden select-none">
       {/* Echo 3 - Faintest Ghost */}
       <motion.div
         key={`echo-3-${text}`}
-        initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 0.12, x: 20 }}
-        exit={{ opacity: 0, x: 10 }}
+        initial={{ opacity: 0, x: -6 }}
+        animate={{ opacity: 0.12, x: 16 }}
+        exit={{ opacity: 0, x: 8 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="font-display font-black text-xl sm:text-2xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-1.5 truncate max-w-full"
+        className="font-display font-black text-lg sm:text-xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-1 truncate max-w-full"
       >
         {text}
       </motion.div>
@@ -61,11 +61,11 @@ function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?
       {/* Echo 2 - Intermediate Ghost */}
       <motion.div
         key={`echo-2-${text}`}
-        initial={{ opacity: 0, x: -4 }}
-        animate={{ opacity: 0.28, x: 10 }}
-        exit={{ opacity: 0, x: 6 }}
+        initial={{ opacity: 0, x: -3 }}
+        animate={{ opacity: 0.28, x: 8 }}
+        exit={{ opacity: 0, x: 5 }}
         transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-        className="font-display font-black text-xl sm:text-2xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-1.5 truncate max-w-full"
+        className="font-display font-black text-lg sm:text-xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-1 truncate max-w-full"
       >
         {text}
       </motion.div>
@@ -73,21 +73,21 @@ function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?
       {/* Main Crisp Layer */}
       <motion.div
         key={`main-${text}`}
-        initial={{ opacity: 0, y: 4 }}
+        initial={{ opacity: 0, y: 3 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -4 }}
+        exit={{ opacity: 0, y: -3 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10"
       >
-        <h2 className="font-display font-black text-xl sm:text-2xl uppercase tracking-tight text-black leading-none truncate">
+        <h2 className="font-display font-black text-lg sm:text-xl uppercase tracking-tight text-black leading-none truncate">
           {text}
         </h2>
         {categoryLabel && (
-          <div className="mt-1 flex items-center gap-1.5">
-            <span className="font-body text-[9px] uppercase tracking-widest text-black/60 font-semibold">
+          <div className="mt-0.5 flex items-center gap-1.5">
+            <span className="font-body text-[8.5px] uppercase tracking-widest text-black/60 font-semibold">
               [{categoryLabel}]
             </span>
-            <span className="w-4 h-[1px] bg-black/20" />
+            <span className="w-3.5 h-[1px] bg-black/20" />
             <span className="font-body text-[8px] uppercase tracking-wider text-black/45">
               FILTRO ATTIVO
             </span>
@@ -185,11 +185,11 @@ export function FilterSidebar({
             initial={{ opacity: 0, y: 15, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.97 }}
-            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-[56px] right-2 sm:right-6 z-40 w-[94vw] sm:w-[410px] max-h-[calc(100vh-76px)] h-[580px] bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/35 flex flex-col justify-between select-none"
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed bottom-[56px] right-2 sm:right-6 z-40 w-[94vw] sm:w-[380px] max-h-[50vh] sm:max-h-[410px] h-[390px] bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/35 flex flex-col justify-between select-none"
           >
             {/* A. HEADER */}
-            <div className="p-3.5 sm:p-4 border-b-2 border-black bg-[#F8F8F6] flex flex-col gap-2.5 shrink-0">
+            <div className="p-2.5 sm:p-3 border-b-2 border-black bg-[#F8F8F6] flex flex-col gap-2 shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="w-3.5 h-3.5 text-black" />
@@ -391,7 +391,7 @@ export function FilterSidebar({
             </div>
 
             {/* D. BOTTOM KINETIC TYPOGRAPHY ECHO (inspo filtri.png) */}
-            <div className="p-3 sm:p-3.5 border-t-2 border-black bg-[#F2F2EF] shrink-0">
+            <div className="p-2 sm:p-2.5 border-t-2 border-black bg-[#F2F2EF] shrink-0">
               <KineticTypoEcho
                 text={currentEchoText}
                 categoryLabel={currentEchoCat}
