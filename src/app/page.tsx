@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ARCHIVE_ITEMS, ArchiveItem } from "@/data/archiveData";
-import { HeaderNav } from "@/components/HeaderNav";
 import { BeyondView } from "@/components/BeyondView";
 import { MacroGrid } from "@/components/MacroGrid";
 import { MicroView } from "@/components/MicroView";
@@ -190,13 +189,7 @@ export default function Home() {
 
   return (
     <main className="w-screen h-screen overflow-hidden bg-[#F8F8F6] text-black font-body relative select-none">
-      {/* 1. Header: Strictly MACRO and MICRO on the left, Title in the center */}
-      <HeaderNav
-        currentView={view}
-        onSelectView={(targetView) => setView(targetView)}
-      />
-
-      {/* 2. Left Vertical Menu (Serotoninn-inspired) - strictly ONLY in MACRO, removed in BEYOND */}
+      {/* 1. Horizontal Bottom Filter Drawer - strictly in MACRO view, opens from the bottom */}
       {view === "macro" && (
         <FilterSidebar
           selectedFilters={selectedFilters}
@@ -213,8 +206,8 @@ export default function Home() {
         />
       )}
 
-      {/* 3. Main Views: BEYOND (Circular Macro Groups), MACRO (Aligned Miniature Grid), MICRO (Detail View) */}
-      <div className="relative w-full h-[calc(100vh-52px)] mt-[52px] overflow-hidden">
+      {/* 2. Main Views: BEYOND (Circular Macro Groups), MACRO (Aligned Miniature Grid), MICRO (Detail View) */}
+      <div className="relative w-full h-full overflow-hidden">
         <AnimatePresence>
           {view === "beyond" && (
             <motion.div

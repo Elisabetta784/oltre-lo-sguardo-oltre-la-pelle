@@ -462,20 +462,14 @@ export function MacroGrid({
       ref={containerRef}
       className="relative w-full h-full overflow-hidden flex items-center justify-center select-none bg-[#F8F8F6]"
     >
-      {/* 1. CORNER LABELS & CONTROLS */}
-      {/* Top Left metadata */}
-      <div className="fixed top-[64px] left-6 z-20 font-body text-[10px] text-black/40 uppercase tracking-widest hidden sm:block pointer-events-none">
-        ©2024 ARCHIVIO / CORPO & MEMORIA
-      </div>
-
-      {/* Bottom Left: Trackpad hint only */}
+      {/* 1. BOTTOM LEFT: Trackpad hint only */}
       <div className="fixed bottom-6 left-6 z-20 font-body text-[10px] text-black/40 uppercase tracking-wider hidden sm:block pointer-events-none">
         PINCH / SCROLL PER ZOOMARE
       </div>
 
-      {/* 2. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER */}
+      {/* 2. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER (WHEN FILTERS ARE CLOSED) */}
       <AnimatePresence>
-        {hoveredTileItem && (
+        {hoveredTileItem && !isFilterOpen && (
           <motion.div
             key={hoveredTileItem.id}
             initial={{ opacity: 0, y: 15, scale: 0.96 }}
@@ -521,20 +515,16 @@ export function MacroGrid({
       </AnimatePresence>
 
       {/* 3. EDGE DISSOLVES IN #F8F8F6 */}
-      <div className="fixed top-[52px] left-0 right-0 h-16 edge-fade-top z-20 pointer-events-none" />
+      <div className="fixed top-0 left-0 right-0 h-16 edge-fade-top z-20 pointer-events-none" />
       <div className="fixed bottom-0 left-0 right-0 h-16 edge-fade-bottom z-20 pointer-events-none" />
-      <div className="fixed top-[52px] bottom-0 left-0 w-16 sm:w-28 edge-fade-left z-20 pointer-events-none" />
-      <div className="fixed top-[52px] bottom-0 right-0 w-16 sm:w-28 edge-fade-right z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-0 left-0 w-16 sm:w-28 edge-fade-left z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-0 right-0 w-16 sm:w-28 edge-fade-right z-20 pointer-events-none" />
 
       {/* 4. SYMMETRICALLY CENTERED CSS GRID WITH FULL CLICKABILITY AND ZERO BLUR */}
       <div
         ref={gridRef}
         style={containerStyle}
-        className={`relative z-20 w-full h-full max-w-[96vw] max-h-[88vh] p-4 transition-[padding] duration-300 grid items-center justify-items-center pointer-events-auto ${
-          isFilterOpen
-            ? "pl-80 sm:pl-96 lg:pl-[440px] pr-8 sm:pr-12"
-            : "px-6 sm:px-12"
-        }`}
+        className="relative z-20 w-full h-full max-w-[96vw] max-h-[90vh] p-4 px-6 sm:px-12 transition-all duration-300 grid items-center justify-items-center pointer-events-auto"
       >
         {displayItems.length === 0 ? (
           <div className="col-span-full row-span-full pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">

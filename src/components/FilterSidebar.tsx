@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, SlidersHorizontal, ArrowRight } from "lucide-react";
+import { Search, X, SlidersHorizontal, Check } from "lucide-react";
 import {
   FILTER_CATEGORIES,
   FilterCategoryId,
@@ -48,35 +48,38 @@ function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?
     <div className="relative py-2 overflow-hidden select-none">
       {/* Echo 3 - Faintest Ghost */}
       <motion.div
+        key={`echo-3-${text}`}
         initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 0.12, x: 38 }}
-        exit={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 0.12, x: 26 }}
+        exit={{ opacity: 0, x: 15 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-2"
+        className="font-display font-black text-xl sm:text-2xl lg:text-3xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-2 truncate max-w-full"
       >
         {text}
       </motion.div>
 
       {/* Echo 2 - Intermediate Ghost */}
       <motion.div
+        key={`echo-2-${text}`}
         initial={{ opacity: 0, x: -6 }}
-        animate={{ opacity: 0.32, x: 18 }}
-        exit={{ opacity: 0, x: 12 }}
+        animate={{ opacity: 0.3, x: 12 }}
+        exit={{ opacity: 0, x: 8 }}
         transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-        className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-2"
+        className="font-display font-black text-xl sm:text-2xl lg:text-3xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-2 truncate max-w-full"
       >
         {text}
       </motion.div>
 
       {/* Main Crisp Layer */}
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
+        key={`main-${text}`}
+        initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -6 }}
+        exit={{ opacity: 0, y: -4 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10"
       >
-        <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-black leading-none">
+        <h2 className="font-display font-black text-xl sm:text-2xl lg:text-3xl uppercase tracking-tight text-black leading-none truncate">
           {text}
         </h2>
         {categoryLabel && (
@@ -84,7 +87,7 @@ function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?
             <span className="font-body text-[10px] uppercase tracking-widest text-black/60 font-semibold">
               [{categoryLabel}]
             </span>
-            <span className="w-8 h-[1px] bg-black/20" />
+            <span className="w-6 h-[1px] bg-black/20" />
             <span className="font-body text-[9px] uppercase tracking-wider text-black/45">
               FILTRO ARCHIVIO ATTIVO
             </span>
@@ -116,8 +119,8 @@ export function FilterSidebar({
     "categorie",
   ];
 
-  const [activeCategoryTab, setActiveCategoryTab] = useState<FilterCategoryId>("segno");
-  const [viewAllCategories, setViewAllCategories] = useState(false);
+  // "all" displays the 5 horizontal columns side-by-side; or filter to a single category
+  const [activeCategoryTab, setActiveCategoryTab] = useState<"all" | FilterCategoryId>("all");
 
   const totalActiveFilters = Object.values(selectedFilters).reduce(
     (acc, arr) => acc + arr.length,
@@ -152,11 +155,11 @@ export function FilterSidebar({
     }).length;
   };
 
-  // Find a representative active label for bottom kinetic echo
+  // Find a representative active label for kinetic echo preview
   const currentEchoText = hoveredFilter
     ? hoveredFilter.value
     : totalActiveFilters > 0
-    ? Object.entries(selectedFilters).find(([, vals]) => vals.length > 0)?.[1][0] || "FILTRI"
+    ? Object.entries(selectedFilters).find(([, vals]) => vals.length > 0)?.[1][0] || "FILTRI ATTIVI"
     : "TUTTI I SEGNI";
 
   const currentEchoCat = hoveredFilter
@@ -166,254 +169,302 @@ export function FilterSidebar({
     : "ARCHIVIO CORPOREO";
 
   return (
-    <>
-      {/* 1. MINIMAL TAB TOGGLE BUTTON WHEN SIDEBAR IS CLOSED - STRICTLY ONLY AT THE TOP */}
-      {!isOpen && (
-        <button
-          type="button"
-          onClick={onToggleOpen}
-          className="fixed left-0 top-[68px] z-30 bg-black text-[#F8F8F6] px-3.5 py-2 font-display text-[11px] font-bold tracking-widest uppercase cursor-pointer hover:bg-black/85 transition-colors border-r border-t border-b border-black shadow-md flex items-center gap-2"
-        >
-          <SlidersHorizontal className="w-3.5 h-3.5" />
-          <span>FILTRI {totalActiveFilters > 0 && `[${totalActiveFilters}]`}</span>
-        </button>
-      )}
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* 1. Backdrop scrim - click outside to dismiss */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onToggleOpen}
+            className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[1px]"
+          />
 
-      {/* 2. MAIN SIDEBAR CONTAINER */}
-      <aside
-        className={`fixed top-[52px] left-0 bottom-0 z-40 w-full sm:w-[380px] lg:w-[420px] bg-[#F8F8F6] border-r-2 border-black transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none shadow-2xl flex flex-col justify-between ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="w-full h-full flex flex-col justify-between p-5 sm:p-7">
-          {/* TOP BAR */}
-          <div className="flex flex-col gap-2.5 border-b-2 border-black pb-4">
-            <div className="flex items-center justify-between font-body text-[10px] text-black/60 uppercase tracking-wider">
-              <span>ARCHIVIO / SEGNI E TESTIMONIANZE</span>
-              <button
-                type="button"
-                onClick={onToggleOpen}
-                className="hover:text-black cursor-pointer font-bold flex items-center gap-1 p-0.5"
-              >
-                <span>[ CHIUDI</span>
-                <X className="w-3 h-3" />
-                <span>]</span>
-              </button>
-            </div>
+          {/* 2. Horizontal Filter Console Opening From Bottom */}
+          <motion.aside
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-[#F8F8F6] border-t-2 border-black shadow-2xl flex flex-col h-[54vh] sm:h-[48vh] max-h-[85vh] select-none"
+          >
+            {/* A. DRAWER HEADER STRIP */}
+            <div className="w-full px-4 sm:px-8 py-3 border-b-2 border-black bg-[#F8F8F6] flex flex-wrap items-center justify-between gap-3 shrink-0">
+              {/* Left: Title + Integrated Search Input */}
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-black" />
+                  <span className="font-display font-bold text-xs sm:text-sm uppercase tracking-wider text-black whitespace-nowrap">
+                    FILTRI ARCHIVIO
+                  </span>
+                </div>
 
-            {/* RESET / ALL SIGNS ROW */}
-            <div
-              onClick={() => {
-                onResetFilters();
-                if (onSearchChange) onSearchChange("");
-                onHoverFilter(null);
-              }}
-              className="flex items-center justify-between py-1.5 font-display text-sm tracking-wide uppercase cursor-pointer group text-black hover:opacity-75 transition-opacity"
-            >
-              <div className="flex items-center gap-1.5 font-bold">
-                <span>[</span>
-                <span className="group-hover:tracking-wider transition-all">
-                  MOSTRA TUTTI I CASI
-                </span>
-                <span>]</span>
-              </div>
-              <span className="font-body text-xs text-black/60">
-                [ {totalItems} ]
-              </span>
-            </div>
-
-            {/* SEARCH INPUT BAR */}
-            <div className="relative my-1 flex items-center border border-black bg-white px-3 py-2 focus-within:ring-1 focus-within:ring-black transition-all">
-              <Search className="w-3.5 h-3.5 text-black/50 mr-2 shrink-0 select-none" />
-              <input
-                type="text"
-                placeholder="CERCA PER PAROLA O CASO..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-                className="w-full bg-transparent font-body text-[11px] uppercase tracking-wider text-black placeholder-black/40 outline-none"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => onSearchChange && onSearchChange("")}
-                  title="Cancella ricerca"
-                  className="ml-1 text-[10px] font-body text-black/60 hover:text-black cursor-pointer uppercase shrink-0 font-bold"
-                >
-                  [ X ]
-                </button>
-              )}
-            </div>
-
-            {/* Active filters status */}
-            {(totalActiveFilters > 0 || searchQuery.trim() !== "") && (
-              <div className="flex items-center justify-between pt-1 font-body text-[10px] text-black">
-                <span className="font-semibold text-black/80">
-                  {searchQuery.trim() !== "" ? (
-                    <>
-                      RICERCA: &ldquo;{searchQuery.trim().toUpperCase()}&rdquo; [{filteredCount}]
-                    </>
-                  ) : (
-                    <>FILTRI ATTIVI: {totalActiveFilters} [{filteredCount} CASI]</>
-                  )}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onResetFilters();
-                    if (onSearchChange) onSearchChange("");
-                  }}
-                  className="hover:underline cursor-pointer uppercase tracking-wider font-bold"
-                >
-                  [ AZZERA ]
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* CATEGORY TABS */}
-          <div className="py-3 border-b border-black/15">
-            <div className="flex items-center justify-between mb-2 font-body text-[10px] text-black/60 uppercase tracking-wider">
-              <span>CATEGORIE:</span>
-              <button
-                type="button"
-                onClick={() => setViewAllCategories(!viewAllCategories)}
-                className="text-[9px] hover:text-black cursor-pointer uppercase underline font-semibold"
-              >
-                {viewAllCategories ? "[ PER TAB ]" : "[ MOSTRA TUTTI ]"}
-              </button>
-            </div>
-
-            {!viewAllCategories && (
-              <div className="flex flex-wrap gap-1.5">
-                {categoryKeys.map((catKey) => {
-                  const catDef = FILTER_CATEGORIES[catKey];
-                  const isTabActive = activeCategoryTab === catKey;
-                  const activeInCat = selectedFilters[catKey].length;
-
-                  return (
+                {/* Search Bar */}
+                <div className="relative flex items-center border border-black bg-white px-2.5 py-1 focus-within:ring-1 focus-within:ring-black transition-all w-52 sm:w-72">
+                  <Search className="w-3.5 h-3.5 text-black/50 mr-2 shrink-0 select-none" />
+                  <input
+                    type="text"
+                    placeholder="CERCA PER PAROLA, SEGNO O CASO..."
+                    value={searchQuery}
+                    onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+                    className="w-full bg-transparent font-body text-[11px] uppercase tracking-wider text-black placeholder-black/40 outline-none"
+                  />
+                  {searchQuery && (
                     <button
-                      key={catKey}
                       type="button"
-                      onClick={() => setActiveCategoryTab(catKey)}
-                      className={`font-display text-[10px] sm:text-[11px] px-2.5 py-1 transition-all duration-150 uppercase tracking-wider cursor-pointer border rounded-none ${
-                        isTabActive
-                          ? "bg-black text-[#F8F8F6] border-black font-bold"
-                          : "border-black/20 text-black hover:border-black hover:bg-black/5"
-                      }`}
+                      onClick={() => onSearchChange && onSearchChange("")}
+                      title="Cancella ricerca"
+                      className="ml-1 text-[10px] font-body text-black/60 hover:text-black cursor-pointer uppercase shrink-0 font-bold"
                     >
-                      {catDef.label}
-                      {activeInCat > 0 && ` (${activeInCat})`}
+                      [X]
                     </button>
-                  );
-                })}
+                  )}
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* MAIN LIST OF FILTER OPTIONS */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar py-3 space-y-1.5">
-            {viewAllCategories ? (
-              categoryKeys.map((catKey) => {
-                const catDef = FILTER_CATEGORIES[catKey];
-                return (
-                  <div key={catKey} className="mb-4">
-                    <div className="font-display text-[11px] font-bold text-black uppercase tracking-wider mb-1.5 border-b border-black/15 pb-0.5">
-                      {catDef.label} —
+              {/* Center: Status & Quick Reset */}
+              <div className="flex items-center gap-3">
+                <span className="font-body text-[11px] text-black/70 uppercase tracking-wider">
+                  MOSTRATI: <strong className="text-black font-display font-bold">{filteredCount}</strong> / {totalItems} CASI
+                </span>
+
+                {(totalActiveFilters > 0 || searchQuery.trim() !== "") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onResetFilters();
+                      if (onSearchChange) onSearchChange("");
+                      onHoverFilter(null);
+                    }}
+                    className="flex items-center gap-1 font-display text-[10px] sm:text-[11px] font-bold text-black uppercase tracking-wider cursor-pointer border border-black px-2.5 py-1 bg-white hover:bg-black hover:text-white transition-colors"
+                  >
+                    <span>[ AZZERA FILTRI ]</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Right: View mode tabs + Close Button */}
+              <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                {/* Horizontal Category Switcher */}
+                <div className="hidden md:flex items-center gap-1 border border-black/20 p-0.5 bg-black/5">
+                  <button
+                    type="button"
+                    onClick={() => setActiveCategoryTab("all")}
+                    className={`font-display text-[10px] px-2 py-0.5 uppercase tracking-wider transition-colors cursor-pointer ${
+                      activeCategoryTab === "all"
+                        ? "bg-black text-[#F8F8F6] font-bold shadow-xs"
+                        : "text-black/70 hover:text-black hover:bg-black/10"
+                    }`}
+                  >
+                    TUTTE [ORIZZONTALE]
+                  </button>
+                  {categoryKeys.map((catKey) => {
+                    const countInCat = selectedFilters[catKey].length;
+                    return (
+                      <button
+                        key={catKey}
+                        type="button"
+                        onClick={() => setActiveCategoryTab(catKey)}
+                        className={`font-display text-[10px] px-2 py-0.5 uppercase tracking-wider transition-colors cursor-pointer ${
+                          activeCategoryTab === catKey
+                            ? "bg-black text-[#F8F8F6] font-bold shadow-xs"
+                            : "text-black/70 hover:text-black hover:bg-black/10"
+                        }`}
+                      >
+                        {FILTER_CATEGORIES[catKey].label}
+                        {countInCat > 0 && ` (${countInCat})`}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={onToggleOpen}
+                  className="flex items-center gap-1 font-display text-xs font-bold text-[#F8F8F6] bg-black hover:bg-black/85 px-3 py-1.5 uppercase tracking-widest cursor-pointer transition-colors shadow-sm"
+                >
+                  <span>CHIUDI</span>
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* B. DRAWER HORIZONTAL BODY */}
+            <div className="flex-1 w-full overflow-hidden flex flex-row items-stretch">
+              {activeCategoryTab === "all" ? (
+                /* 5 HORIZONTAL COLUMNS SIDE-BY-SIDE + KINETIC ECHO COLUMN */
+                <div className="flex-1 w-full overflow-x-auto overflow-y-hidden custom-scrollbar flex flex-row items-stretch divide-x-2 divide-black">
+                  {categoryKeys.map((catKey) => {
+                    const catDef = FILTER_CATEGORIES[catKey];
+                    const activeInCat = selectedFilters[catKey].length;
+
+                    return (
+                      <div
+                        key={catKey}
+                        className="w-[240px] sm:w-[270px] lg:w-[290px] shrink-0 flex flex-col justify-between p-3.5 sm:p-4 bg-[#F8F8F6]"
+                      >
+                        {/* Column Header */}
+                        <div className="pb-2 mb-2 border-b border-black/20 flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-display font-bold text-xs uppercase tracking-wider text-black">
+                              {catDef.label}
+                            </span>
+                            {activeInCat > 0 && (
+                              <span className="bg-black text-[#F8F8F6] font-display text-[9px] font-bold px-1.5 py-0.2">
+                                {activeInCat}
+                              </span>
+                            )}
+                          </div>
+                          <span className="font-body text-[9px] uppercase tracking-wider text-black/40">
+                            {catDef.options.length} OPZIONI
+                          </span>
+                        </div>
+
+                        {/* Column Scrollable Options List */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1 pr-1">
+                          {catDef.options.map((opt) => {
+                            const isSelected = selectedFilters[catKey].includes(opt);
+                            const count = getOptionCount(catKey, opt);
+
+                            return (
+                              <div
+                                key={opt}
+                                onClick={() => onToggleFilter(catKey, opt)}
+                                onMouseEnter={() =>
+                                  onHoverFilter({
+                                    category: catKey,
+                                    value: opt,
+                                    label: `${opt.toUpperCase()} (${catDef.label})`,
+                                  })
+                                }
+                                onMouseLeave={() => onHoverFilter(null)}
+                                className={`flex items-center justify-between py-1.5 px-2 cursor-pointer font-body text-xs tracking-wider transition-all duration-150 group border rounded-none ${
+                                  isSelected
+                                    ? "bg-black text-[#F8F8F6] font-bold border-black shadow-xs"
+                                    : "border-transparent hover:border-black/30 hover:bg-black/5 text-black/85 hover:text-black"
+                                }`}
+                              >
+                                <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1 truncate mr-2">
+                                  <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}>[</span>
+                                  <span className={`truncate ${isSelected ? "font-bold text-[#F8F8F6]" : ""}`}>
+                                    {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
+                                  </span>
+                                  <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}>]</span>
+                                </span>
+                                <span
+                                  className={`font-body text-[11px] shrink-0 ${
+                                    isSelected ? "text-[#F8F8F6]/80 font-semibold" : "text-black/50"
+                                  }`}
+                                >
+                                  [ {count} ]
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* 6. Kinetic Typographic Echo Preview Column (inspo filtri.png) */}
+                  <div className="w-[280px] sm:w-[320px] shrink-0 p-4 sm:p-5 flex flex-col justify-between bg-[#F2F2EF]">
+                    <div>
+                      <div className="font-display font-bold text-[10px] text-black/60 uppercase tracking-widest pb-1 border-b border-black/15">
+                        ANTEPRIMA HOVER & ATTIVO
+                      </div>
+                      <div className="mt-4">
+                        <KineticTypoEcho
+                          text={currentEchoText}
+                          categoryLabel={currentEchoCat}
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      {catDef.options.map((opt) => {
-                        const isSelected = selectedFilters[catKey].includes(opt);
-                        const count = getOptionCount(catKey, opt);
+
+                    <div className="pt-3 border-t border-black/15">
+                      <div className="font-body text-[9px] uppercase tracking-wider text-black/50">
+                        [ REAZIONE IN TEMPO REALE SULLA PARETE VISIVA ]
+                      </div>
+                      <div className="mt-1 font-body text-[8px] uppercase tracking-wider text-black/35">
+                        [ SPRING TO FIND PICTURES WHERE THERE ARE NO HORNS ]
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* SINGLE CATEGORY EXPANDED HORIZONTAL GRID */
+                <div className="flex-1 w-full p-4 sm:p-6 overflow-y-auto custom-scrollbar flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-black">
+                      <div className="flex items-center gap-2">
+                        <span className="font-display font-black text-sm sm:text-base uppercase tracking-wider text-black">
+                          {FILTER_CATEGORIES[activeCategoryTab].label}
+                        </span>
+                        <span className="font-body text-xs text-black/50">
+                          ({FILTER_CATEGORIES[activeCategoryTab].options.length} OPZIONI DISPONIBILI)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setActiveCategoryTab("all")}
+                        className="font-display text-[11px] font-bold text-black uppercase tracking-wider underline cursor-pointer"
+                      >
+                        ← MOSTRA TUTTE LE CATEGORIE
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                      {FILTER_CATEGORIES[activeCategoryTab].options.map((opt) => {
+                        const isSelected = selectedFilters[activeCategoryTab].includes(opt);
+                        const count = getOptionCount(activeCategoryTab, opt);
 
                         return (
                           <div
                             key={opt}
-                            onClick={() => onToggleFilter(catKey, opt)}
+                            onClick={() => onToggleFilter(activeCategoryTab, opt)}
                             onMouseEnter={() =>
                               onHoverFilter({
-                                category: catKey,
+                                category: activeCategoryTab,
                                 value: opt,
-                                label: `${opt.toUpperCase()} (${catDef.label})`,
+                                label: `${opt.toUpperCase()} (${FILTER_CATEGORIES[activeCategoryTab].label})`,
                               })
                             }
                             onMouseLeave={() => onHoverFilter(null)}
-                            className={`flex items-center justify-between py-1 px-1.5 cursor-pointer font-body text-xs tracking-wider transition-all duration-150 group border border-transparent hover:border-black/20 ${
+                            className={`flex items-center justify-between py-2 px-2.5 cursor-pointer font-body text-xs tracking-wider transition-all duration-150 group border ${
                               isSelected
-                                ? "bg-black text-[#F8F8F6] font-bold border-black"
-                                : "text-black/85 hover:text-black hover:bg-black/5"
+                                ? "bg-black text-[#F8F8F6] font-bold border-black shadow-xs"
+                                : "border-black/20 hover:border-black hover:bg-black/5 text-black"
                             }`}
                           >
-                            <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1">
-                              <span>[</span>
-                              <span className={isSelected ? "font-bold text-[#F8F8F6]" : ""}>
-                                {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
-                              </span>
-                              <span>]</span>
+                            <span className="truncate mr-1 font-medium">
+                              {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
                             </span>
-                            <span className={`font-body text-xs ${isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}`}>
-                              [ {count} ]
+                            <span className={`text-[10px] shrink-0 ${isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}`}>
+                              [{count}]
                             </span>
                           </div>
                         );
                       })}
                     </div>
                   </div>
-                );
-              })
-            ) : (
-              <div className="space-y-1">
-                {FILTER_CATEGORIES[activeCategoryTab].options.map((opt) => {
-                  const isSelected = selectedFilters[activeCategoryTab].includes(opt);
-                  const count = getOptionCount(activeCategoryTab, opt);
 
-                  return (
-                    <div
-                      key={opt}
-                      onClick={() => onToggleFilter(activeCategoryTab, opt)}
-                      onMouseEnter={() =>
-                        onHoverFilter({
-                          category: activeCategoryTab,
-                          value: opt,
-                          label: `${opt.toUpperCase()} (${FILTER_CATEGORIES[activeCategoryTab].label})`,
-                        })
-                      }
-                      onMouseLeave={() => onHoverFilter(null)}
-                      className={`flex items-center justify-between py-1.5 px-2 cursor-pointer font-body text-xs sm:text-[13px] tracking-wider transition-all duration-150 group border ${
-                        isSelected
-                          ? "bg-black text-[#F8F8F6] font-bold border-black"
-                          : "border-transparent hover:border-black/30 hover:bg-black/5 text-black/85 hover:text-black"
-                      }`}
-                    >
-                      <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1.5">
-                        <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}>[</span>
-                        <span className={isSelected ? "font-bold text-[#F8F8F6]" : ""}>
-                          {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
-                        </span>
-                        <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}>]</span>
-                      </span>
-                      <span className={`font-body text-xs ${isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}`}>
-                        [ {count} ]
-                      </span>
+                  <div className="pt-3 border-t border-black/15 flex items-center justify-between mt-3">
+                    <KineticTypoEcho
+                      text={currentEchoText}
+                      categoryLabel={currentEchoCat}
+                    />
+                    <div className="font-body text-[9px] uppercase tracking-wider text-black/40 hidden sm:block">
+                      [ SELEZIONA PER FILTRARE LE OPERE DELL&apos;ARCHIVIO ]
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* BOTTOM KINETIC TYPOGRAPHY ECHO (Direct implementation of inspo filtri.png) */}
-          <div className="pt-3 border-t-2 border-black min-h-[90px] flex flex-col justify-end">
-            <KineticTypoEcho
-              text={currentEchoText}
-              categoryLabel={currentEchoCat}
-            />
-            {/* Subtle editorial caption matching filtri.png */}
-            <div className="mt-1 font-body text-[9px] uppercase tracking-wider text-black/45">
-              [ SPRING TO FIND PICTURES WHERE THERE ARE NO HORNS ]
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      </aside>
-    </>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
