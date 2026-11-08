@@ -224,7 +224,6 @@ export function MacroGrid({
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const [selectedItemForPreview, setSelectedItemForPreview] = useState<ArchiveItem | null>(null);
   const [hoveredTileItem, setHoveredTileItem] = useState<ArchiveItem | null>(null);
 
   const displayItems = items;
@@ -424,17 +423,6 @@ export function MacroGrid({
     gap: "18px",
   } as React.CSSProperties;
 
-  // Handle clicking a case study tile:
-  // - First click: selects the case study and shows the bottom-right thumbnail preview!
-  // - Clicking the already-selected tile: opens the full micro view!
-  const handleTileClick = (item: ArchiveItem) => {
-    if (selectedItemForPreview?.id === item.id) {
-      onSelectItem(item);
-    } else {
-      setSelectedItemForPreview(item);
-    }
-  };
-
   return (
     <div
       ref={containerRef}
@@ -463,57 +451,44 @@ export function MacroGrid({
         PINCH / SCROLL PER ZOOMARE
       </div>
 
-      {/* 3. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS WHEN A CASE STUDY IS CLICKED */}
+      {/* 3. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER */}
       <AnimatePresence>
-        {selectedItemForPreview && (
+        {hoveredTileItem && (
           <motion.div
-            key={selectedItemForPreview.id}
+            key={hoveredTileItem.id}
             initial={{ opacity: 0, y: 15, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.96 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => {
               e.stopPropagation();
-              onSelectItem(selectedItemForPreview);
+              onSelectItem(hoveredTileItem);
             }}
             className="fixed bottom-6 right-16 sm:right-24 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
           >
-            {/* Close button to dismiss preview */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedItemForPreview(null);
-              }}
-              className="absolute -top-3 -right-3 z-40 bg-black text-[#F8F8F6] hover:bg-black/80 w-6 h-6 flex items-center justify-center font-display text-xs font-bold rounded-full border border-[#F8F8F6] shadow-md cursor-pointer"
-              title="Chiudi miniatura"
-            >
-              ✕
-            </button>
-
             <div className="relative w-full aspect-[4/3] bg-white overflow-hidden mb-2.5 border border-black/15">
               <img
-                src={selectedItemForPreview.imageUrl || selectedItemForPreview.thumbnailUrl || ""}
-                alt={selectedItemForPreview.title}
+                src={hoveredTileItem.imageUrl || hoveredTileItem.thumbnailUrl || ""}
+                alt={hoveredTileItem.title}
                 loading="eager"
                 style={{ imageRendering: "-webkit-optimize-contrast" }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 filter-none"
               />
               <div className="absolute top-2 left-2 bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[9px] font-bold tracking-wider">
-                SEG-{selectedItemForPreview.number}
+                SEG-{hoveredTileItem.number}
               </div>
             </div>
 
             <div className="space-y-1">
               <h3 className="font-display font-bold text-xs text-black uppercase tracking-tight line-clamp-1 group-hover:underline">
-                {selectedItemForPreview.title}
+                {hoveredTileItem.title}
               </h3>
               <div className="flex items-center justify-between font-body text-[10px] text-black/60 uppercase">
-                <span>{selectedItemForPreview.authorOrSubject}</span>
-                <span>{selectedItemForPreview.year}</span>
+                <span>{hoveredTileItem.authorOrSubject}</span>
+                <span>{hoveredTileItem.year}</span>
               </div>
               <div className="pt-1.5 border-t border-black/10 flex items-center justify-between text-[9px] font-body text-black uppercase tracking-wider">
-                <span className="font-semibold text-black/80">{selectedItemForPreview.segno}</span>
+                <span className="font-semibold text-black/80">{hoveredTileItem.segno}</span>
                 <span className="flex items-center gap-0.5 text-black font-bold group-hover:translate-x-0.5 transition-transform">
                   ESPLORA <ArrowUpRight className="w-3 h-3" />
                 </span>
@@ -552,12 +527,11 @@ export function MacroGrid({
           displayItems.map((item, idx) => {
             const pos = positions[idx] || { row: 1, col: 1, offsetX: 0, offsetY: 0 };
             const isHovered = hoveredTileItem?.id === item.id;
-            const isSelected = selectedItemForPreview?.id === item.id;
             return (
               <MacroTile
                 key={item.id}
                 item={item}
-                isActive={isSelected}
+                isActive={activeItemId === item.id}
                 isHovered={isHovered}
                 hasHoveredSibling={hoveredTileItem !== null && !isHovered}
                 isFilterOpen={isFilterOpen}
@@ -565,7 +539,7 @@ export function MacroGrid({
                 col={pos.col}
                 offsetX={pos.offsetX}
                 offsetY={pos.offsetY}
-                onSelect={handleTileClick}
+                onSelect={onSelectItem}
                 onHover={setHoveredTileItem}
               />
             );
