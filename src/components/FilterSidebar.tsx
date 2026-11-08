@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, X, SlidersHorizontal, ArrowRight } from "lucide-react";
 import {
   FILTER_CATEGORIES,
   FilterCategoryId,
@@ -25,51 +25,6 @@ export const INITIAL_FILTERS: SelectedFiltersState = {
   categorie: [],
 };
 
-export const FILTER_PREVIEW_IMAGES: Record<string, string> = {
-  // Segno
-  "Smagliatura": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1000&q=80",
-  "Ustioni da acido": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1000&q=80",
-  "Ustioni da fuoco": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1000&q=80",
-  "Cicatrici da incidente": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=80",
-  "Parto": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
-  "Acne": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
-  "Eczema": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1000&q=80",
-  "Cicatrici da mastectomia": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1000&q=80",
-  "Cicatrici chirurgiche": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1000&q=80",
-  "Tracce oncologiche": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80",
-
-  // Tipologia
-  "Mostra/istallazione": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1000&q=80",
-  "Archivio/ricerca": "https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=1000&q=80",
-  "Performance": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1000&q=80",
-  "Serie fotografica": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
-  "Pubblicazioni editoriali": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=1000&q=80",
-  "Fotografia d’autore": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
-  "Testimonianze personali": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80",
-
-  // Tono
-  "Politico/rivendicativo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80",
-  "Intimo/confessionale": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
-  "Clinico/scientifico": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1000&q=80",
-  "Poetico/evocativo": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1000&q=80",
-  "Viscerale/radicale": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1000&q=80",
-  "Normalizzazione": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
-
-  // Tipo di media
-  "Fotografia": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
-  "Audio": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=80",
-  "Video": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1000&q=80",
-  "Pittura": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=1000&q=80",
-  "Scultura": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=80",
-  "Artefatto tessile": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1000&q=80",
-
-  // Categorie
-  "Traumi": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1000&q=80",
-  "Sistemici": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80",
-  "Medici": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=1000&q=80",
-  "Trasformazione": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=80",
-};
-
 interface FilterSidebarProps {
   selectedFilters: SelectedFiltersState;
   onToggleFilter: (category: FilterCategoryId, value: string) => void;
@@ -82,6 +37,62 @@ interface FilterSidebarProps {
   onToggleOpen: () => void;
   hoveredFilter: { category: FilterCategoryId; value: string; label: string } | null;
   onHoverFilter: (filter: { category: FilterCategoryId; value: string; label: string } | null) => void;
+}
+
+/**
+ * Kinetic Typographic Echo component recreating the exact visual movement in inspo filtri.png:
+ * Staggered text layers with offset horizontal/vertical positions and fading opacities.
+ */
+function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?: string }) {
+  return (
+    <div className="relative py-2 overflow-hidden select-none">
+      {/* Echo 3 - Faintest Ghost */}
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 0.12, x: 38 }}
+        exit={{ opacity: 0, x: 20 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-2"
+      >
+        {text}
+      </motion.div>
+
+      {/* Echo 2 - Intermediate Ghost */}
+      <motion.div
+        initial={{ opacity: 0, x: -6 }}
+        animate={{ opacity: 0.32, x: 18 }}
+        exit={{ opacity: 0, x: 12 }}
+        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-black leading-none pointer-events-none absolute left-0 top-2"
+      >
+        {text}
+      </motion.div>
+
+      {/* Main Crisp Layer */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10"
+      >
+        <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-black leading-none">
+          {text}
+        </h2>
+        {categoryLabel && (
+          <div className="mt-1 flex items-center gap-2">
+            <span className="font-body text-[10px] uppercase tracking-widest text-black/60 font-semibold">
+              [{categoryLabel}]
+            </span>
+            <span className="w-8 h-[1px] bg-black/20" />
+            <span className="font-body text-[9px] uppercase tracking-wider text-black/45">
+              FILTRO ARCHIVIO ATTIVO
+            </span>
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
 }
 
 export function FilterSidebar({
@@ -97,7 +108,6 @@ export function FilterSidebar({
   hoveredFilter,
   onHoverFilter,
 }: FilterSidebarProps) {
-  // Exact 5 categories requested by user
   const categoryKeys: FilterCategoryId[] = [
     "segno",
     "tipologia",
@@ -109,13 +119,11 @@ export function FilterSidebar({
   const [activeCategoryTab, setActiveCategoryTab] = useState<FilterCategoryId>("segno");
   const [viewAllCategories, setViewAllCategories] = useState(false);
 
-  // Total active selections
   const totalActiveFilters = Object.values(selectedFilters).reduce(
     (acc, arr) => acc + arr.length,
     0
   );
 
-  // Dynamic count calculation matching Excel multi-tag taxonomy
   const getOptionCount = (category: FilterCategoryId, opt: string): number => {
     const optLower = opt.toLowerCase();
     return ARCHIVE_ITEMS.filter((item) => {
@@ -144,150 +152,108 @@ export function FilterSidebar({
     }).length;
   };
 
-  // Preview image on hover directly from matching real archive case studies
-  const activePreviewImage = hoveredFilter
-    ? ARCHIVE_ITEMS.find((it) => {
-        if (!it.imageUrl) return false;
-        const valLower = hoveredFilter.value.toLowerCase();
-        if (hoveredFilter.category === "segno") {
-          return (
-            it.segno.toLowerCase().includes(valLower) ||
-            (it.segnoTags && it.segnoTags.some((t) => t.toLowerCase() === valLower))
-          );
-        }
-        if (hoveredFilter.category === "tipologia") {
-          return it.tipologia.toLowerCase().includes(valLower);
-        }
-        if (hoveredFilter.category === "tono") {
-          return it.tono.toLowerCase() === valLower;
-        }
-        if (hoveredFilter.category === "tipoDiMedia") {
-          return it.tipoDiMedia.toLowerCase().includes(valLower);
-        }
-        if (hoveredFilter.category === "categorie") {
-          return (
-            it.categorie.toLowerCase().includes(valLower) ||
-            (it.clusterTags && it.clusterTags.some((t) => t.toLowerCase() === valLower))
-          );
-        }
-        return false;
-      })?.imageUrl || ARCHIVE_ITEMS.find((it) => it.imageUrl)?.imageUrl || ""
-    : null;
+  // Find a representative active label for bottom kinetic echo
+  const currentEchoText = hoveredFilter
+    ? hoveredFilter.value
+    : totalActiveFilters > 0
+    ? Object.entries(selectedFilters).find(([, vals]) => vals.length > 0)?.[1][0] || "FILTRI"
+    : "TUTTI I SEGNI";
+
+  const currentEchoCat = hoveredFilter
+    ? FILTER_CATEGORIES[hoveredFilter.category].label
+    : totalActiveFilters > 0
+    ? "SELEZIONE ATTIVA"
+    : "ARCHIVIO CORPOREO";
 
   return (
     <>
-      {/* 1. Toggle Button when sidebar is collapsed */}
+      {/* 1. MINIMAL TAB TOGGLE BUTTON WHEN SIDEBAR IS CLOSED */}
       {!isOpen && (
         <button
           type="button"
           onClick={onToggleOpen}
-          className="fixed left-4 sm:left-6 top-[68px] z-30 flex items-center gap-2.5 px-3 py-1.5 bg-[#f5f0e0] border border-[#88562C] text-[#523719] font-mono text-xs uppercase tracking-wider hover:bg-[#523719] hover:text-[#f5f0e0] transition-all duration-200 cursor-pointer shadow-md rounded-none hover:scale-105"
+          className="fixed left-0 top-[110px] z-30 bg-black text-[#F8F8F6] px-3 py-2 font-display text-[11px] font-bold tracking-widest uppercase cursor-pointer hover:bg-black/85 transition-colors border-r border-t border-b border-black shadow-md flex items-center gap-2"
         >
-          <span>[ + FILTRI ARCHIVIO ]</span>
-          {(totalActiveFilters > 0 || searchQuery.trim() !== "") && (
-            <span className="font-bold text-[11px] text-[#88562C]">
-              [ {totalActiveFilters > 0 ? totalActiveFilters : filteredCount} ]
-            </span>
-          )}
+          <SlidersHorizontal className="w-3.5 h-3.5" />
+          <span>FILTRI {totalActiveFilters > 0 && `[${totalActiveFilters}]`}</span>
         </button>
       )}
 
-      {/* 2. Main Vertical Left Section (serotoninn.com inspired) */}
+      {/* 2. MAIN SIDEBAR CONTAINER */}
       <aside
-        className={`fixed left-0 top-[52px] bottom-0 z-30 w-80 sm:w-96 lg:w-[400px] bg-[#f5f0e0] border-r border-[#88562C]/30 shadow-2xl flex flex-col rounded-none transition-transform duration-300 ease-out select-none overflow-hidden ${
-          isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
+        className={`fixed top-[52px] left-0 bottom-0 z-40 w-full sm:w-[380px] lg:w-[420px] bg-[#F8F8F6] border-r-2 border-black transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] select-none shadow-2xl flex flex-col justify-between ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* ATMOSPHERIC BACKGROUND PREVIEW */}
-        <AnimatePresence>
-          {activePreviewImage && (
-            <motion.div
-              key={activePreviewImage}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 0.32, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
-            >
-              <img
-                src={activePreviewImage}
-                alt=""
-                className="w-full h-full object-cover filter contrast-125"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#f5f0e0] via-[#f5f0e0]/75 to-[#f5f0e0]/90" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Content Container (Layered above background) */}
-        <div className="relative z-10 w-full h-full flex flex-col justify-between p-6 sm:p-8">
-          {/* Top Header matching serotoninn.com */}
-          <div className="flex flex-col gap-2 border-b border-[#88562C]/20 pb-4">
-            <div className="flex items-center justify-between font-mono text-[11px] text-[#88562C] uppercase tracking-wider">
-              <span>ARCHIVIO / SEGNI DELLA PELLE</span>
+        <div className="w-full h-full flex flex-col justify-between p-5 sm:p-7">
+          {/* TOP BAR */}
+          <div className="flex flex-col gap-2.5 border-b-2 border-black pb-4">
+            <div className="flex items-center justify-between font-body text-[10px] text-black/60 uppercase tracking-wider">
+              <span>ARCHIVIO / SEGNI E TESTIMONIANZE</span>
               <button
                 type="button"
                 onClick={onToggleOpen}
-                title="Chiudi menu filtri"
-                className="hover:text-[#523719] cursor-pointer p-0.5"
+                className="hover:text-black cursor-pointer font-bold flex items-center gap-1 p-0.5"
               >
-                [ – CHIUDI ]
+                <span>[ CHIUDI</span>
+                <X className="w-3 h-3" />
+                <span>]</span>
               </button>
             </div>
 
-            {/* SHOP ALL / ALL SIGNS ROW */}
+            {/* RESET / ALL SIGNS ROW */}
             <div
               onClick={() => {
                 onResetFilters();
                 if (onSearchChange) onSearchChange("");
                 onHoverFilter(null);
               }}
-              className="flex items-center justify-between py-1 font-mono text-xs sm:text-[13px] tracking-wider uppercase cursor-pointer group text-[#523719] hover:text-[#88562C] transition-colors"
+              className="flex items-center justify-between py-1.5 font-display text-sm tracking-wide uppercase cursor-pointer group text-black hover:opacity-75 transition-opacity"
             >
               <div className="flex items-center gap-1.5 font-bold">
                 <span>[</span>
-                <span className="group-hover:tracking-widest transition-all">
-                  TUTTI I SEGNI
+                <span className="group-hover:tracking-wider transition-all">
+                  MOSTRA TUTTI I CASI
                 </span>
                 <span>]</span>
               </div>
-              <span className="font-mono text-xs text-[#88562C]">
+              <span className="font-body text-xs text-black/60">
                 [ {totalItems} ]
               </span>
             </div>
 
             {/* SEARCH INPUT BAR */}
-            <div className="relative my-1 flex items-center border border-[#88562C]/40 bg-[#f5f0e0]/90 px-2.5 py-1.5 focus-within:border-[#523719] focus-within:bg-[#f5f0e0] transition-colors">
-              <Search className="w-3.5 h-3.5 text-[#88562C] mr-2 shrink-0 select-none" />
+            <div className="relative my-1 flex items-center border border-black bg-white px-3 py-2 focus-within:ring-1 focus-within:ring-black transition-all">
+              <Search className="w-3.5 h-3.5 text-black/50 mr-2 shrink-0 select-none" />
               <input
                 type="text"
                 placeholder="CERCA PER PAROLA O CASO..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-                className="w-full bg-transparent font-mono text-[11px] uppercase tracking-wider text-[#523719] placeholder-[#88562C]/60 outline-none"
+                className="w-full bg-transparent font-body text-[11px] uppercase tracking-wider text-black placeholder-black/40 outline-none"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => onSearchChange && onSearchChange("")}
                   title="Cancella ricerca"
-                  className="ml-1 text-[10px] font-mono text-[#88562C] hover:text-[#523719] cursor-pointer uppercase shrink-0"
+                  className="ml-1 text-[10px] font-body text-black/60 hover:text-black cursor-pointer uppercase shrink-0 font-bold"
                 >
                   [ X ]
                 </button>
               )}
             </div>
 
-            {/* Active filters count & reset button */}
+            {/* Active filters status */}
             {(totalActiveFilters > 0 || searchQuery.trim() !== "") && (
-              <div className="flex items-center justify-between pt-1 font-mono text-[10px] text-[#88562C]">
-                <span className="font-bold text-[#523719]">
+              <div className="flex items-center justify-between pt-1 font-body text-[10px] text-black">
+                <span className="font-semibold text-black/80">
                   {searchQuery.trim() !== "" ? (
                     <>
                       RICERCA: &ldquo;{searchQuery.trim().toUpperCase()}&rdquo; [{filteredCount}]
                     </>
                   ) : (
-                    <>FILTRI ATTIVI: {totalActiveFilters} [{filteredCount}]</>
+                    <>FILTRI ATTIVI: {totalActiveFilters} [{filteredCount} CASI]</>
                   )}
                 </span>
                 <button
@@ -296,7 +262,7 @@ export function FilterSidebar({
                     onResetFilters();
                     if (onSearchChange) onSearchChange("");
                   }}
-                  className="hover:text-[#523719] underline cursor-pointer uppercase tracking-wider"
+                  className="hover:underline cursor-pointer uppercase tracking-wider font-bold"
                 >
                   [ AZZERA ]
                 </button>
@@ -304,16 +270,16 @@ export function FilterSidebar({
             )}
           </div>
 
-          {/* Category Tabs: SEGNO, TIPOLOGIA, TONO, TIPO DI MEDIA, CATEGORIE */}
-          <div className="py-3 border-b border-[#88562C]/20">
-            <div className="flex items-center justify-between mb-2 font-mono text-[10px] text-[#88562C] uppercase tracking-wider">
+          {/* CATEGORY TABS */}
+          <div className="py-3 border-b border-black/15">
+            <div className="flex items-center justify-between mb-2 font-body text-[10px] text-black/60 uppercase tracking-wider">
               <span>CATEGORIE:</span>
               <button
                 type="button"
                 onClick={() => setViewAllCategories(!viewAllCategories)}
-                className="text-[9px] hover:text-[#523719] cursor-pointer uppercase underline"
+                className="text-[9px] hover:text-black cursor-pointer uppercase underline font-semibold"
               >
-                {viewAllCategories ? "[ MOSTRA PER TAB ]" : "[ MOSTRA TUTTI ]"}
+                {viewAllCategories ? "[ PER TAB ]" : "[ MOSTRA TUTTI ]"}
               </button>
             </div>
 
@@ -329,10 +295,10 @@ export function FilterSidebar({
                       key={catKey}
                       type="button"
                       onClick={() => setActiveCategoryTab(catKey)}
-                      className={`font-mono text-[10px] sm:text-[11px] px-2 py-0.5 transition-all duration-150 uppercase tracking-wider cursor-pointer border rounded-none ${
+                      className={`font-display text-[10px] sm:text-[11px] px-2.5 py-1 transition-all duration-150 uppercase tracking-wider cursor-pointer border rounded-none ${
                         isTabActive
-                          ? "bg-[#523719] text-[#f5f0e0] border-[#523719] font-bold"
-                          : "border-[#88562C]/30 text-[#523719] hover:border-[#523719] hover:bg-[#88562C]/10"
+                          ? "bg-black text-[#F8F8F6] border-black font-bold"
+                          : "border-black/20 text-black hover:border-black hover:bg-black/5"
                       }`}
                     >
                       {catDef.label}
@@ -344,16 +310,15 @@ export function FilterSidebar({
             )}
           </div>
 
-          {/* MAIN LIST OF FILTERS IN SEROTONINN SQUARE BRACKET STYLE */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar py-4 space-y-2">
+          {/* MAIN LIST OF FILTER OPTIONS */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar py-3 space-y-1.5">
             {viewAllCategories ? (
-              // All categories stacked
               categoryKeys.map((catKey) => {
                 const catDef = FILTER_CATEGORIES[catKey];
                 return (
                   <div key={catKey} className="mb-4">
-                    <div className="font-mono text-[10px] font-bold text-[#88562C] uppercase tracking-widest mb-1.5 border-b border-[#88562C]/15 pb-0.5">
-                      {catDef.label} --
+                    <div className="font-display text-[11px] font-bold text-black uppercase tracking-wider mb-1.5 border-b border-black/15 pb-0.5">
+                      {catDef.label} —
                     </div>
                     <div className="space-y-1">
                       {catDef.options.map((opt) => {
@@ -372,20 +337,20 @@ export function FilterSidebar({
                               })
                             }
                             onMouseLeave={() => onHoverFilter(null)}
-                            className={`flex items-center justify-between py-1 cursor-pointer font-mono text-xs sm:text-[13px] tracking-wider transition-all duration-150 group ${
+                            className={`flex items-center justify-between py-1 px-1.5 cursor-pointer font-body text-xs tracking-wider transition-all duration-150 group border border-transparent hover:border-black/20 ${
                               isSelected
-                                ? "text-[#523719] font-bold"
-                                : "text-[#523719]/80 hover:text-[#523719]"
+                                ? "bg-black text-[#F8F8F6] font-bold border-black"
+                                : "text-black/85 hover:text-black hover:bg-black/5"
                             }`}
                           >
                             <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1">
                               <span>[</span>
-                              <span className={isSelected ? "font-bold text-[#523719]" : ""}>
+                              <span className={isSelected ? "font-bold text-[#F8F8F6]" : ""}>
                                 {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
                               </span>
                               <span>]</span>
                             </span>
-                            <span className="text-[#88562C] font-mono text-xs">
+                            <span className={`font-body text-xs ${isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}`}>
                               [ {count} ]
                             </span>
                           </div>
@@ -396,8 +361,7 @@ export function FilterSidebar({
                 );
               })
             ) : (
-              // Active category list
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 {FILTER_CATEGORIES[activeCategoryTab].options.map((opt) => {
                   const isSelected = selectedFilters[activeCategoryTab].includes(opt);
                   const count = getOptionCount(activeCategoryTab, opt);
@@ -414,20 +378,20 @@ export function FilterSidebar({
                         })
                       }
                       onMouseLeave={() => onHoverFilter(null)}
-                      className={`flex items-center justify-between py-1.5 px-1 cursor-pointer font-mono text-xs sm:text-[13px] tracking-wider transition-all duration-150 group border border-transparent hover:border-[#88562C]/20 rounded-none ${
+                      className={`flex items-center justify-between py-1.5 px-2 cursor-pointer font-body text-xs sm:text-[13px] tracking-wider transition-all duration-150 group border ${
                         isSelected
-                          ? "bg-[#523719]/10 text-[#523719] font-bold border-[#523719]/30"
-                          : "text-[#523719]/80 hover:text-[#523719] hover:bg-[#88562C]/5"
+                          ? "bg-black text-[#F8F8F6] font-bold border-black"
+                          : "border-transparent hover:border-black/30 hover:bg-black/5 text-black/85 hover:text-black"
                       }`}
                     >
                       <span className="flex items-center gap-1.5 transition-transform duration-150 group-hover:translate-x-1.5">
-                        <span className="text-[#88562C] font-bold">[</span>
-                        <span className={isSelected ? "font-bold text-[#523719]" : ""}>
+                        <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}>[</span>
+                        <span className={isSelected ? "font-bold text-[#F8F8F6]" : ""}>
                           {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
                         </span>
-                        <span className="text-[#88562C] font-bold">]</span>
+                        <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}>]</span>
                       </span>
-                      <span className="text-[#88562C] font-mono text-xs">
+                      <span className={`font-body text-xs ${isSelected ? "text-[#F8F8F6]/80" : "text-black/50"}`}>
                         [ {count} ]
                       </span>
                     </div>
@@ -437,40 +401,15 @@ export function FilterSidebar({
             )}
           </div>
 
-          {/* BOTTOM-LEFT BIG BOLD TITLE */}
-          <div className="pt-4 border-t border-[#88562C]/20">
-            <div className="min-h-[56px] flex flex-col justify-end">
-              <AnimatePresence mode="wait">
-                {hoveredFilter ? (
-                  <motion.div
-                    key={hoveredFilter.value}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tighter text-[#523719] leading-none">
-                      {hoveredFilter.value}{" "}
-                      <span className="text-base sm:text-lg font-mono font-normal opacity-70 tracking-normal block sm:inline">
-                        ({FILTER_CATEGORIES[hoveredFilter.category].label})
-                      </span>
-                    </h2>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="default-title"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="font-mono text-[11px] text-[#88562C] flex items-center justify-between"
-                  >
-                    <span>RISULTATI VISIBILI:</span>
-                    <span className="font-bold text-[#523719]">
-                      [ {filteredCount} / {totalItems} ]
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          {/* BOTTOM KINETIC TYPOGRAPHY ECHO (Direct implementation of inspo filtri.png) */}
+          <div className="pt-3 border-t-2 border-black min-h-[90px] flex flex-col justify-end">
+            <KineticTypoEcho
+              text={currentEchoText}
+              categoryLabel={currentEchoCat}
+            />
+            {/* Subtle editorial caption matching filtri.png */}
+            <div className="mt-1 font-body text-[9px] uppercase tracking-wider text-black/45">
+              [ SPRING TO FIND PICTURES WHERE THERE ARE NO HORNS ]
             </div>
           </div>
         </div>

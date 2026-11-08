@@ -183,7 +183,6 @@ export function BeyondView({
   onSelectItem,
   onBackToMacro,
 }: BeyondViewProps) {
-  // Active fucsia category in Beyond view (default: mascherabilità)
   const [activeCategoryId, setActiveCategoryId] = useState<BeyondCategoryId>("mascherabilita");
   const [hoveredItem, setHoveredItem] = useState<ArchiveItem | null>(null);
 
@@ -191,12 +190,10 @@ export function BeyondView({
     return BEYOND_CATEGORIES.find((c) => c.id === activeCategoryId) || BEYOND_CATEGORIES[0];
   }, [activeCategoryId]);
 
-  // Filter out theoretical texts from Beyond: only visual/photographic cases
   const visualItems = useMemo(() => {
     return items.filter((item) => item.type !== "text");
   }, [items]);
 
-  // Group items by the active category's exactly two groups
   const groupedData = useMemo(() => {
     return activeCategory.groups.map((group) => {
       const groupItems = visualItems.filter((item) => {
@@ -222,8 +219,6 @@ export function BeyondView({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Wheel / Trackpad scroll listener in Beyond:
-  // Scrolling down (or pinch-to-zoom in) with trackpad/mouse seamlessly transitions back to Macro!
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -236,12 +231,10 @@ export function BeyondView({
       e.preventDefault();
       if (isLocked) return;
 
-      // Trackpad pinch zoom in (ctrlKey + negative deltaY) or scroll down / forward (deltaY > 0)
       const isZoomIn = (e.ctrlKey && e.deltaY < 0) || (!e.ctrlKey && e.deltaY > 0);
 
       if (isZoomIn) {
         accumulatedDelta += Math.abs(e.deltaY);
-        // Generous, calm threshold so it doesn't snap abruptly
         if (accumulatedDelta > 45) {
           isLocked = true;
           accumulatedDelta = 0;
@@ -265,32 +258,28 @@ export function BeyondView({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden flex flex-col justify-between bg-[#f5f0e0] select-none"
+      className="relative w-full h-full overflow-hidden flex flex-col justify-between bg-[#F8F8F6] text-black font-body select-none"
     >
-      {/* 1. TOP CONTROL BAR: The 6 Fucsia Macro-Categories - shifted to the left to avoid timeline */}
-      <div className="w-full z-20 px-4 sm:px-8 pr-28 sm:pr-36 pt-3.5 pb-2.5 border-b border-[#88562C]/20 bg-[#f5f0e0]/95 backdrop-blur-sm">
+      {/* 1. TOP CONTROL BAR */}
+      <div className="w-full z-20 px-4 sm:px-8 pr-28 sm:pr-36 pt-3.5 pb-2.5 border-b border-black/15 bg-[#F8F8F6]/95 backdrop-blur-sm">
         <div className="w-full flex flex-col md:flex-row md:items-center justify-start gap-4 sm:gap-8">
-          {/* Back to Macro Button & Sub-Header */}
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               type="button"
               onClick={onBackToMacro}
-              className="flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] font-bold text-[#88562C] hover:text-[#523719] uppercase tracking-wider cursor-pointer group"
+              className="flex items-center gap-1.5 font-display text-[11px] font-bold text-black hover:opacity-75 uppercase tracking-wider cursor-pointer group"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
               <span>← MACRO</span>
             </button>
-            <span className="text-[#88562C]/40">|</span>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs sm:text-[13px] font-black tracking-widest text-[#523719] uppercase whitespace-nowrap">
-                OLTRE · VISIONE SISTEMICA
-              </span>
-            </div>
+            <span className="text-black/30">|</span>
+            <span className="font-display text-xs sm:text-[13px] font-black tracking-widest text-black uppercase whitespace-nowrap">
+              OLTRE · VISIONE SISTEMICA
+            </span>
           </div>
 
-          {/* Symmetrical 2-Row Layout of Categories (3 sopra e 3 sotto) - positioned cleanly to the left */}
+          {/* Symmetrical 2-Row Layout of Categories */}
           <div className="flex flex-col items-start gap-1.5 flex-shrink-0">
-            {/* Top row: 3 buttons */}
             <div className="flex flex-wrap items-center gap-1.5">
               {BEYOND_CATEGORIES.slice(0, 3).map((cat) => {
                 const isActive = cat.id === activeCategoryId;
@@ -299,10 +288,10 @@ export function BeyondView({
                     key={cat.id}
                     type="button"
                     onClick={() => setActiveCategoryId(cat.id)}
-                    className={`font-mono text-[9px] sm:text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
+                    className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
                       isActive
-                        ? "border-[#c026d3] bg-[#d946ef]/15 text-[#86198f] font-bold shadow-sm ring-1 ring-[#c026d3]"
-                        : "border-[#88562C]/25 text-[#88562C] hover:border-[#c026d3]/60 hover:text-[#523719] bg-[#f5f0e0]"
+                        ? "border-black bg-black text-[#F8F8F6] font-bold shadow-sm"
+                        : "border-black/20 text-black/80 hover:border-black hover:text-black bg-transparent"
                     }`}
                   >
                     [{cat.label}]
@@ -311,7 +300,6 @@ export function BeyondView({
               })}
             </div>
 
-            {/* Bottom row: 3 buttons */}
             <div className="flex flex-wrap items-center gap-1.5">
               {BEYOND_CATEGORIES.slice(3, 6).map((cat) => {
                 const isActive = cat.id === activeCategoryId;
@@ -320,10 +308,10 @@ export function BeyondView({
                     key={cat.id}
                     type="button"
                     onClick={() => setActiveCategoryId(cat.id)}
-                    className={`font-mono text-[9px] sm:text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
+                    className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
                       isActive
-                        ? "border-[#c026d3] bg-[#d946ef]/15 text-[#86198f] font-bold shadow-sm ring-1 ring-[#c026d3]"
-                        : "border-[#88562C]/25 text-[#88562C] hover:border-[#c026d3]/60 hover:text-[#523719] bg-[#f5f0e0]"
+                        ? "border-black bg-black text-[#F8F8F6] font-bold shadow-sm"
+                        : "border-black/20 text-black/80 hover:border-black hover:text-black bg-transparent"
                     }`}
                   >
                     [{cat.label}]
@@ -335,16 +323,12 @@ export function BeyondView({
         </div>
       </div>
 
-      {/* 2. MAIN CANVAS: Symmetrical 3-Column Layout:
-             [Left Circle: Polo A]  ───  [Center Squadrato Card: Considerazioni]  ───  [Right Circle: Polo B]
-      */}
+      {/* 2. MAIN CANVAS: Symmetrical 3-Column Layout */}
       <div className="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center p-3 sm:p-6 pr-16 sm:pr-24">
-        {/* Soft edge fade overlays */}
         <div className="absolute top-0 left-0 right-0 h-8 edge-fade-top pointer-events-none z-10" />
         <div className="absolute bottom-0 left-0 right-0 h-8 edge-fade-bottom pointer-events-none z-10" />
 
         <div className="relative w-full h-full max-w-7xl flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 my-auto">
-          {/* Helper to render adaptive concentric circular constellation */}
           {(() => {
             const renderOrbitGroup = (group: typeof leftGroup, isLeft: boolean) => {
               const totalInGroup = group.items.length;
@@ -361,40 +345,37 @@ export function BeyondView({
                   className="relative flex items-center justify-center"
                   style={{ width: `${orbitDiameter}px`, height: `${orbitDiameter}px` }}
                 >
-                  {/* Outer Dashed Orbit */}
-                  <div className="absolute inset-0 rounded-full border border-dashed border-[#88562C]/30 pointer-events-none" />
-                  {/* Middle Orbit if 2 or 3 rings */}
+                  <div className="absolute inset-0 rounded-full border border-dashed border-black/20 pointer-events-none" />
                   {numRings >= 2 && (
                     <div
-                      className="absolute rounded-full border border-dotted border-[#88562C]/25 pointer-events-none"
+                      className="absolute rounded-full border border-dotted border-black/15 pointer-events-none"
                       style={{
                         width: numRings === 3 ? "245px" : "210px",
                         height: numRings === 3 ? "245px" : "210px",
                       }}
                     />
                   )}
-                  {/* Inner Orbit if 3 rings */}
                   {numRings === 3 && (
                     <div
-                      className="absolute rounded-full border border-dotted border-[#88562C]/20 pointer-events-none"
+                      className="absolute rounded-full border border-dotted border-black/10 pointer-events-none"
                       style={{ width: "170px", height: "170px" }}
                     />
                   )}
 
-                  {/* STRICTLY SQUADRATO CENTER BADGE */}
-                  <div className="z-10 flex flex-col items-center justify-center text-center p-3 bg-[#ebe4d1] border border-[#523719] shadow-md max-w-[145px] select-none rounded-none">
-                    <span className="font-mono text-[10px] sm:text-[11px] font-black tracking-wider text-[#523719] uppercase leading-tight">
+                  {/* SQUADRATO CENTER BADGE */}
+                  <div className="z-10 flex flex-col items-center justify-center text-center p-3.5 bg-white border-2 border-black shadow-lg max-w-[155px] select-none rounded-none">
+                    <span className="font-display text-[11px] sm:text-xs font-black tracking-wider text-black uppercase leading-tight">
                       {group.label}
                     </span>
-                    <span className="font-mono text-[9px] text-[#c026d3] font-bold mt-1">
+                    <span className="font-display text-[10px] text-black font-bold mt-1">
                       {group.items.length} CASI ({isLeft ? leftPercent : rightPercent}%)
                     </span>
-                    <span className="font-mono text-[7.5px] text-[#88562C] leading-tight mt-1 opacity-80 max-w-[125px]">
+                    <span className="font-body text-[8px] text-black/60 leading-tight mt-1 max-w-[130px]">
                       {group.subLabel}
                     </span>
                   </div>
 
-                  {/* Orbiting Case Study Miniatures */}
+                  {/* Orbiting Case Study Miniatures with translucency */}
                   {group.items.map((item, itemIdx) => {
                     const ringIdx = itemIdx % numRings;
                     const itemsInThisRing = Math.ceil(totalInGroup / numRings);
@@ -410,7 +391,7 @@ export function BeyondView({
                     const angle = (indexInRing / Math.max(1, itemsInThisRing)) * 2 * Math.PI - Math.PI / 2;
                     const x = center + currentRadius * Math.cos(angle);
                     const y = center + currentRadius * Math.sin(angle);
-                    const tileSize = totalInGroup > 50 ? 20 : totalInGroup > 22 ? 24 : 29;
+                    const tileSize = totalInGroup > 50 ? 22 : totalInGroup > 22 ? 26 : 30;
                     const isItemActive = item.id === activeItemId;
 
                     return (
@@ -432,10 +413,10 @@ export function BeyondView({
                         <motion.div
                           whileHover={{ scale: 1.8, zIndex: 50 }}
                           transition={{ duration: 0.2 }}
-                          className={`w-full h-full rounded-none overflow-hidden bg-[#ebe4d1] border transition-colors shadow-sm ${
+                          className={`w-full h-full rounded-none overflow-hidden bg-white border transition-all shadow-sm ${
                             isItemActive
-                              ? "border-[#c026d3] ring-1 ring-[#c026d3]"
-                              : "border-[#88562C]/40 group-hover/node:border-[#523719] group-hover/node:shadow-md"
+                              ? "border-2 border-black ring-1 ring-black"
+                              : "border-black/30 group-hover/node:border-black group-hover/node:shadow-md"
                           }`}
                         >
                           {item.type === "photo" && (
@@ -448,8 +429,8 @@ export function BeyondView({
                             />
                           )}
                           {item.type === "audio" && (
-                            <div className="w-full h-full flex items-center justify-center p-0.5 bg-[#ebe4d1]">
-                              <div className="w-1.5 h-1.5 bg-[#88562C]" />
+                            <div className="w-full h-full flex items-center justify-center p-0.5 bg-white">
+                              <div className="w-1.5 h-1.5 bg-black" />
                             </div>
                           )}
                         </motion.div>
@@ -473,56 +454,51 @@ export function BeyondView({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45 }}
-                  className="w-full max-w-[340px] sm:max-w-[380px] max-h-[82vh] overflow-y-auto custom-scrollbar bg-[#ebe4d1]/95 border border-[#523719] p-4 sm:p-5 shadow-lg select-none rounded-none flex-shrink-0 z-30"
+                  className="w-full max-w-[340px] sm:max-w-[380px] max-h-[82vh] overflow-y-auto custom-scrollbar bg-white border-2 border-black p-5 shadow-xl select-none rounded-none flex-shrink-0 z-30"
                 >
-                  {/* Header Badge */}
-                  <div className="flex items-center justify-between border-b border-[#88562C]/25 pb-2 mb-3">
-                    <div className="flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-wider text-[#c026d3]">
-                      <Info className="w-3 h-3" />
+                  <div className="flex items-center justify-between border-b border-black/15 pb-2 mb-3">
+                    <div className="flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-black">
+                      <Info className="w-3.5 h-3.5" />
                       <span>CONSIDERAZIONI SISTEMICHE</span>
                     </div>
-                    <span className="font-mono text-[9px] text-[#88562C] font-semibold">
+                    <span className="font-body text-[10px] text-black/60 font-semibold">
                       DOC. {totalAnalyzed} / {visualItems.length}
                     </span>
                   </div>
 
-                  {/* Category Title */}
-                  <h3 className="font-mono text-xs sm:text-[13px] font-black text-[#523719] tracking-wider uppercase mb-1">
+                  <h3 className="font-display text-sm sm:text-base font-black text-black tracking-tight uppercase mb-1">
                     {activeCategory.label}
                   </h3>
-                  <p className="font-mono text-[9.5px] text-[#88562C] mb-3 leading-tight">
+                  <p className="font-body text-[10px] text-black/65 mb-3 leading-tight">
                     {activeCategory.subtitle}
                   </p>
 
-                  {/* Comparative Proportion Bar */}
                   <div className="w-full mb-3">
-                    <div className="flex justify-between font-mono text-[8px] font-bold text-[#523719] mb-1">
+                    <div className="flex justify-between font-display text-[9px] font-bold text-black mb-1">
                       <span>{leftGroup.label} ({leftPercent}%)</span>
                       <span>{rightGroup.label} ({rightPercent}%)</span>
                     </div>
-                    <div className="w-full h-2 bg-[#d7ceb8] flex overflow-hidden border border-[#88562C]/40">
+                    <div className="w-full h-2.5 bg-[#EAEAE5] flex overflow-hidden border border-black">
                       <div
                         style={{ width: `${leftPercent}%` }}
-                        className="h-full bg-[#523719] transition-all duration-500"
+                        className="h-full bg-black transition-all duration-500"
                       />
                       <div
                         style={{ width: `${rightPercent}%` }}
-                        className="h-full bg-[#c026d3] transition-all duration-500"
+                        className="h-full bg-black/40 transition-all duration-500"
                       />
                     </div>
                   </div>
 
-                  {/* In-depth Curatorial Text */}
-                  <div className="font-mono text-[10px] sm:text-[10.5px] text-[#523719] leading-relaxed text-justify opacity-95 pt-1 border-t border-[#88562C]/15 whitespace-pre-line">
+                  <div className="font-body text-[10.5px] text-black leading-relaxed text-justify opacity-95 pt-2 border-t border-black/10 whitespace-pre-line">
                     {activeCategory.considerations}
                   </div>
 
-                  {/* Metric Footer */}
-                  <div className="mt-3.5 pt-2 border-t border-[#88562C]/25 flex items-center justify-between font-mono text-[8px] text-[#88562C] uppercase tracking-wider">
+                  <div className="mt-4 pt-2 border-t border-black/15 flex items-center justify-between font-body text-[8.5px] text-black/60 uppercase tracking-wider">
                     <span>POLO A: {leftGroup.items.length}</span>
-                    <span className="w-1 h-1 bg-[#88562C]/40" />
+                    <span className="w-1 h-1 bg-black/40" />
                     <span>POLO B: {rightGroup.items.length}</span>
-                    <span className="w-1 h-1 bg-[#88562C]/40" />
+                    <span className="w-1 h-1 bg-black/40" />
                     <span>{visualItems.length} CASI VISIVI</span>
                   </div>
                 </motion.div>
@@ -544,10 +520,10 @@ export function BeyondView({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 6 }}
               transition={{ duration: 0.15 }}
-              className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 bg-[#ebe4d1] border border-[#523719] shadow-xl p-3 flex items-center gap-3.5 max-w-lg pointer-events-none select-none rounded-none"
+              className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white border-2 border-black shadow-2xl p-3 flex items-center gap-3.5 max-w-lg pointer-events-none select-none rounded-none"
             >
               {hoveredItem.imageUrl && (
-                <div className="w-10 h-10 border border-[#88562C]/30 overflow-hidden flex-shrink-0 bg-[#f5f0e0]">
+                <div className="w-11 h-11 border border-black/20 overflow-hidden flex-shrink-0 bg-white">
                   <img
                     src={hoveredItem.thumbnailUrl || hoveredItem.imageUrl}
                     alt=""
@@ -558,22 +534,22 @@ export function BeyondView({
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[9px] font-bold text-[#c026d3]">
-                    DOC. {hoveredItem.number}
+                  <span className="font-display text-[10px] font-bold text-black">
+                    SEG-{hoveredItem.number}
                   </span>
-                  <span className="font-mono text-[8px] text-[#88562C] uppercase">
+                  <span className="font-body text-[8.5px] text-black/60 uppercase">
                     [{hoveredItem.tipoDiMedia}]
                   </span>
                 </div>
-                <div className="font-mono text-xs font-bold text-[#523719] truncate leading-tight mt-0.5">
+                <div className="font-display text-xs font-bold text-black truncate leading-tight mt-0.5">
                   {hoveredItem.title}
                 </div>
-                <div className="font-mono text-[9.5px] text-[#88562C] truncate">
+                <div className="font-body text-[10px] text-black/60 truncate">
                   {hoveredItem.authorOrSubject} ({hoveredItem.year}) · Segno: {hoveredItem.segno}
                 </div>
               </div>
-              <div className="flex items-center gap-1 font-mono text-[8.5px] text-[#523719] font-bold uppercase pl-2 border-l border-[#88562C]/20">
-                <ZoomIn className="w-3 h-3" />
+              <div className="flex items-center gap-1 font-display text-[9px] text-black font-bold uppercase pl-2 border-l border-black/20">
+                <ZoomIn className="w-3.5 h-3.5" />
                 <span>APRI</span>
               </div>
             </motion.div>
@@ -581,20 +557,20 @@ export function BeyondView({
         </AnimatePresence>
       </div>
 
-      {/* 3. BOTTOM FOOTER HINT: Returning to Macro */}
-      <div className="w-full z-20 px-6 py-2 border-t border-[#88562C]/20 bg-[#f5f0e0]/90 flex items-center justify-between font-mono text-[10px] text-[#88562C]">
+      {/* 3. BOTTOM FOOTER HINT */}
+      <div className="w-full z-20 px-6 py-2 border-t border-black/15 bg-[#F8F8F6]/95 flex items-center justify-between font-body text-[10px] text-black/60">
         <span>
           SCORRI IN GIÙ O TRASCINA LA LINEA DESTRA PER TORNARE A{" "}
           <button
             type="button"
             onClick={onBackToMacro}
-            className="text-[#523719] font-bold underline cursor-pointer hover:text-[#88562C]"
+            className="text-black font-display font-bold underline cursor-pointer hover:opacity-75"
           >
             MACRO
           </button>
         </span>
         <span className="hidden sm:inline">
-          71 CASI STUDIO VISIVI • 2 POLI DIALETTICI • 6 DIMENSIONI SOCIOLOGICHE
+          {visualItems.length} CASI STUDIO VISIVI • 2 POLI DIALETTICI • 6 DIMENSIONI SOCIOLOGICHE
         </span>
       </div>
     </div>

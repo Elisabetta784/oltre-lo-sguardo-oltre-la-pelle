@@ -190,7 +190,7 @@ export default function Home() {
   };
 
   return (
-    <main className="w-screen h-screen overflow-hidden bg-[#f5f0e0] text-[#523719] font-mono-text relative select-none">
+    <main className="w-screen h-screen overflow-hidden bg-[#F8F8F6] text-black font-body relative select-none">
       {/* 1. Header: Strictly MACRO and MICRO on the left, Title in the center */}
       <HeaderNav
         currentView={view}
@@ -275,6 +275,7 @@ export default function Home() {
                 }}
                 onSelectItem={handleSelectItem}
                 isFilterOpen={isFilterOpen && view === "macro"}
+                onToggleFilter={() => setIsFilterOpen(!isFilterOpen)}
                 onCloseFilter={() => setIsFilterOpen(false)}
               />
             </motion.div>

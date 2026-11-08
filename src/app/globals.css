@@ -1,38 +1,55 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* 1. TYPOGRAPHY: Alte Haas Grotesk (Titoli & Elementi Principali) */
 @font-face {
-  font-family: 'Forma DJR Deck';
-  src: url('/fonts/FormaDJRDeck-Regular.woff2') format('woff2'),
-       url('/fonts/FormaDJRDeck-Regular.woff') format('woff');
+  font-family: 'Alte Haas Grotesk';
+  src: local('Alte Haas Grotesk Regular'),
+       local('AlteHaasGroteskRegular'),
+       local('Alte Haas Grotesk'),
+       url('/fonts/AlteHaasGroteskRegular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Forma DJR Deck';
-  src: url('/fonts/FormaDJRDeck-Bold.woff2') format('woff2'),
-       url('/fonts/FormaDJRDeck-Bold.woff') format('woff');
+  font-family: 'Alte Haas Grotesk';
+  src: local('Alte Haas Grotesk Bold'),
+       local('AlteHaasGroteskBold'),
+       url('/fonts/AlteHaasGroteskBold.ttf') format('truetype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
+/* 2. TYPOGRAPHY: Indivisible Variable (Testi Normali & Body) */
+@font-face {
+  font-family: 'Indivisible';
+  src: local('Indivisible Variable Regular'),
+       local('Indivisible Variable'),
+       local('IndivisibleVarRoman-Regular'),
+       local('Indivisible'),
+       url('/fonts/IndivisibleVariable.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --bg-color: #f5f0e0;
-  --text-color: #523719;
-  --detail-color: #88562C;
-  --detail-subtle: rgba(136, 86, 44, 0.25);
-  --detail-dim: rgba(136, 86, 44, 0.1);
+  --bg-color: #F8F8F6; /* Bianco sporco raffinato */
+  --text-color: #000000; /* Testi neri */
+  --text-muted: rgba(0, 0, 0, 0.55);
+  --border-subtle: rgba(0, 0, 0, 0.12);
+  --border-strong: #000000;
 }
 
 @theme inline {
   --color-background: var(--bg-color);
   --color-foreground: var(--text-color);
-  --color-detail: var(--detail-color);
-  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-display: "Forma DJR Deck", "Forma DJR Display", "Space Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-sans: "Indivisible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Indivisible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Alte Haas Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Indivisible", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 }
 
 * {
@@ -40,9 +57,9 @@
 }
 
 html, body {
-  background-color: #f5f0e0 !important;
-  color: #523719 !important;
-  font-family: "DM Mono", monospace;
+  background-color: #F8F8F6 !important;
+  color: #000000 !important;
+  font-family: "Indivisible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin: 0;
   padding: 0;
   width: 100vw;
@@ -54,61 +71,56 @@ html, body {
 }
 
 ::selection {
-  background: #88562C;
-  color: #f5f0e0;
+  background: #000000;
+  color: #F8F8F6;
 }
 
-/* Typography Helpers */
+/* Typography Utility Classes */
 .font-display {
-  font-family: "Forma DJR Deck", "Forma DJR Display", "Space Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  letter-spacing: -0.02em;
+  font-family: "Alte Haas Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -0.015em;
+}
+
+.font-body {
+  font-family: "Indivisible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .font-mono-text {
-  font-family: "DM Mono", monospace;
+  font-family: "Indivisible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0.03em;
 }
 
-/* Edge Fades in #f5f0e0 */
+/* Edge Fades in #F8F8F6 */
 .edge-fade-top {
-  background: linear-gradient(180deg, #f5f0e0 0%, rgba(245, 240, 224, 0.85) 40%, rgba(245, 240, 224, 0) 100%);
+  background: linear-gradient(180deg, #F8F8F6 0%, rgba(248, 248, 246, 0.85) 45%, rgba(248, 248, 246, 0) 100%);
   pointer-events: none;
 }
 
 .edge-fade-bottom {
-  background: linear-gradient(0deg, #f5f0e0 0%, rgba(245, 240, 224, 0.85) 40%, rgba(245, 240, 224, 0) 100%);
+  background: linear-gradient(0deg, #F8F8F6 0%, rgba(248, 248, 246, 0.85) 45%, rgba(248, 248, 246, 0) 100%);
   pointer-events: none;
 }
 
 .edge-fade-left {
-  background: linear-gradient(90deg, #f5f0e0 0%, rgba(245, 240, 224, 0) 100%);
+  background: linear-gradient(90deg, #F8F8F6 0%, rgba(248, 248, 246, 0) 100%);
   pointer-events: none;
 }
 
 .edge-fade-right {
-  background: linear-gradient(270deg, #f5f0e0 0%, rgba(245, 240, 224, 0) 100%);
+  background: linear-gradient(270deg, #F8F8F6 0%, rgba(248, 248, 246, 0) 100%);
   pointer-events: none;
 }
 
-/* Grid scene container */
-.macro-scene {
-  width: 100%;
-  height: calc(100vh - 54px);
-  margin-top: 54px;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Custom subtle squadrato scrollbar */
+/* Custom minimal scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 3px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(136, 86, 44, 0.08);
+  background: rgba(0, 0, 0, 0.04);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #88562C;
+  background: rgba(0, 0, 0, 0.35);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #523719;
+  background: #000000;
 }
-

@@ -12,17 +12,17 @@ export function HeaderNav({
   onSelectView,
 }: HeaderNavProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-[#f5f0e0] border-b border-[#88562C]/25 px-4 sm:px-6 h-[52px] select-none">
-      <div className="w-full h-full flex items-center justify-between text-xs sm:text-[13px] tracking-wider uppercase font-mono-text">
-        {/* Left: BEYOND, MACRO, MICRO */}
-        <div className="flex items-center gap-3 sm:gap-5 flex-shrink-0">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-[#F8F8F6]/95 backdrop-blur-md border-b border-black/10 px-4 sm:px-6 h-[52px] select-none">
+      <div className="w-full h-full flex items-center justify-between text-xs sm:text-[13px] tracking-wider uppercase font-body">
+        {/* Left: OLTRE, MACRO, MICRO */}
+        <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0">
           <button
             type="button"
             onClick={() => onSelectView("beyond")}
-            className={`cursor-pointer transition-all duration-150 ${
+            className={`cursor-pointer transition-all duration-150 font-display ${
               currentView === "beyond"
-                ? "text-[#523719] font-bold underline underline-offset-4 decoration-[#c026d3]"
-                : "text-[#523719]/50 hover:text-[#523719]"
+                ? "text-black font-bold underline underline-offset-6 decoration-black decoration-2"
+                : "text-black/40 hover:text-black font-normal"
             }`}
           >
             OLTRE
@@ -31,10 +31,10 @@ export function HeaderNav({
           <button
             type="button"
             onClick={() => onSelectView("macro")}
-            className={`cursor-pointer transition-all duration-150 ${
+            className={`cursor-pointer transition-all duration-150 font-display ${
               currentView === "macro"
-                ? "text-[#523719] font-bold underline underline-offset-4 decoration-[#88562C]"
-                : "text-[#523719]/50 hover:text-[#523719]"
+                ? "text-black font-bold underline underline-offset-6 decoration-black decoration-2"
+                : "text-black/40 hover:text-black font-normal"
             }`}
           >
             MACRO
@@ -43,29 +43,31 @@ export function HeaderNav({
           <button
             type="button"
             onClick={() => onSelectView("micro")}
-            className={`cursor-pointer transition-all duration-150 ${
+            className={`cursor-pointer transition-all duration-150 font-display ${
               currentView === "micro"
-                ? "text-[#523719] font-bold underline underline-offset-4 decoration-[#88562C]"
-                : "text-[#523719]/50 hover:text-[#523719]"
+                ? "text-black font-bold underline underline-offset-6 decoration-black decoration-2"
+                : "text-black/40 hover:text-black font-normal"
             }`}
           >
             MICRO
           </button>
         </div>
 
-        {/* Center: Title & Subtitle */}
-        <div className="flex items-center gap-3 sm:gap-6 text-center px-2 truncate">
-          <span className="font-display font-bold text-xs sm:text-sm text-[#523719] tracking-tight">
+        {/* Center: Title & Subtitle in Alte Haas Grotesk and Indivisible */}
+        <div className="flex items-center gap-3 sm:gap-5 text-center px-2 truncate">
+          <span className="font-display font-bold text-xs sm:text-[14px] text-black tracking-tight">
             OLTRE LO SGUARDO OLTRE LA PELLE
           </span>
-          <span className="hidden md:inline w-6 h-[1px] bg-[#88562C]/30" />
-          <span className="hidden sm:inline font-mono-text text-[11px] sm:text-xs text-[#88562C] tracking-widest uppercase">
+          <span className="hidden md:inline w-5 h-[1px] bg-black/20" />
+          <span className="hidden sm:inline font-body text-[11px] sm:text-xs text-black/55 tracking-widest uppercase">
             SEGNI E TESTIMONIANZE
           </span>
         </div>
 
-        {/* Right: Balanced Spacer */}
-        <div className="flex items-center justify-end flex-shrink-0 w-24 sm:w-48" />
+        {/* Right: Clean minimal count / status */}
+        <div className="flex items-center justify-end flex-shrink-0 font-body text-[10px] sm:text-[11px] text-black/50 tracking-wider">
+          <span>76 CASI STUDIO</span>
+        </div>
       </div>
     </header>
   );

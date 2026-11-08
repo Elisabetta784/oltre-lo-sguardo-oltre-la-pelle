@@ -38,8 +38,7 @@ export function AudioPlayerSnippet({
       filter.frequency.setValueAtTime(320, ctx.currentTime);
 
       osc.type = "sine";
-      osc.frequency.setValueAtTime(140, ctx.currentTime); // Deep warm bodily tone
-      // gentle frequency vibrato
+      osc.frequency.setValueAtTime(140, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(148, ctx.currentTime + 1.5);
 
       gain.gain.setValueAtTime(0.001, ctx.currentTime);
@@ -106,14 +105,14 @@ export function AudioPlayerSnippet({
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className={`flex items-center gap-3 bg-[#523719]/5 border border-[#88562C]/25 rounded-xl px-3 py-2 select-none ${
+      className={`flex items-center gap-3 bg-black/[0.04] border border-black/20 rounded-none px-3 select-none ${
         compact ? "py-1.5" : "py-2.5"
       }`}
     >
       <button
         type="button"
         onClick={togglePlay}
-        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#523719] hover:bg-[#88562C] text-[#F4E488] flex items-center justify-center transition-colors flex-shrink-0 cursor-pointer shadow-sm"
+        className="w-7 h-7 sm:w-8 sm:h-8 rounded-none bg-black hover:bg-black/85 text-[#F8F8F6] flex items-center justify-center transition-colors flex-shrink-0 cursor-pointer shadow-sm"
         title={isPlaying ? "Pausa registrazione" : "Ascolta traccia vocale"}
       >
         {isPlaying ? (
@@ -134,12 +133,12 @@ export function AudioPlayerSnippet({
               style={{
                 height: `${Math.max(15, height * (isPlaying ? 0.7 + Math.random() * 0.4 : 0.8))}%`,
               }}
-              className={`w-1 sm:w-1.5 rounded-full transition-all duration-150 ${
+              className={`w-1 sm:w-1.5 rounded-none transition-all duration-150 ${
                 isPassed
-                  ? "bg-[#523719]"
+                  ? "bg-black"
                   : isPlaying
-                  ? "bg-[#88562C]/70"
-                  : "bg-[#88562C]/35"
+                  ? "bg-black/60"
+                  : "bg-black/25"
               }`}
             />
           );
@@ -147,8 +146,8 @@ export function AudioPlayerSnippet({
       </div>
 
       {/* Duration / Status */}
-      <div className="text-[10px] sm:text-xs font-mono text-[#88562C] flex items-center gap-1.5 flex-shrink-0">
-        <Volume2 className={`w-3.5 h-3.5 ${isPlaying ? "animate-pulse text-[#523719]" : ""}`} />
+      <div className="text-[10px] sm:text-xs font-body text-black/60 flex items-center gap-1.5 flex-shrink-0">
+        <Volume2 className={`w-3.5 h-3.5 ${isPlaying ? "animate-pulse text-black" : ""}`} />
         <span>{isPlaying ? `${Math.round(progress)}%` : duration}</span>
       </div>
     </div>

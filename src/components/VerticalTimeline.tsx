@@ -29,7 +29,7 @@ export function VerticalTimeline({
   const activeIndex = items.findIndex((i) => i.id === activeItemId);
   const safeActiveIndex = activeIndex >= 0 ? activeIndex : 0;
 
-  // The thumb position percentage (0% to 100%)
+  // Thumb position percentage (0% to 100%)
   const thumbPercent =
     currentView === "micro"
       ? 100
@@ -52,7 +52,6 @@ export function VerticalTimeline({
     const ratio = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
 
     if (currentView === "micro") {
-      // In micro, scrub items
       const targetIndex = Math.min(
         items.length - 1,
         Math.max(0, Math.round(ratio * (items.length - 1)))
@@ -118,16 +117,16 @@ export function VerticalTimeline({
 
   return (
     <aside className="fixed right-3 sm:right-6 top-[68px] bottom-8 z-30 flex flex-col items-end select-none">
-      {/* Top Value indicator (e.g. 025% or DOC 042) */}
-      <div className="font-mono text-xs sm:text-[13px] font-bold text-[#523719] mb-3 tracking-widest text-right pr-1">
+      {/* Top Value indicator */}
+      <div className="font-display text-xs sm:text-[13px] font-bold text-black mb-3 tracking-widest text-right pr-1">
         {currentLabelNumber}
       </div>
 
-      {/* Main Track container with separate label column and line track */}
+      {/* Main Track container */}
       <div className="relative flex-1 flex items-stretch gap-2.5 sm:gap-3 touch-none">
-        {/* Left Column: Dedicated interactive labels (positioned to the left, never overlapping the line) */}
+        {/* Left Column: Interactive labels */}
         <div className="relative flex flex-col justify-between py-0 text-right min-w-[56px] pointer-events-auto">
-          {/* 1. OLTRE (Sopra - 0%) */}
+          {/* 1. OLTRE (0%) */}
           <button
             type="button"
             onClick={(e) => {
@@ -135,17 +134,17 @@ export function VerticalTimeline({
               onToggleView("beyond");
               onZoomChange(0);
             }}
-            className={`absolute top-0 right-0 -translate-y-1/2 font-mono text-[9px] sm:text-[10px] tracking-widest uppercase transition-all cursor-pointer whitespace-nowrap px-1 py-0.5 ${
+            className={`absolute top-0 right-0 -translate-y-1/2 font-display text-[10px] sm:text-[11px] tracking-widest uppercase transition-all cursor-pointer whitespace-nowrap px-1 py-0.5 ${
               currentView === "beyond"
-                ? "text-[#c026d3] font-black scale-105"
-                : "text-[#88562C]/60 hover:text-[#523719] font-semibold"
+                ? "text-black font-black underline underline-offset-4 decoration-2"
+                : "text-black/40 hover:text-black font-medium"
             }`}
             title="Vista Oltre (0%)"
           >
             OLTRE
           </button>
 
-          {/* 2. MACRO (Poco più giù - 24%) */}
+          {/* 2. MACRO (24%) */}
           <button
             type="button"
             onClick={(e) => {
@@ -154,17 +153,17 @@ export function VerticalTimeline({
               onZoomChange(0.24);
             }}
             style={{ top: "24%" }}
-            className={`absolute right-0 -translate-y-1/2 font-mono text-[9px] sm:text-[10px] tracking-widest uppercase transition-all cursor-pointer whitespace-nowrap px-1 py-0.5 ${
+            className={`absolute right-0 -translate-y-1/2 font-display text-[10px] sm:text-[11px] tracking-widest uppercase transition-all cursor-pointer whitespace-nowrap px-1 py-0.5 ${
               currentView === "macro"
-                ? "text-[#523719] font-black scale-105"
-                : "text-[#88562C]/60 hover:text-[#523719] font-semibold"
+                ? "text-black font-black underline underline-offset-4 decoration-2"
+                : "text-black/40 hover:text-black font-medium"
             }`}
             title="Vista Macro (24%)"
           >
             MACRO
           </button>
 
-          {/* 3. MICRO (In fondo - 100%) */}
+          {/* 3. MICRO (100%) */}
           <button
             type="button"
             onClick={(e) => {
@@ -172,10 +171,10 @@ export function VerticalTimeline({
               onToggleView("micro");
               onZoomChange(1);
             }}
-            className={`absolute bottom-0 right-0 translate-y-1/2 font-mono text-[9px] sm:text-[10px] tracking-widest uppercase transition-all cursor-pointer whitespace-nowrap px-1 py-0.5 ${
+            className={`absolute bottom-0 right-0 translate-y-1/2 font-display text-[10px] sm:text-[11px] tracking-widest uppercase transition-all cursor-pointer whitespace-nowrap px-1 py-0.5 ${
               currentView === "micro"
-                ? "text-[#523719] font-black scale-105"
-                : "text-[#88562C]/60 hover:text-[#523719] font-semibold"
+                ? "text-black font-black underline underline-offset-4 decoration-2"
+                : "text-black/40 hover:text-black font-medium"
             }`}
             title="Vista Micro (100%)"
           >
@@ -183,7 +182,7 @@ export function VerticalTimeline({
           </button>
         </div>
 
-        {/* Right Column: Track with Central Line, Ticks, and Draggable Thumb */}
+        {/* Right Column: Track line & ticks */}
         <div
           ref={trackRef}
           onPointerDown={handlePointerDown}
@@ -193,9 +192,9 @@ export function VerticalTimeline({
           className="relative w-5 sm:w-6 flex items-center justify-center cursor-pointer group"
           title="Trascina o usa la rotellina per zoomare tra Oltre, Macro e Micro"
         >
-          {/* The Central Line */}
-          <div className="relative w-[1.5px] h-full bg-[#88562C]/40 group-hover:bg-[#88562C] transition-colors">
-            {/* Tick marks along the track (inspired by Kellerstöckl style.css) */}
+          {/* Central Track Line */}
+          <div className="relative w-[1.5px] h-full bg-black/20 group-hover:bg-black/60 transition-colors">
+            {/* Tick marks */}
             {Array.from({ length: 25 }, (_, i) => {
               const isTall = i % 4 === 0;
               const topPct = (i / 24) * 100;
@@ -205,14 +204,14 @@ export function VerticalTimeline({
                   style={{ top: `${topPct}%` }}
                   className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
                     isTall
-                      ? "w-4 sm:w-5 h-[1.5px] bg-[#523719]"
-                      : "w-2 sm:w-2.5 h-[1px] bg-[#88562C]/50"
+                      ? "w-4 sm:w-5 h-[1.5px] bg-black"
+                      : "w-2 sm:w-2.5 h-[1px] bg-black/25"
                   }`}
                 />
               );
             })}
 
-            {/* Solid prominent thumb (pallino), 18px diameter */}
+            {/* Draggable thumb */}
             <motion.div
               className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10"
               animate={{ top: `${thumbPercent}%` }}
@@ -223,8 +222,7 @@ export function VerticalTimeline({
               }
             >
               <div className="relative flex items-center justify-center">
-                {/* Outer ring */}
-                <div className="w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full bg-[#523719] border-2 border-[#f5f0e0] shadow-md shadow-[#523719]/40" />
+                <div className="w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full bg-black border-2 border-[#F8F8F6] shadow-md shadow-black/30" />
               </div>
             </motion.div>
           </div>
