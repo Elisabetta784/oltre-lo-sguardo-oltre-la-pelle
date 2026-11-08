@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, ArrowUpRight, SlidersHorizontal } from "lucide-react";
+import { Volume2, ArrowUpRight } from "lucide-react";
 import { ArchiveItem } from "@/data/archiveData";
 
 interface MacroGridProps {
@@ -12,7 +12,6 @@ interface MacroGridProps {
   onZoomChange: (newZoom: number) => void;
   onSelectItem: (item: ArchiveItem) => void;
   isFilterOpen?: boolean;
-  onToggleFilter?: () => void;
   onCloseFilter?: () => void;
   onGoToBeyond?: () => void;
 }
@@ -86,6 +85,7 @@ interface MacroTileProps {
   isActive: boolean;
   isHovered: boolean;
   hasHoveredSibling: boolean;
+  isFilterOpen: boolean;
   row: number;
   col: number;
   offsetX: number;
@@ -99,6 +99,7 @@ const MacroTile = React.memo(function MacroTile({
   isActive,
   isHovered,
   hasHoveredSibling,
+  isFilterOpen,
   row,
   col,
   offsetX,
@@ -106,20 +107,31 @@ const MacroTile = React.memo(function MacroTile({
   onSelect,
   onHover,
 }: MacroTileProps) {
-  // Translucency interplay:
-  // - If an item is hovered: that item is 100% opacity, all other items fade to 0.28.
-  // - When idle: default opacity is 0.82 for subtle floating translucency.
-  const tileOpacity = isHovered
+  // Focus & Sharpness:
+  // - In filter mode: All matching images are 100% in focus, sharp and clear ("a fuoco")!
+  // - In normal mode: Full sharpness and clarity, subtle highlight on hover
+  const tileOpacity = isFilterOpen
+    ? 1
+    : isHovered
     ? 1
     : hasHoveredSibling
-    ? 0.28
-    : 0.82;
+    ? 0.45
+    : 1;
 
   return (
     <div
       onClick={(e) => {
+        e.preventDefault();
         e.stopPropagation();
         onSelect(item);
+      }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect(item);
+        }
       }}
       onMouseEnter={() => onHover(item)}
       onMouseLeave={() => onHover(null)}
@@ -131,7 +143,7 @@ const MacroTile = React.memo(function MacroTile({
         transform: `translate(${offsetX}px, ${offsetY}px)`,
         opacity: tileOpacity,
       }}
-      className={`pointer-events-auto flex items-center justify-center cursor-pointer relative group transition-opacity duration-200 ${
+      className={`pointer-events-auto flex items-center justify-center cursor-pointer relative group transition-opacity duration-150 ${
         isHovered ? "z-30" : "z-10"
       }`}
     >
@@ -145,29 +157,32 @@ const MacroTile = React.memo(function MacroTile({
           width: "100%",
           height: "100%",
         }}
-        className={`w-full h-full aspect-square rounded-none overflow-hidden bg-[#EFEFEA] transition-all duration-200 ${
+        className={`w-full h-full aspect-square rounded-none overflow-hidden bg-white transition-all duration-200 cursor-pointer ${
           isHovered
-            ? "border-2 border-black shadow-xl shadow-black/20"
+            ? "border-2 border-black shadow-xl shadow-black/25"
             : isActive
             ? "border-2 border-black shadow-md shadow-black/15"
-            : "border border-black/15 hover:border-black/50"
+            : "border border-black/20 hover:border-black"
         }`}
       >
-        {/* 1. PHOTO */}
+        {/* 1. PHOTO - Sharp, in focus, high contrast */}
         {item.type === "photo" && (
           <img
             src={item.thumbnailUrl || item.imageUrl || ""}
             alt={item.title}
             draggable={false}
-            loading="lazy"
+            loading="eager"
             decoding="async"
-            className="w-full h-full object-cover rounded-none block pointer-events-none select-none filter contrast-[1.02]"
+            style={{
+              imageRendering: "-webkit-optimize-contrast",
+            }}
+            className="w-full h-full object-cover rounded-none block pointer-events-none select-none filter-none"
           />
         )}
 
         {/* 2. AUDIO */}
         {item.type === "audio" && (
-          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#EFEFEA]">
+          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#F2F2EF]">
             <div className="flex items-center gap-1 h-6 w-full justify-center overflow-hidden">
               {(item.audioWaveform || [40, 70, 90, 50, 80, 100, 60, 40])
                 .slice(0, 8)
@@ -203,7 +218,6 @@ export function MacroGrid({
   onZoomChange,
   onSelectItem,
   isFilterOpen = false,
-  onToggleFilter,
   onCloseFilter,
   onGoToBeyond,
 }: MacroGridProps) {
@@ -409,7 +423,7 @@ export function MacroGrid({
     gap: "18px",
   } as React.CSSProperties;
 
-  // The active or hovered item to display in the bottom-right preview (matching inspo home.png)
+  // The active or hovered item to display in the bottom-right preview
   const activePreviewItem = hoveredTileItem || displayItems.find((it) => it.id === activeItemId) || displayItems[0];
 
   return (
@@ -417,15 +431,7 @@ export function MacroGrid({
       ref={containerRef}
       className="relative w-full h-full overflow-hidden flex items-center justify-center select-none bg-[#F8F8F6]"
     >
-      {/* Off-screen dark overlay when filter sidebar is open */}
-      {isFilterOpen && (
-        <div
-          onClick={onCloseFilter}
-          className="absolute inset-0 z-30 bg-black/10 backdrop-blur-[4px] transition-all duration-300 cursor-pointer"
-        />
-      )}
-
-      {/* 1. EDITORIAL CENTER TITLE WATERMARK (matching inspo home.png) */}
+      {/* 1. EDITORIAL CENTER TITLE WATERMARK */}
       <div className="absolute inset-0 z-0 flex flex-col items-center justify-center pointer-events-none select-none text-center px-4">
         <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-black/25 uppercase tracking-tighter leading-tight max-w-3xl">
           OLTRE LO SGUARDO
@@ -437,27 +443,15 @@ export function MacroGrid({
         </p>
       </div>
 
-      {/* 2. CORNER LABELS & CONTROLS (matching inspo home.png) */}
+      {/* 2. CORNER LABELS & CONTROLS */}
       {/* Top Left metadata */}
       <div className="fixed top-[64px] left-6 z-20 font-body text-[10px] text-black/40 uppercase tracking-widest hidden sm:block pointer-events-none">
         ©2024 ARCHIVIO / CORPO & MEMORIA
       </div>
 
-      {/* Bottom Left: FILTRI BUTTON */}
-      <div className="fixed bottom-6 left-6 z-30 flex items-center gap-3">
-        {onToggleFilter && (
-          <button
-            type="button"
-            onClick={onToggleFilter}
-            className="flex items-center gap-2 px-3.5 py-2 bg-black text-[#F8F8F6] font-display font-bold text-xs uppercase tracking-wider hover:bg-black/85 transition-colors cursor-pointer shadow-lg shadow-black/10 rounded-none border border-black"
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>FILTRI [{displayItems.length}]</span>
-          </button>
-        )}
-        <span className="hidden md:inline font-body text-[10px] text-black/40 uppercase tracking-wider">
-          PINCH / SCROLL PER ZOOMARE
-        </span>
+      {/* Bottom Left: Trackpad hint only (FILTRI button is strictly at top left) */}
+      <div className="fixed bottom-6 left-6 z-20 font-body text-[10px] text-black/40 uppercase tracking-wider hidden sm:block pointer-events-none">
+        PINCH / SCROLL PER ZOOMARE
       </div>
 
       {/* 3. BOTTOM-RIGHT CORNER PREVIEW DOCK (direct recreation of inspo home.png) */}
@@ -469,14 +463,19 @@ export function MacroGrid({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.96 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            onClick={() => onSelectItem(activePreviewItem)}
-            className="fixed bottom-6 right-16 sm:right-24 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectItem(activePreviewItem);
+            }}
+            className="fixed bottom-6 right-16 sm:right-24 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
           >
-            <div className="relative w-full aspect-[4/3] bg-[#EFEFEA] overflow-hidden mb-2.5 border border-black/10">
+            <div className="relative w-full aspect-[4/3] bg-white overflow-hidden mb-2.5 border border-black/15">
               <img
                 src={activePreviewItem.imageUrl || activePreviewItem.thumbnailUrl || ""}
                 alt={activePreviewItem.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="eager"
+                style={{ imageRendering: "-webkit-optimize-contrast" }}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 filter-none"
               />
               <div className="absolute top-2 right-2 bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[9px] font-bold tracking-wider">
                 SEG-{activePreviewItem.number}
@@ -508,14 +507,14 @@ export function MacroGrid({
       <div className="fixed top-[52px] bottom-0 left-0 w-16 sm:w-28 edge-fade-left z-20 pointer-events-none" />
       <div className="fixed top-[52px] bottom-0 right-14 sm:right-24 w-16 sm:w-28 edge-fade-right z-20 pointer-events-none" />
 
-      {/* 5. SYMMETRICALLY CENTERED CSS GRID WITH CSS VARIABLE FOR TILE SIZE */}
+      {/* 5. SYMMETRICALLY CENTERED CSS GRID WITH FULL CLICKABILITY AND ZERO BLUR */}
       <div
         ref={gridRef}
         style={containerStyle}
-        className={`relative z-20 w-full h-full max-w-[96vw] max-h-[88vh] p-4 transition-none grid items-center justify-items-center ${
+        className={`relative z-20 w-full h-full max-w-[96vw] max-h-[88vh] p-4 transition-[padding] duration-300 grid items-center justify-items-center pointer-events-auto ${
           isFilterOpen
-            ? "pl-80 sm:pl-96 lg:pl-[420px] pr-8 sm:pr-12 pointer-events-none"
-            : "pl-6 sm:pl-16 pr-16 sm:pr-24 pointer-events-auto"
+            ? "pl-80 sm:pl-96 lg:pl-[440px] pr-8 sm:pr-12"
+            : "pl-6 sm:pl-16 pr-16 sm:pr-24"
         }`}
       >
         {displayItems.length === 0 ? (
@@ -538,6 +537,7 @@ export function MacroGrid({
                 isActive={activeItemId === item.id}
                 isHovered={isHovered}
                 hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                isFilterOpen={isFilterOpen}
                 row={pos.row}
                 col={pos.col}
                 offsetX={pos.offsetX}

@@ -167,12 +167,12 @@ export function FilterSidebar({
 
   return (
     <>
-      {/* 1. MINIMAL TAB TOGGLE BUTTON WHEN SIDEBAR IS CLOSED */}
+      {/* 1. MINIMAL TAB TOGGLE BUTTON WHEN SIDEBAR IS CLOSED - STRICTLY ONLY AT THE TOP */}
       {!isOpen && (
         <button
           type="button"
           onClick={onToggleOpen}
-          className="fixed left-0 top-[110px] z-30 bg-black text-[#F8F8F6] px-3 py-2 font-display text-[11px] font-bold tracking-widest uppercase cursor-pointer hover:bg-black/85 transition-colors border-r border-t border-b border-black shadow-md flex items-center gap-2"
+          className="fixed left-0 top-[68px] z-30 bg-black text-[#F8F8F6] px-3.5 py-2 font-display text-[11px] font-bold tracking-widest uppercase cursor-pointer hover:bg-black/85 transition-colors border-r border-t border-b border-black shadow-md flex items-center gap-2"
         >
           <SlidersHorizontal className="w-3.5 h-3.5" />
           <span>FILTRI {totalActiveFilters > 0 && `[${totalActiveFilters}]`}</span>

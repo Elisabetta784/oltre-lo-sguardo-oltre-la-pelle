@@ -275,7 +275,6 @@ export default function Home() {
                 }}
                 onSelectItem={handleSelectItem}
                 isFilterOpen={isFilterOpen && view === "macro"}
-                onToggleFilter={() => setIsFilterOpen(!isFilterOpen)}
                 onCloseFilter={() => setIsFilterOpen(false)}
               />
             </motion.div>
