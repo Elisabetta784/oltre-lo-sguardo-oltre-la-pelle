@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, ArrowUpRight, SlidersHorizontal } from "lucide-react";
+import { Volume2, ArrowUpRight } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 
 interface MacroGridProps {
@@ -17,63 +17,177 @@ interface MacroGridProps {
   onGoToBeyond?: () => void;
 }
 
+interface PortionPlacement {
+  item: ArchiveItem;
+  row: number;
+  col: number;
+  colSpan: number;
+  staggerY: number;
+  sizeFactor: number;
+}
+
+interface PortionData {
+  cols: number;
+  rows: number;
+  placements: PortionPlacement[];
+}
+
 /**
- * Computes deterministic, non-overlapping staggered grid positions for all cases.
- * Allows varied natural sizes and alternating rhythmic vertical offsets without any collisions.
+ * Packs items into a designated portion of the 5x3m wall.
+ * In full-archive mode (~76 items split into 3 portions of 26, 25, 25 items):
+ * - Grid: 4 columns x 8 rows = 32 slots per portion.
+ * - 6 to 7 wide landscape items (aspect ratio >= 1.30) span 2 columns as prominent hero anchors.
+ * - Single cells interlock compactly with varied size factors (0.92x to 1.08x) and subtle organic staggers.
+ * - Strictly keeps all items inside this portion; zero items positioned between adjacent portions.
  */
-function getGridConfig(totalCount: number) {
-  if (totalCount > 50) {
-    const cols = 11;
-    const rows = Math.ceil(totalCount / cols); // 7 rows for 76 items (11 * 7 = 77 slots)
-    const positions: { row: number; col: number; staggerY: number; sizeFactor: number }[] = [];
-
-    // Organic staggered cadence that strictly never collides:
-    // Columns alternate slightly up and down (-5px / +5px) creating a beautiful gallery stagger.
-    // Varied sizes: some slightly larger (1.04), some slightly smaller (0.90) for natural variety.
-    const sizePattern = [1.02, 0.92, 0.98, 1.04, 0.93, 1.0, 0.91];
-
-    for (let i = 0; i < totalCount; i++) {
-      const col = (i % cols) + 1;
-      const row = Math.floor(i / cols) + 1;
-      const staggerY = col % 2 === 0 ? 5 : -5;
-      const sizeFactor = sizePattern[i % sizePattern.length];
-
-      positions.push({
-        row,
-        col,
-        staggerY,
-        sizeFactor,
-      });
-    }
-
-    return {
-      cols,
-      rows,
-      positions,
-    };
+function packPortionItems(
+  portionItems: ArchiveItem[],
+  ratiosMap: Record<string, { w: number; h: number; ratio: number }>
+): PortionData {
+  const count = portionItems.length;
+  if (count === 0) {
+    return { cols: 1, rows: 1, placements: [] };
   }
 
-  // Filtered state with fewer items (e.g. 1-40 items)
-  const cols = Math.max(3, Math.min(8, Math.ceil(Math.sqrt(totalCount * 1.5))));
-  const rows = Math.ceil(totalCount / cols);
-  const positions: { row: number; col: number; staggerY: number; sizeFactor: number }[] = [];
+  // Full-archive mode: 4 columns x 8 rows = 32 slots
+  if (count >= 18) {
+    const cols = 4;
+    const rows = 8;
+    const slots = cols * rows; // 32
+    const targetSpans = Math.max(0, slots - count); // 6 for 26 items, 7 for 25 items
 
-  for (let i = 0; i < totalCount; i++) {
+    const grid: boolean[][] = Array.from({ length: rows }, () =>
+      Array.from({ length: cols }, () => false)
+    );
+    const placements: PortionPlacement[] = [];
+
+    let spansDone = 0;
+    let itemPtr = 0;
+
+    for (let r = 0; r < rows; r++) {
+      let c = 0;
+      while (c < cols && itemPtr < count) {
+        if (grid[r][c]) {
+          c++;
+          continue;
+        }
+
+        const item = portionItems[itemPtr];
+        const ratio = ratiosMap[item.id]?.ratio || item.aspectRatio || 1.33;
+
+        const remainingSlots = (rows - r) * cols - c;
+        const remainingItems = count - itemPtr;
+
+        // Can we span 2 columns horizontally (landscape item)?
+        const canSpan =
+          spansDone < targetSpans &&
+          c <= 2 &&
+          !grid[r][c + 1] &&
+          ratio >= 1.3 &&
+          remainingSlots - 2 >= remainingItems - 1;
+
+        const colSpan = canSpan ? 2 : 1;
+        if (colSpan === 2) {
+          spansDone++;
+          grid[r][c] = true;
+          grid[r][c + 1] = true;
+        } else {
+          grid[r][c] = true;
+        }
+
+        // Varied organic sizes:
+        // Spanned hero items scale prominently (1.15x).
+        // Single cells alternate rhythmically (0.92x to 1.06x) to interlock tightly.
+        const staggers = [-3, 2, -2, 3, 0, -1, 2];
+        const staggerY = staggers[(r * cols + c) % staggers.length];
+        const sizePattern = [1.04, 0.93, 1.0, 0.92, 1.06, 0.94, 0.98];
+        const sizeFactor =
+          colSpan === 2 ? 1.15 : sizePattern[itemPtr % sizePattern.length];
+
+        placements.push({
+          item,
+          row: r + 1,
+          col: c + 1,
+          colSpan,
+          staggerY,
+          sizeFactor,
+        });
+
+        c += colSpan;
+        itemPtr++;
+      }
+    }
+
+    return { cols, rows, placements };
+  }
+
+  // Filtered mode with fewer items per portion (1 to 17 items)
+  const cols = Math.max(1, Math.min(3, Math.ceil(Math.sqrt(count * 1.2))));
+  const rows = Math.ceil(count / cols);
+  const placements: PortionPlacement[] = [];
+
+  for (let i = 0; i < count; i++) {
     const col = (i % cols) + 1;
     const row = Math.floor(i / cols) + 1;
-    const staggerY = col % 2 === 0 ? 4 : -4;
-    positions.push({
+    const staggerY = col % 2 === 0 ? 2 : -2;
+    placements.push({
+      item: portionItems[i],
       row,
       col,
+      colSpan: 1,
       staggerY,
-      sizeFactor: 0.96,
+      sizeFactor: 1.0,
     });
   }
 
+  return { cols, rows, placements };
+}
+
+/**
+ * Computes deterministic 3-portion layout for the 5m x 3m wall:
+ * - Portion 1 (Left 1/3)
+ * - Portion 2 (Center 1/3)
+ * - Portion 3 (Right 1/3)
+ * Strictly zero items placed across portion boundaries.
+ */
+function getThreePortionsLayout(
+  displayItems: ArchiveItem[],
+  ratiosMap: Record<string, { w: number; h: number; ratio: number }>
+): {
+  portion1: PortionData;
+  portion2: PortionData;
+  portion3: PortionData;
+} {
+  const total = displayItems.length;
+
+  if (total >= 60) {
+    // 76 cases split into 26 + 25 + 25
+    const p1Items = displayItems.slice(0, 26);
+    const p2Items = displayItems.slice(26, 51);
+    const p3Items = displayItems.slice(51, 76);
+
+    return {
+      portion1: packPortionItems(p1Items, ratiosMap),
+      portion2: packPortionItems(p2Items, ratiosMap),
+      portion3: packPortionItems(p3Items, ratiosMap),
+    };
+  }
+
+  // Filtered state: distribute round-robin to keep 3 stations visually balanced
+  const p1Items: ArchiveItem[] = [];
+  const p2Items: ArchiveItem[] = [];
+  const p3Items: ArchiveItem[] = [];
+
+  displayItems.forEach((item, idx) => {
+    if (idx % 3 === 0) p1Items.push(item);
+    else if (idx % 3 === 1) p2Items.push(item);
+    else p3Items.push(item);
+  });
+
   return {
-    cols,
-    rows,
-    positions,
+    portion1: packPortionItems(p1Items, ratiosMap),
+    portion2: packPortionItems(p2Items, ratiosMap),
+    portion3: packPortionItems(p3Items, ratiosMap),
   };
 }
 
@@ -85,6 +199,7 @@ interface MacroTileProps {
   isFilterOpen: boolean;
   row: number;
   col: number;
+  colSpan?: number;
   staggerY: number;
   sizeFactor: number;
   onSelect: (item: ArchiveItem) => void;
@@ -99,14 +214,12 @@ const MacroTile = React.memo(function MacroTile({
   isFilterOpen,
   row,
   col,
+  colSpan = 1,
   staggerY,
   sizeFactor,
   onSelect,
   onHover,
 }: MacroTileProps) {
-  // Focus & Sharpness:
-  // - In filter mode: All matching images are 100% in focus, sharp and clear ("a fuoco")!
-  // - In normal mode: Full sharpness and clarity, subtle highlight on hover
   const tileOpacity = isFilterOpen
     ? 1
     : isHovered
@@ -116,7 +229,11 @@ const MacroTile = React.memo(function MacroTile({
     : 1;
 
   // Retrieve natural pixel dimensions & aspect ratio:
-  const dim = ARCHIVE_ASPECT_RATIOS[item.id] || { w: 100, h: 100, ratio: item.aspectRatio || 1.33 };
+  const dim = ARCHIVE_ASPECT_RATIOS[item.id] || {
+    w: 100,
+    h: 100,
+    ratio: item.aspectRatio || 1.33,
+  };
 
   return (
     <div
@@ -136,8 +253,8 @@ const MacroTile = React.memo(function MacroTile({
       onMouseEnter={() => onHover(item)}
       onMouseLeave={() => onHover(null)}
       style={{
-        gridRow: row,
-        gridColumn: col,
+        gridRow: `${row} / span 1`,
+        gridColumn: `${col} / span ${colSpan}`,
         transform: `translateY(${staggerY}px)`,
         opacity: tileOpacity,
       }}
@@ -148,13 +265,13 @@ const MacroTile = React.memo(function MacroTile({
       <motion.div
         layoutId={`item-media-${item.id}`}
         animate={{
-          scale: isHovered ? 1.12 : 1,
+          scale: isHovered ? 1.09 : 1,
         }}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         style={{
           aspectRatio: `${dim.w} / ${dim.h}`,
-          maxWidth: `${Math.round(92 * sizeFactor)}%`,
-          maxHeight: `${Math.round(88 * sizeFactor)}%`,
+          maxWidth: `${Math.min(100, Math.round(98 * sizeFactor))}%`,
+          maxHeight: `${Math.min(100, Math.round(96 * sizeFactor))}%`,
         }}
         className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center ${
           isHovered
@@ -164,7 +281,7 @@ const MacroTile = React.memo(function MacroTile({
             : "border border-black/35 hover:border-black"
         }`}
       >
-        {/* 1. PHOTO - 100% natural shape, NO white borders, full edge-to-edge coverage */}
+        {/* 1. PHOTO - 100% natural shape, NO white borders, edge-to-edge coverage */}
         {item.type === "photo" && (
           <img
             src={item.thumbnailUrl || item.imageUrl || ""}
@@ -217,8 +334,6 @@ export function MacroGrid({
   onZoomChange,
   onSelectItem,
   isFilterOpen = false,
-  onCloseFilter,
-  onToggleFilter,
   onGoToBeyond,
 }: MacroGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -227,11 +342,12 @@ export function MacroGrid({
   const [hoveredTileItem, setHoveredTileItem] = useState<ArchiveItem | null>(null);
 
   const displayItems = items;
-  const gridConfig = useMemo(
-    () => getGridConfig(displayItems.length),
-    [displayItems.length]
+
+  // 3-Portion Layout: strictly separates Left, Center, and Right bays with zero items bridging them
+  const { portion1, portion2, portion3 } = useMemo(
+    () => getThreePortionsLayout(displayItems, ARCHIVE_ASPECT_RATIOS),
+    [displayItems]
   );
-  const { cols, rows, positions } = gridConfig;
 
   // Max scale at 100% zoom
   const maxScale = 2.8;
@@ -268,7 +384,7 @@ export function MacroGrid({
     return () => el.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // RAF loop for smooth zoom and panning within the media wall
+  // RAF loop for smooth zoom and panning across the media wall
   useEffect(() => {
     let isRunning = true;
 
@@ -290,9 +406,8 @@ export function MacroGrid({
 
       const curZoom = currentZoomRef.current;
 
-      const zoomProgress = curZoom >= 0.24
-        ? Math.min(1, (curZoom - 0.24) / (1 - 0.24))
-        : 0;
+      const zoomProgress =
+        curZoom >= 0.24 ? Math.min(1, (curZoom - 0.24) / (1 - 0.24)) : 0;
 
       let scale = 1.0;
       if (curZoom >= 0.24) {
@@ -409,27 +524,28 @@ export function MacroGrid({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden flex flex-col justify-between select-none bg-[#F8F8F6]"
+      className="relative w-full h-full overflow-hidden select-none bg-[#F8F8F6]"
     >
-      {/* 1. EDGE DISSOLVES */}
-      <div className="fixed top-0 left-0 right-0 h-8 edge-fade-top z-20 pointer-events-none" />
-      <div className="fixed top-0 bottom-[52px] left-0 w-8 sm:w-16 edge-fade-left z-20 pointer-events-none" />
-      <div className="fixed top-0 bottom-[52px] right-0 w-8 sm:w-16 edge-fade-right z-20 pointer-events-none" />
+      {/* 1. SUBTLE EDGE DISSOLVES */}
+      <div className="fixed top-0 left-0 right-0 h-6 edge-fade-top z-20 pointer-events-none" />
+      <div className="fixed bottom-0 left-0 right-0 h-6 edge-fade-bottom z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-0 left-0 w-6 sm:w-10 edge-fade-left z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-0 right-0 w-6 sm:w-10 edge-fade-right z-20 pointer-events-none" />
 
-      {/* 2. BOTTOM-RIGHT CORNER PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER (WHEN FILTERS ARE CLOSED) */}
+      {/* 2. FLOATING PREVIEW DOCK: ONLY APPEARS ON CURSER HOVER OVER A CASE STUDY */}
       <AnimatePresence>
-        {hoveredTileItem && !isFilterOpen && (
+        {hoveredTileItem && (
           <motion.div
             key={hoveredTileItem.id}
             initial={{ opacity: 0, y: 15, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.96 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => {
               e.stopPropagation();
               onSelectItem(hoveredTileItem);
             }}
-            className="fixed bottom-[60px] right-4 sm:right-6 z-30 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
+            className="fixed bottom-5 right-5 z-40 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
           >
             <div className="relative w-full aspect-[4/3] bg-white overflow-hidden mb-2.5 border border-black/15">
               <img
@@ -463,155 +579,135 @@ export function MacroGrid({
         )}
       </AnimatePresence>
 
-      {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES HARMONIOUSLY VISIBLE WITHOUT OVERLAPS */}
-      <div className="relative flex-1 w-full h-[calc(100%-52px)] overflow-hidden flex items-center justify-center p-2 sm:p-4 pb-1">
-        <div
-          ref={gridRef}
-          style={{
-            transformOrigin: "center center",
-            willChange: "transform",
-            display: "grid",
-            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-            gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
-            gap: "8px",
-            width: "100%",
-            height: "100%",
-            maxWidth: "98vw",
-            maxHeight: "calc(100vh - 68px)",
-          }}
-          className="items-center justify-items-center"
-        >
-          {displayItems.length === 0 ? (
-            <div className="col-span-full row-span-full pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
-              <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
-                NESSUN SEGNO CORRISPONDENTE
-              </p>
-              <p className="font-body text-xs text-black/60 max-w-xs">
-                Prova a reimpostare o combinare diversamente i filtri selezionati.
-              </p>
-            </div>
-          ) : (
-            displayItems.map((item, idx) => {
-              const pos = positions[idx] || { row: 1, col: 1, staggerY: 0, sizeFactor: 1.0 };
-              const isHovered = hoveredTileItem?.id === item.id;
-              return (
-                <MacroTile
-                  key={item.id}
-                  item={item}
-                  isActive={activeItemId === item.id}
-                  isHovered={isHovered}
-                  hasHoveredSibling={hoveredTileItem !== null && !isHovered}
-                  isFilterOpen={isFilterOpen}
-                  row={pos.row}
-                  col={pos.col}
-                  staggerY={pos.staggerY}
-                  sizeFactor={pos.sizeFactor}
-                  onSelect={onSelectItem}
-                  onHover={setHoveredTileItem}
-                />
-              );
-            })
-          )}
-        </div>
-      </div>
-
-      {/* 4. BLACK HORIZONTAL BAR: POSITIONED AT THE VERY BOTTOM OF ALL IMAGES */}
-      <div className="relative w-full h-[52px] bg-[#0D0D0D] text-[#F8F8F6] border-t-2 border-black z-30 shrink-0 flex items-stretch justify-between shadow-2xl">
-        {/* SECTION 1: OLTRE */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onGoToBeyond?.();
-          }}
-          className="group flex-1 flex items-center justify-between px-4 sm:px-6 hover:bg-[#1C1C1C] transition-colors cursor-pointer text-left border-r border-white/15"
-        >
-          <div className="flex flex-col">
-            <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] group-hover:text-white flex items-center gap-1.5">
-              OLTRE
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#F8F8F6]/60 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </span>
-            <span className="font-display text-[9.5px] font-medium text-[#F8F8F6]/60 uppercase tracking-wider group-hover:text-[#F8F8F6]/90 transition-colors hidden sm:inline">
-              VISIONE SISTEMICA / 6 DIALETTICHE
-            </span>
+      {/* 3. MAIN EXHIBITION MEDIA WALL: 3-PORTION COMPACT ARCHITECTURE (5m x 3m LEDWALL) */}
+      <div className="relative w-full h-full overflow-hidden flex items-center justify-center p-2 sm:p-3">
+        {displayItems.length === 0 ? (
+          <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
+            <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
+              NESSUN SEGNO CORRISPONDENTE
+            </p>
+            <p className="font-body text-xs text-black/60 max-w-xs">
+              Prova a reimpostare o combinare diversamente i filtri selezionati.
+            </p>
           </div>
-          <div className="hidden md:flex items-center gap-1 opacity-30 group-hover:opacity-100 transition-opacity">
-            <span className="w-1.5 h-1.5 rounded-full border border-white" />
-            <span className="w-1.5 h-1.5 rounded-full border border-white" />
-          </div>
-        </button>
-
-        {/* SECTION 2: MACRO */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            targetZoomRef.current = 0.24;
-            currentZoomRef.current = 0.24;
-            targetFocusRef.current = { u: 0.5, v: 0.5 };
-            currentFocusRef.current = { u: 0.5, v: 0.5 };
-            onZoomChange?.(0.24);
-          }}
-          className="group flex-1 flex items-center justify-between px-4 sm:px-6 hover:bg-[#161616] transition-colors cursor-pointer text-left bg-[#141414] border-r border-white/15"
-        >
-          <div className="flex flex-col">
-            <span className="font-display font-bold text-xs sm:text-sm tracking-widest text-[#F8F8F6] flex items-center gap-2">
-              MACRO
-              <span className="inline-block w-2 h-2 rounded-full bg-white shadow-sm shadow-white/80" />
-            </span>
-            <span className="font-display text-[9.5px] font-medium text-[#F8F8F6]/65 uppercase tracking-wider hidden sm:inline">
-              ARCHIVIO VISIVO · {displayItems.length} CASI
-            </span>
-          </div>
-          <div className="hidden lg:block font-display text-[9.5px] font-bold uppercase tracking-widest text-[#F8F8F6]/60 border border-white/20 px-2 py-0.5">
-            PANORAMICA
-          </div>
-        </button>
-
-        {/* SECTION 3: FILTRI */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFilter?.();
-          }}
-          className={`group flex-1 flex items-center justify-between px-4 sm:px-6 transition-colors cursor-pointer text-left ${
-            isFilterOpen
-              ? "bg-[#F8F8F6] text-black hover:bg-white"
-              : "hover:bg-[#1C1C1C] text-[#F8F8F6]"
-          }`}
-        >
-          <div className="flex flex-col">
-            <span
-              className={`font-display font-bold text-xs sm:text-sm tracking-widest flex items-center gap-2 ${
-                isFilterOpen ? "text-black" : "text-[#F8F8F6] group-hover:text-white"
-              }`}
-            >
-              FILTRI
-              <SlidersHorizontal
-                className={`w-3.5 h-3.5 ${
-                  isFilterOpen ? "text-black" : "text-[#F8F8F6]/70 group-hover:text-white"
-                }`}
-              />
-            </span>
-            <span
-              className={`font-display text-[9.5px] uppercase tracking-wider hidden sm:inline ${
-                isFilterOpen ? "text-black/80 font-bold" : "text-[#F8F8F6]/60 group-hover:text-[#F8F8F6]/85"
-              }`}
-            >
-              {isFilterOpen ? "CHIUDI PANNELLO" : "SELEZIONA PER SEGNO & CATEGORIA"}
-            </span>
-          </div>
+        ) : (
           <div
-            className={`text-[9.5px] font-display font-bold uppercase tracking-wider px-2.5 py-1 border ${
-              isFilterOpen
-                ? "border-black bg-black text-[#F8F8F6]"
-                : "border-white/30 text-[#F8F8F6]/80 group-hover:border-white group-hover:text-white"
-            }`}
+            ref={gridRef}
+            style={{
+              transformOrigin: "center center",
+              willChange: "transform",
+            }}
+            className="w-full h-full grid grid-cols-3 gap-x-5 sm:gap-x-7 lg:gap-x-9 items-stretch justify-items-stretch"
           >
-            {isFilterOpen ? "ATTIVO" : "APRI"}
+            {/* ======================================================== */}
+            {/* PORTION 1: LEFT STATION (CASI 001 - 026)                */}
+            {/* ======================================================== */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${portion1.cols}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${portion1.rows}, minmax(0, 1fr))`,
+                gap: "5px",
+                width: "100%",
+                height: "100%",
+              }}
+              className="items-center justify-items-center relative"
+            >
+              {portion1.placements.map((p) => {
+                const isHovered = hoveredTileItem?.id === p.item.id;
+                return (
+                  <MacroTile
+                    key={p.item.id}
+                    item={p.item}
+                    isActive={activeItemId === p.item.id}
+                    isHovered={isHovered}
+                    hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                    isFilterOpen={isFilterOpen}
+                    row={p.row}
+                    col={p.col}
+                    colSpan={p.colSpan}
+                    staggerY={p.staggerY}
+                    sizeFactor={p.sizeFactor}
+                    onSelect={onSelectItem}
+                    onHover={setHoveredTileItem}
+                  />
+                );
+              })}
+            </div>
+
+            {/* ======================================================== */}
+            {/* PORTION 2: CENTER STATION (CASI 027 - 051)              */}
+            {/* ======================================================== */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${portion2.cols}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${portion2.rows}, minmax(0, 1fr))`,
+                gap: "5px",
+                width: "100%",
+                height: "100%",
+              }}
+              className="items-center justify-items-center relative"
+            >
+              {portion2.placements.map((p) => {
+                const isHovered = hoveredTileItem?.id === p.item.id;
+                return (
+                  <MacroTile
+                    key={p.item.id}
+                    item={p.item}
+                    isActive={activeItemId === p.item.id}
+                    isHovered={isHovered}
+                    hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                    isFilterOpen={isFilterOpen}
+                    row={p.row}
+                    col={p.col}
+                    colSpan={p.colSpan}
+                    staggerY={p.staggerY}
+                    sizeFactor={p.sizeFactor}
+                    onSelect={onSelectItem}
+                    onHover={setHoveredTileItem}
+                  />
+                );
+              })}
+            </div>
+
+            {/* ======================================================== */}
+            {/* PORTION 3: RIGHT STATION (CASI 052 - 076)               */}
+            {/* ======================================================== */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${portion3.cols}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${portion3.rows}, minmax(0, 1fr))`,
+                gap: "5px",
+                width: "100%",
+                height: "100%",
+              }}
+              className="items-center justify-items-center relative"
+            >
+              {portion3.placements.map((p) => {
+                const isHovered = hoveredTileItem?.id === p.item.id;
+                return (
+                  <MacroTile
+                    key={p.item.id}
+                    item={p.item}
+                    isActive={activeItemId === p.item.id}
+                    isHovered={isHovered}
+                    hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                    isFilterOpen={isFilterOpen}
+                    row={p.row}
+                    col={p.col}
+                    colSpan={p.colSpan}
+                    staggerY={p.staggerY}
+                    sizeFactor={p.sizeFactor}
+                    onSelect={onSelectItem}
+                    onHover={setHoveredTileItem}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </button>
+        )}
       </div>
     </div>
   );
