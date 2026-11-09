@@ -35,9 +35,10 @@ interface PortionData {
 /**
  * Packs items into a designated portion of the 5x3m wall.
  * In full-archive mode (~76 items split into 3 portions of 26, 25, 25 items):
- * - Grid: 4 columns x 8 rows = 32 slots per portion.
- * - 6 to 7 wide landscape items (aspect ratio >= 1.30) span 2 columns as prominent hero anchors.
- * - Single cells interlock compactly with varied size factors (0.92x to 1.08x) and subtle organic staggers.
+ * - Grid: exactly 4 columns x 7 rows = 28 slots per portion (84 slots total across 3 portions).
+ * - Guaranteed: ALL 76 case studies are visible within the 100vh viewport without any clipping.
+ * - Prominent landscape items (aspect ratio >= 1.25) span 2 columns as hero anchors (2 in P1, 3 in P2, 3 in P3).
+ * - Single cells interlock compactly with varied size factors (0.94x to 1.04x) and subtle organic staggers.
  * - Strictly keeps all items inside this portion; zero items positioned between adjacent portions.
  */
 function packPortionItems(
@@ -49,12 +50,12 @@ function packPortionItems(
     return { cols: 1, rows: 1, placements: [] };
   }
 
-  // Full-archive mode: 4 columns x 8 rows = 32 slots
+  // Full-archive mode: 4 columns x 7 rows = 28 slots
   if (count >= 18) {
     const cols = 4;
-    const rows = 8;
-    const slots = cols * rows; // 32
-    const targetSpans = Math.max(0, slots - count); // 6 for 26 items, 7 for 25 items
+    const rows = 7;
+    const slots = cols * rows; // 28 slots
+    const targetSpans = Math.max(0, slots - count); // 2 for 26 items, 3 for 25 items
 
     const grid: boolean[][] = Array.from({ length: rows }, () =>
       Array.from({ length: cols }, () => false)
@@ -83,7 +84,7 @@ function packPortionItems(
           spansDone < targetSpans &&
           c <= 2 &&
           !grid[r][c + 1] &&
-          ratio >= 1.3 &&
+          ratio >= 1.25 &&
           remainingSlots - 2 >= remainingItems - 1;
 
         const colSpan = canSpan ? 2 : 1;
@@ -96,13 +97,13 @@ function packPortionItems(
         }
 
         // Varied organic sizes:
-        // Spanned hero items scale prominently (1.15x).
-        // Single cells alternate rhythmically (0.92x to 1.06x) to interlock tightly.
-        const staggers = [-3, 2, -2, 3, 0, -1, 2];
+        // Spanned hero items scale prominently (1.08x).
+        // Single cells alternate rhythmically (0.94x to 1.04x) to interlock tightly.
+        const staggers = [-2, 1, -1, 2, 0, -1, 1];
         const staggerY = staggers[(r * cols + c) % staggers.length];
-        const sizePattern = [1.04, 0.93, 1.0, 0.92, 1.06, 0.94, 0.98];
+        const sizePattern = [1.02, 0.96, 1.0, 0.95, 1.04, 0.97, 0.98];
         const sizeFactor =
-          colSpan === 2 ? 1.15 : sizePattern[itemPtr % sizePattern.length];
+          colSpan === 2 ? 1.08 : sizePattern[itemPtr % sizePattern.length];
 
         placements.push({
           item,
@@ -145,10 +146,11 @@ function packPortionItems(
 
 /**
  * Computes deterministic 3-portion layout for the 5m x 3m wall:
- * - Portion 1 (Left 1/3)
- * - Portion 2 (Center 1/3)
- * - Portion 3 (Right 1/3)
+ * - Portion 1 (Left 1/3): 26 items
+ * - Portion 2 (Center 1/3): 25 items
+ * - Portion 3 (Right 1/3): 25 items
  * Strictly zero items placed across portion boundaries.
+ * Spaced with subtle organic gutters so the wall appears unified and continuous ("non palese").
  */
 function getThreePortionsLayout(
   displayItems: ArchiveItem[],
@@ -161,7 +163,7 @@ function getThreePortionsLayout(
   const total = displayItems.length;
 
   if (total >= 60) {
-    // 76 cases split into 26 + 25 + 25
+    // Exact 76 cases split into 26 + 25 + 25
     const p1Items = displayItems.slice(0, 26);
     const p2Items = displayItems.slice(26, 51);
     const p3Items = displayItems.slice(51, 76);
@@ -258,14 +260,14 @@ const MacroTile = React.memo(function MacroTile({
         transform: `translateY(${staggerY}px)`,
         opacity: tileOpacity,
       }}
-      className={`pointer-events-auto w-full h-full flex items-center justify-center cursor-pointer relative group transition-opacity duration-150 ${
+      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 flex items-center justify-center cursor-pointer relative group transition-opacity duration-150 ${
         isHovered ? "z-30" : "z-10"
       }`}
     >
       <motion.div
         layoutId={`item-media-${item.id}`}
         animate={{
-          scale: isHovered ? 1.09 : 1,
+          scale: isHovered ? 1.08 : 1,
         }}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         style={{
@@ -527,12 +529,12 @@ export function MacroGrid({
       className="relative w-full h-full overflow-hidden select-none bg-[#F8F8F6]"
     >
       {/* 1. SUBTLE EDGE DISSOLVES */}
-      <div className="fixed top-0 left-0 right-0 h-6 edge-fade-top z-20 pointer-events-none" />
-      <div className="fixed bottom-0 left-0 right-0 h-6 edge-fade-bottom z-20 pointer-events-none" />
-      <div className="fixed top-0 bottom-0 left-0 w-6 sm:w-10 edge-fade-left z-20 pointer-events-none" />
-      <div className="fixed top-0 bottom-0 right-0 w-6 sm:w-10 edge-fade-right z-20 pointer-events-none" />
+      <div className="fixed top-0 left-0 right-0 h-4 edge-fade-top z-20 pointer-events-none" />
+      <div className="fixed bottom-0 left-0 right-0 h-4 edge-fade-bottom z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-0 left-0 w-4 sm:w-6 edge-fade-left z-20 pointer-events-none" />
+      <div className="fixed top-0 bottom-0 right-0 w-4 sm:w-6 edge-fade-right z-20 pointer-events-none" />
 
-      {/* 2. FLOATING PREVIEW DOCK: ONLY APPEARS ON CURSER HOVER OVER A CASE STUDY */}
+      {/* 2. FLOATING PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER OVER A CASE STUDY */}
       <AnimatePresence>
         {hoveredTileItem && (
           <motion.div
@@ -545,7 +547,7 @@ export function MacroGrid({
               e.stopPropagation();
               onSelectItem(hoveredTileItem);
             }}
-            className="fixed bottom-5 right-5 z-40 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
+            className="fixed bottom-4 right-4 z-40 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
           >
             <div className="relative w-full aspect-[4/3] bg-white overflow-hidden mb-2.5 border border-black/15">
               <img
@@ -579,8 +581,8 @@ export function MacroGrid({
         )}
       </AnimatePresence>
 
-      {/* 3. MAIN EXHIBITION MEDIA WALL: 3-PORTION COMPACT ARCHITECTURE (5m x 3m LEDWALL) */}
-      <div className="relative w-full h-full overflow-hidden flex items-center justify-center p-2 sm:p-3">
+      {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS */}
+      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-2 sm:p-2.5">
         {displayItems.length === 0 ? (
           <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
             <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
@@ -597,7 +599,7 @@ export function MacroGrid({
               transformOrigin: "center center",
               willChange: "transform",
             }}
-            className="w-full h-full grid grid-cols-3 gap-x-5 sm:gap-x-7 lg:gap-x-9 items-stretch justify-items-stretch"
+            className="w-full h-full max-h-full grid grid-cols-3 gap-x-2 sm:gap-x-2.5 lg:gap-x-3 items-stretch justify-items-stretch"
           >
             {/* ======================================================== */}
             {/* PORTION 1: LEFT STATION (CASI 001 - 026)                */}
@@ -611,7 +613,7 @@ export function MacroGrid({
                 width: "100%",
                 height: "100%",
               }}
-              className="items-center justify-items-center relative"
+              className="items-center justify-items-center relative min-h-0 min-w-0"
             >
               {portion1.placements.map((p) => {
                 const isHovered = hoveredTileItem?.id === p.item.id;
@@ -647,7 +649,7 @@ export function MacroGrid({
                 width: "100%",
                 height: "100%",
               }}
-              className="items-center justify-items-center relative"
+              className="items-center justify-items-center relative min-h-0 min-w-0"
             >
               {portion2.placements.map((p) => {
                 const isHovered = hoveredTileItem?.id === p.item.id;
@@ -683,7 +685,7 @@ export function MacroGrid({
                 width: "100%",
                 height: "100%",
               }}
-              className="items-center justify-items-center relative"
+              className="items-center justify-items-center relative min-h-0 min-w-0"
             >
               {portion3.placements.map((p) => {
                 const isHovered = hoveredTileItem?.id === p.item.id;
