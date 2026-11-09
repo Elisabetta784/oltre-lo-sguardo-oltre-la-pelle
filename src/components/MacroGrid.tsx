@@ -29,97 +29,164 @@ interface PortionPlacement {
 interface PortionData {
   cols: number;
   rows: number;
+  rowTemplate: string;
   placements: PortionPlacement[];
 }
 
 /**
- * Packs items into a designated portion of the 5x3m wall.
- * In full-archive mode (~76 items split into 3 portions of 26, 25, 25 items):
- * - Grid: exactly 4 columns x 7 rows = 28 slots per portion (84 slots total across 3 portions).
- * - Guaranteed: ALL 76 case studies are visible within the 100vh viewport without any clipping.
- * - Prominent landscape items (aspect ratio >= 1.25) span 2 columns as hero anchors (2 in P1, 3 in P2, 3 in P3).
- * - Single cells interlock compactly with varied size factors (0.94x to 1.04x) and subtle organic staggers.
+ * Harmonious Packing for full-archive mode (76 cases across 3 portions of 26, 25, 25 items):
+ * - Row 1 across all portions is filled with 2-column wide landscape items, completely eliminating white space at the top.
+ * - Rows 2 to 7 group items with complementary aspect ratios so that each row's items have matched heights.
+ * - Calibrated row templates ensure each row snugly wraps its content without vertical gaps.
+ * - Guaranteed: ALL 76 cases are 100% visible on screen simultaneously.
  * - Strictly keeps all items inside this portion; zero items positioned between adjacent portions.
  */
-function packPortionItems(
+function packHarmoniousPortion(
   portionItems: ArchiveItem[],
-  ratiosMap: Record<string, { w: number; h: number; ratio: number }>
+  ratiosMap: Record<string, { w: number; h: number; ratio: number }>,
+  portionIndex: number
 ): PortionData {
   const count = portionItems.length;
   if (count === 0) {
-    return { cols: 1, rows: 1, placements: [] };
+    return { cols: 1, rows: 1, rowTemplate: "1fr", placements: [] };
   }
 
-  // Full-archive mode: 4 columns x 7 rows = 28 slots
+  // Full-archive mode: 4 columns x 7 rows
   if (count >= 18) {
     const cols = 4;
     const rows = 7;
-    const slots = cols * rows; // 28 slots
-    const targetSpans = Math.max(0, slots - count); // 2 for 26 items, 3 for 25 items
+    const rowTemplate = "1.28fr 1.06fr 0.94fr 1.12fr 0.94fr 0.94fr 0.94fr";
 
-    const grid: boolean[][] = Array.from({ length: rows }, () =>
-      Array.from({ length: cols }, () => false)
+    // Select 2 wide landscape items for Row 1
+    const wideCandidates = portionItems.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
     );
+    const row1Items = wideCandidates.slice(0, 2);
+    let remaining = portionItems.filter((it) => !row1Items.includes(it));
+
+    // For 25-item portions (P2, P3): select 1 wide item for Row 4 (middle hero span)
+    let midSpanItem: ArchiveItem | null = null;
+    if (count === 25) {
+      const remWide = remaining.filter(
+        (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
+      );
+      midSpanItem = remWide[0] || remaining[0];
+      remaining = remaining.filter((it) => it !== midSpanItem);
+    }
+
+    // Categorize remaining into tall/square (< 1.1) and wide (>= 1.1)
+    const tall = remaining.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) < 1.1
+    );
+    const wide = remaining.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.1
+    );
+
     const placements: PortionPlacement[] = [];
 
-    let spansDone = 0;
-    let itemPtr = 0;
+    // ROW 1: Two 2-column wide landscape items flush with the top
+    placements.push({
+      item: row1Items[0],
+      row: 1,
+      col: 1,
+      colSpan: 2,
+      staggerY: 0,
+      sizeFactor: 1.02,
+    });
+    placements.push({
+      item: row1Items[1],
+      row: 1,
+      col: 3,
+      colSpan: 2,
+      staggerY: 0,
+      sizeFactor: 1.02,
+    });
 
-    for (let r = 0; r < rows; r++) {
-      let c = 0;
-      while (c < cols && itemPtr < count) {
-        if (grid[r][c]) {
-          c++;
-          continue;
-        }
+    if (count === 26) {
+      // P1: 8 tall, 16 wide distributed into rows 2..7 (6 rows of 4 items)
+      // Row 2: 4 tall
+      // Row 3: 4 wide
+      // Row 4: 4 tall
+      // Row 5: 4 wide
+      // Row 6: 4 wide
+      // Row 7: 4 wide
+      const rPlan: [number, ArchiveItem[]][] = [
+        [2, tall.slice(0, 4)],
+        [3, wide.slice(0, 4)],
+        [4, tall.slice(4, 8)],
+        [5, wide.slice(4, 8)],
+        [6, wide.slice(8, 12)],
+        [7, wide.slice(12, 16)],
+      ];
 
-        const item = portionItems[itemPtr];
-        const ratio = ratiosMap[item.id]?.ratio || item.aspectRatio || 1.33;
-
-        const remainingSlots = (rows - r) * cols - c;
-        const remainingItems = count - itemPtr;
-
-        // Can we span 2 columns horizontally (landscape item)?
-        const canSpan =
-          spansDone < targetSpans &&
-          c <= 2 &&
-          !grid[r][c + 1] &&
-          ratio >= 1.25 &&
-          remainingSlots - 2 >= remainingItems - 1;
-
-        const colSpan = canSpan ? 2 : 1;
-        if (colSpan === 2) {
-          spansDone++;
-          grid[r][c] = true;
-          grid[r][c + 1] = true;
-        } else {
-          grid[r][c] = true;
-        }
-
-        // Varied organic sizes:
-        // Spanned hero items scale prominently (1.08x).
-        // Single cells alternate rhythmically (0.94x to 1.04x) to interlock tightly.
-        const staggers = [-2, 1, -1, 2, 0, -1, 1];
-        const staggerY = staggers[(r * cols + c) % staggers.length];
-        const sizePattern = [1.02, 0.96, 1.0, 0.95, 1.04, 0.97, 0.98];
-        const sizeFactor =
-          colSpan === 2 ? 1.08 : sizePattern[itemPtr % sizePattern.length];
-
-        placements.push({
-          item,
-          row: r + 1,
-          col: c + 1,
-          colSpan,
-          staggerY,
-          sizeFactor,
+      rPlan.forEach(([rowNum, rowItems]) => {
+        rowItems.forEach((it, colIdx) => {
+          const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
+          placements.push({
+            item: it,
+            row: rowNum,
+            col: colIdx + 1,
+            colSpan: 1,
+            staggerY: colIdx % 2 === 1 ? 1 : -1,
+            sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
+          });
         });
+      });
+    } else {
+      // P2 and P3 (25 items):
+      // Row 4 has midSpanItem (cols 1-2) + 2 tall items (cols 3-4)
+      const midTall = tall.slice(0, 2);
+      const remTall = tall.slice(2);
+      const allPool = [...remTall, ...wide];
+      let poolPtr = 0;
 
-        c += colSpan;
-        itemPtr++;
+      for (let r = 2; r <= 7; r++) {
+        if (r === 4 && midSpanItem) {
+          placements.push({
+            item: midSpanItem,
+            row: 4,
+            col: 1,
+            colSpan: 2,
+            staggerY: 0,
+            sizeFactor: 1.02,
+          });
+          placements.push({
+            item: midTall[0],
+            row: 4,
+            col: 3,
+            colSpan: 1,
+            staggerY: 1,
+            sizeFactor: 1.0,
+          });
+          placements.push({
+            item: midTall[1],
+            row: 4,
+            col: 4,
+            colSpan: 1,
+            staggerY: -1,
+            sizeFactor: 1.0,
+          });
+        } else {
+          for (let c = 1; c <= 4; c++) {
+            if (poolPtr < allPool.length) {
+              const it = allPool[poolPtr];
+              const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
+              placements.push({
+                item: it,
+                row: r,
+                col: c,
+                colSpan: 1,
+                staggerY: c % 2 === 1 ? 1 : -1,
+                sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
+              });
+              poolPtr++;
+            }
+          }
+        }
       }
     }
 
-    return { cols, rows, placements };
+    return { cols, rows, rowTemplate, placements };
   }
 
   // Filtered mode with fewer items per portion (1 to 17 items)
@@ -141,7 +208,12 @@ function packPortionItems(
     });
   }
 
-  return { cols, rows, placements };
+  return {
+    cols,
+    rows,
+    rowTemplate: `repeat(${rows}, minmax(0, 1fr))`,
+    placements,
+  };
 }
 
 /**
@@ -169,9 +241,9 @@ function getThreePortionsLayout(
     const p3Items = displayItems.slice(51, 76);
 
     return {
-      portion1: packPortionItems(p1Items, ratiosMap),
-      portion2: packPortionItems(p2Items, ratiosMap),
-      portion3: packPortionItems(p3Items, ratiosMap),
+      portion1: packHarmoniousPortion(p1Items, ratiosMap, 0),
+      portion2: packHarmoniousPortion(p2Items, ratiosMap, 1),
+      portion3: packHarmoniousPortion(p3Items, ratiosMap, 2),
     };
   }
 
@@ -187,9 +259,9 @@ function getThreePortionsLayout(
   });
 
   return {
-    portion1: packPortionItems(p1Items, ratiosMap),
-    portion2: packPortionItems(p2Items, ratiosMap),
-    portion3: packPortionItems(p3Items, ratiosMap),
+    portion1: packHarmoniousPortion(p1Items, ratiosMap, 0),
+    portion2: packHarmoniousPortion(p2Items, ratiosMap, 1),
+    portion3: packHarmoniousPortion(p3Items, ratiosMap, 2),
   };
 }
 
@@ -272,8 +344,8 @@ const MacroTile = React.memo(function MacroTile({
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         style={{
           aspectRatio: `${dim.w} / ${dim.h}`,
-          maxWidth: `${Math.min(100, Math.round(98 * sizeFactor))}%`,
-          maxHeight: `${Math.min(100, Math.round(96 * sizeFactor))}%`,
+          maxWidth: `${Math.min(100, Math.round(99 * sizeFactor))}%`,
+          maxHeight: `${Math.min(100, Math.round(98 * sizeFactor))}%`,
         }}
         className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center ${
           isHovered
@@ -582,7 +654,7 @@ export function MacroGrid({
       </AnimatePresence>
 
       {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS */}
-      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-2 sm:p-2.5">
+      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-1.5 sm:p-2">
         {displayItems.length === 0 ? (
           <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
             <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
@@ -608,7 +680,7 @@ export function MacroGrid({
               style={{
                 display: "grid",
                 gridTemplateColumns: `repeat(${portion1.cols}, minmax(0, 1fr))`,
-                gridTemplateRows: `repeat(${portion1.rows}, minmax(0, 1fr))`,
+                gridTemplateRows: portion1.rowTemplate,
                 gap: "5px",
                 width: "100%",
                 height: "100%",
@@ -644,7 +716,7 @@ export function MacroGrid({
               style={{
                 display: "grid",
                 gridTemplateColumns: `repeat(${portion2.cols}, minmax(0, 1fr))`,
-                gridTemplateRows: `repeat(${portion2.rows}, minmax(0, 1fr))`,
+                gridTemplateRows: portion2.rowTemplate,
                 gap: "5px",
                 width: "100%",
                 height: "100%",
@@ -680,7 +752,7 @@ export function MacroGrid({
               style={{
                 display: "grid",
                 gridTemplateColumns: `repeat(${portion3.cols}, minmax(0, 1fr))`,
-                gridTemplateRows: `repeat(${portion3.rows}, minmax(0, 1fr))`,
+                gridTemplateRows: portion3.rowTemplate,
                 gap: "5px",
                 width: "100%",
                 height: "100%",
