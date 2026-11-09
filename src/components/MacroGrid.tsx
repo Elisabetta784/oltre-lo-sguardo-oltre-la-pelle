@@ -34,14 +34,15 @@ interface PortionData {
 }
 
 /**
- * Harmonious Packing for full-archive mode (76 cases across 3 portions of 26, 25, 25 items):
- * - Row 1 across all portions is filled with 2-column wide landscape items, completely eliminating white space at the top.
- * - Rows 2 to 7 group items with complementary aspect ratios so that each row's items have matched heights.
+ * Builds an organic, homogeneous, and balanced distribution for a portion:
+ * - Row 1 across all 3 portions features 2-column wide landscape items flush with the top, completely eliminating empty white bands at the top.
+ * - Rows 2 to 7 evenly intersperse tall portraits and wide landscapes in an alternating checkerboard pattern (1 to 2 tall items per row), preventing any rigid horizontal striping.
+ * - In Row 4, hero landscape items span 2 columns with dynamic diagonal balance (left in P2, right in P3).
  * - Calibrated row templates ensure each row snugly wraps its content without vertical gaps.
- * - Guaranteed: ALL 76 cases are 100% visible on screen simultaneously.
- * - Strictly keeps all items inside this portion; zero items positioned between adjacent portions.
+ * - Guaranteed: ALL 76 case studies are 100% visible on screen simultaneously.
+ * - Strictly keeps all items inside this portion; zero items positioned across adjacent portions.
  */
-function packHarmoniousPortion(
+function packHomogeneousPortion(
   portionItems: ArchiveItem[],
   ratiosMap: Record<string, { w: number; h: number; ratio: number }>,
   portionIndex: number
@@ -55,38 +56,38 @@ function packHarmoniousPortion(
   if (count >= 18) {
     const cols = 4;
     const rows = 7;
-    const rowTemplate = "1.28fr 1.06fr 0.94fr 1.12fr 0.94fr 0.94fr 0.94fr";
+    const rowTemplate = "1.22fr 1.02fr 0.96fr 1.10fr 0.96fr 0.96fr 0.96fr";
 
-    // Select 2 wide landscape items for Row 1
+    // 1. Select 2 wide landscape items for Row 1
     const wideCandidates = portionItems.filter(
       (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
     );
-    const row1Items = wideCandidates.slice(0, 2);
-    let remaining = portionItems.filter((it) => !row1Items.includes(it));
+    const row1 = wideCandidates.slice(0, 2);
+    let rem = portionItems.filter((it) => !row1.includes(it));
 
-    // For 25-item portions (P2, P3): select 1 wide item for Row 4 (middle hero span)
-    let midSpanItem: ArchiveItem | null = null;
+    // 2. Select 1 wide item for Row 4 hero span in portions with 25 items (P2, P3)
+    let midHero: ArchiveItem | null = null;
     if (count === 25) {
-      const remWide = remaining.filter(
+      const remWide = rem.filter(
         (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
       );
-      midSpanItem = remWide[0] || remaining[0];
-      remaining = remaining.filter((it) => it !== midSpanItem);
+      midHero = remWide[0] || rem[0];
+      rem = rem.filter((it) => it !== midHero);
     }
 
-    // Categorize remaining into tall/square (< 1.1) and wide (>= 1.1)
-    const tall = remaining.filter(
+    // 3. Separate remaining items into tall (< 1.1) and wide (>= 1.1)
+    const tall = rem.filter(
       (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) < 1.1
     );
-    const wide = remaining.filter(
+    const wide = rem.filter(
       (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.1
     );
 
     const placements: PortionPlacement[] = [];
 
-    // ROW 1: Two 2-column wide landscape items flush with the top
+    // ROW 1: Flush top hero landscapes spanning 2 columns each (no white gaps above)
     placements.push({
-      item: row1Items[0],
+      item: row1[0],
       row: 1,
       col: 1,
       colSpan: 2,
@@ -94,7 +95,7 @@ function packHarmoniousPortion(
       sizeFactor: 1.02,
     });
     placements.push({
-      item: row1Items[1],
+      item: row1[1],
       row: 1,
       col: 3,
       colSpan: 2,
@@ -103,86 +104,179 @@ function packHarmoniousPortion(
     });
 
     if (count === 26) {
-      // P1: 8 tall, 16 wide distributed into rows 2..7 (6 rows of 4 items)
-      // Row 2: 4 tall
-      // Row 3: 4 wide
-      // Row 4: 4 tall
-      // Row 5: 4 wide
-      // Row 6: 4 wide
-      // Row 7: 4 wide
-      const rPlan: [number, ArchiveItem[]][] = [
-        [2, tall.slice(0, 4)],
-        [3, wide.slice(0, 4)],
-        [4, tall.slice(4, 8)],
-        [5, wide.slice(4, 8)],
-        [6, wide.slice(8, 12)],
-        [7, wide.slice(12, 16)],
+      // Portion 1 (26 items): 8 tall, 16 wide
+      // Interwoven checkerboard pattern across rows 2-7:
+      // Row 2: [W, T, W, T] (2 tall, 2 wide)
+      // Row 3: [W, W, T, W] (1 tall, 3 wide)
+      // Row 4: [T, W, T, W] (2 tall, 2 wide)
+      // Row 5: [W, T, W, W] (1 tall, 3 wide)
+      // Row 6: [W, W, W, T] (1 tall, 3 wide)
+      // Row 7: [T, W, W, W] (1 tall, 3 wide)
+      let tallPtr = 0;
+      let widePtr = 0;
+      const rowPatterns = [
+        [false, true, false, true],
+        [false, false, true, false],
+        [true, false, true, false],
+        [false, true, false, false],
+        [false, false, false, true],
+        [true, false, false, false],
       ];
 
-      rPlan.forEach(([rowNum, rowItems]) => {
-        rowItems.forEach((it, colIdx) => {
+      rowPatterns.forEach((pat, rIdx) => {
+        const rowNum = rIdx + 2;
+        pat.forEach((isTall, colIdx) => {
+          let it: ArchiveItem;
+          if (isTall && tallPtr < tall.length) {
+            it = tall[tallPtr++];
+          } else {
+            it = wide[widePtr++];
+          }
           const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
+          const staggerY = (rowNum + colIdx) % 2 === 1 ? 1 : -1;
           placements.push({
             item: it,
             row: rowNum,
             col: colIdx + 1,
             colSpan: 1,
-            staggerY: colIdx % 2 === 1 ? 1 : -1,
+            staggerY,
             sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
           });
         });
       });
-    } else {
-      // P2 and P3 (25 items):
-      // Row 4 has midSpanItem (cols 1-2) + 2 tall items (cols 3-4)
-      const midTall = tall.slice(0, 2);
-      const remTall = tall.slice(2);
-      const allPool = [...remTall, ...wide];
-      let poolPtr = 0;
+    } else if (portionIndex === 1) {
+      // Portion 2 (25 items): 8 tall, 14 wide + 1 midHero
+      // Row 4: midHero (cols 1-2) + [Tall, Wide] (cols 3-4)
+      // Rows 2, 3, 5, 6, 7 evenly intersperse remaining 7 tall and 13 wide
+      let tallPtr = 0;
+      let widePtr = 0;
+      const p2RowPatterns = [
+        [true, false, true, false], // Row 2 (2 tall, 2 wide)
+        [false, true, false, false], // Row 3 (1 tall, 3 wide)
+        [false, true, false, true], // Row 5 (2 tall, 2 wide)
+        [true, false, false, false], // Row 6 (1 tall, 3 wide)
+        [false, false, true, false], // Row 7 (1 tall, 3 wide)
+      ];
 
-      for (let r = 2; r <= 7; r++) {
-        if (r === 4 && midSpanItem) {
-          placements.push({
-            item: midSpanItem,
-            row: 4,
-            col: 1,
-            colSpan: 2,
-            staggerY: 0,
-            sizeFactor: 1.02,
-          });
-          placements.push({
-            item: midTall[0],
-            row: 4,
-            col: 3,
-            colSpan: 1,
-            staggerY: 1,
-            sizeFactor: 1.0,
-          });
-          placements.push({
-            item: midTall[1],
-            row: 4,
-            col: 4,
-            colSpan: 1,
-            staggerY: -1,
-            sizeFactor: 1.0,
-          });
-        } else {
-          for (let c = 1; c <= 4; c++) {
-            if (poolPtr < allPool.length) {
-              const it = allPool[poolPtr];
-              const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
-              placements.push({
-                item: it,
-                row: r,
-                col: c,
-                colSpan: 1,
-                staggerY: c % 2 === 1 ? 1 : -1,
-                sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
-              });
-              poolPtr++;
-            }
+      p2RowPatterns.forEach((pat, rIdx) => {
+        const rowNum = rIdx < 2 ? rIdx + 2 : rIdx + 3;
+        pat.forEach((isTall, colIdx) => {
+          let it: ArchiveItem;
+          if (isTall && tallPtr < tall.length) {
+            it = tall[tallPtr++];
+          } else {
+            it = wide[widePtr++];
           }
-        }
+          const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
+          const staggerY = (rowNum + colIdx) % 2 === 1 ? 1 : -1;
+          placements.push({
+            item: it,
+            row: rowNum,
+            col: colIdx + 1,
+            colSpan: 1,
+            staggerY,
+            sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
+          });
+        });
+      });
+
+      // Row 4 for Portion 2
+      if (midHero) {
+        placements.push({
+          item: midHero,
+          row: 4,
+          col: 1,
+          colSpan: 2,
+          staggerY: 0,
+          sizeFactor: 1.02,
+        });
+      }
+      if (tallPtr < tall.length) {
+        placements.push({
+          item: tall[tallPtr++],
+          row: 4,
+          col: 3,
+          colSpan: 1,
+          staggerY: 1,
+          sizeFactor: 1.0,
+        });
+      }
+      if (widePtr < wide.length) {
+        placements.push({
+          item: wide[widePtr++],
+          row: 4,
+          col: 4,
+          colSpan: 1,
+          staggerY: -1,
+          sizeFactor: 0.99,
+        });
+      }
+    } else {
+      // Portion 3 (25 items): 5 tall, 17 wide + 1 midHero
+      // Row 4: [Tall, Wide] (cols 1-2) + midHero (cols 3-4) -> diagonal balance!
+      // Rows 2, 3, 5, 6, 7 evenly intersperse remaining 4 tall and 16 wide
+      let tallPtr = 0;
+      let widePtr = 0;
+      const p3RowPatterns = [
+        [false, true, false, false], // Row 2 (1 tall, 3 wide)
+        [true, false, false, false], // Row 3 (1 tall, 3 wide)
+        [false, false, true, false], // Row 5 (1 tall, 3 wide)
+        [false, false, false, true], // Row 6 (1 tall, 3 wide)
+        [false, false, false, false], // Row 7 (0 tall, 4 wide)
+      ];
+
+      p3RowPatterns.forEach((pat, rIdx) => {
+        const rowNum = rIdx < 2 ? rIdx + 2 : rIdx + 3;
+        pat.forEach((isTall, colIdx) => {
+          let it: ArchiveItem;
+          if (isTall && tallPtr < tall.length) {
+            it = tall[tallPtr++];
+          } else {
+            it = wide[widePtr++];
+          }
+          const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
+          const staggerY = (rowNum + colIdx) % 2 === 1 ? 1 : -1;
+          placements.push({
+            item: it,
+            row: rowNum,
+            col: colIdx + 1,
+            colSpan: 1,
+            staggerY,
+            sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
+          });
+        });
+      });
+
+      // Row 4 for Portion 3
+      if (tallPtr < tall.length) {
+        placements.push({
+          item: tall[tallPtr++],
+          row: 4,
+          col: 1,
+          colSpan: 1,
+          staggerY: 1,
+          sizeFactor: 1.0,
+        });
+      }
+      if (widePtr < wide.length) {
+        placements.push({
+          item: wide[widePtr++],
+          row: 4,
+          col: 2,
+          colSpan: 1,
+          staggerY: -1,
+          sizeFactor: 0.99,
+        });
+      }
+      if (midHero) {
+        placements.push({
+          item: midHero,
+          row: 4,
+          col: 3,
+          colSpan: 2,
+          staggerY: 0,
+          sizeFactor: 1.02,
+        });
       }
     }
 
@@ -241,9 +335,9 @@ function getThreePortionsLayout(
     const p3Items = displayItems.slice(51, 76);
 
     return {
-      portion1: packHarmoniousPortion(p1Items, ratiosMap, 0),
-      portion2: packHarmoniousPortion(p2Items, ratiosMap, 1),
-      portion3: packHarmoniousPortion(p3Items, ratiosMap, 2),
+      portion1: packHomogeneousPortion(p1Items, ratiosMap, 0),
+      portion2: packHomogeneousPortion(p2Items, ratiosMap, 1),
+      portion3: packHomogeneousPortion(p3Items, ratiosMap, 2),
     };
   }
 
@@ -259,9 +353,9 @@ function getThreePortionsLayout(
   });
 
   return {
-    portion1: packHarmoniousPortion(p1Items, ratiosMap, 0),
-    portion2: packHarmoniousPortion(p2Items, ratiosMap, 1),
-    portion3: packHarmoniousPortion(p3Items, ratiosMap, 2),
+    portion1: packHomogeneousPortion(p1Items, ratiosMap, 0),
+    portion2: packHomogeneousPortion(p2Items, ratiosMap, 1),
+    portion3: packHomogeneousPortion(p3Items, ratiosMap, 2),
   };
 }
 
