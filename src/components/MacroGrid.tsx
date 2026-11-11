@@ -364,7 +364,6 @@ interface MacroTileProps {
   item: ArchiveItem;
   isActive: boolean;
   isHovered: boolean;
-  hasHoveredSibling: boolean;
   isFilterOpen: boolean;
   row: number;
   col: number;
@@ -379,7 +378,6 @@ const MacroTile = React.memo(function MacroTile({
   item,
   isActive,
   isHovered,
-  hasHoveredSibling,
   isFilterOpen,
   row,
   col,
@@ -389,14 +387,6 @@ const MacroTile = React.memo(function MacroTile({
   onSelect,
   onHover,
 }: MacroTileProps) {
-  const tileOpacity = isFilterOpen
-    ? 1
-    : isHovered
-    ? 1
-    : hasHoveredSibling
-    ? 0.45
-    : 1;
-
   // Retrieve natural pixel dimensions & aspect ratio:
   const dim = ARCHIVE_ASPECT_RATIOS[item.id] || {
     w: 100,
@@ -439,9 +429,9 @@ const MacroTile = React.memo(function MacroTile({
         gridRow: `${row} / span 1`,
         gridColumn: `${col} / span ${colSpan}`,
         transform: `translateY(${staggerY}px)`,
-        opacity: tileOpacity,
+        opacity: 1,
       }}
-      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 flex items-center justify-center cursor-pointer relative group transition-opacity duration-150 ${
+      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 flex items-center justify-center cursor-pointer relative group ${
         isHovered ? "z-30" : "z-10"
       }`}
     >
@@ -827,7 +817,6 @@ export function MacroGrid({
                       item={p.item}
                       isActive={activeItemId === p.item.id}
                       isHovered={isHovered}
-                      hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
                       isFilterOpen={isFilterOpen}
                       row={p.row}
                       col={p.col}
@@ -911,7 +900,6 @@ export function MacroGrid({
                       item={p.item}
                       isActive={activeItemId === p.item.id}
                       isHovered={isHovered}
-                      hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
                       isFilterOpen={isFilterOpen}
                       row={p.row}
                       col={p.col}
@@ -995,7 +983,6 @@ export function MacroGrid({
                       item={p.item}
                       isActive={activeItemId === p.item.id}
                       isHovered={isHovered}
-                      hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
                       isFilterOpen={isFilterOpen}
                       row={p.row}
                       col={p.col}
