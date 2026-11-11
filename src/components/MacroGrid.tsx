@@ -802,6 +802,7 @@ function StationColumn({
             item={stationModal}
             portionIndex={portionIndex}
             onClose={onCloseModal}
+            onSelectItem={onSelectItem}
           />
         )}
       </AnimatePresence>
