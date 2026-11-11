@@ -19,32 +19,32 @@ export function StationModal({ item, portionIndex = 2, onClose }: StationModalPr
   // Natural dimensions from archive
   const dim = ARCHIVE_ASPECT_RATIOS[item.id];
 
-  // Seamless edge feathering only on the boundary bordering the neighboring column(s)
+  // Ultra-soft, delicate edge feathering (85px wide) on the boundary bordering the neighboring column(s)
   const maskStyle = useMemo(() => {
     if (portionIndex === 1) {
-      // Station 1: right edge borders Station 2 -> soft feather on right seam only
+      // Station 1: right edge borders Station 2 -> soft 85px gradual feather on right seam only
       return {
         maskImage:
-          "linear-gradient(to right, black 0%, black calc(100% - 28px), transparent 100%)",
+          "linear-gradient(to right, black 0%, black calc(100% - 85px), transparent 100%)",
         WebkitMaskImage:
-          "linear-gradient(to right, black 0%, black calc(100% - 28px), transparent 100%)",
+          "linear-gradient(to right, black 0%, black calc(100% - 85px), transparent 100%)",
       };
     }
     if (portionIndex === 3) {
-      // Station 3: left edge borders Station 2 -> soft feather on left seam only
+      // Station 3: left edge borders Station 2 -> soft 85px gradual feather on left seam only
       return {
         maskImage:
-          "linear-gradient(to right, transparent 0%, black 28px, black 100%)",
+          "linear-gradient(to right, transparent 0%, black 85px, black 100%)",
         WebkitMaskImage:
-          "linear-gradient(to right, transparent 0%, black 28px, black 100%)",
+          "linear-gradient(to right, transparent 0%, black 85px, black 100%)",
       };
     }
-    // Station 2 (center): borders both Station 1 and 3 -> soft feather on both seams
+    // Station 2 (center): borders both Station 1 and 3 -> soft 85px gradual feather on both seams
     return {
       maskImage:
-        "linear-gradient(to right, transparent 0%, black 28px, black calc(100% - 28px), transparent 100%)",
+        "linear-gradient(to right, transparent 0%, black 85px, black calc(100% - 85px), transparent 100%)",
       WebkitMaskImage:
-        "linear-gradient(to right, transparent 0%, black 28px, black calc(100% - 28px), transparent 100%)",
+        "linear-gradient(to right, transparent 0%, black 85px, black calc(100% - 85px), transparent 100%)",
     };
   }, [portionIndex]);
 
@@ -84,7 +84,7 @@ export function StationModal({ item, portionIndex = 2, onClose }: StationModalPr
 
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto overflow-hidden">
-      {/* 1. Original backdrop from first version, with softly feathered outer column seam */}
+      {/* 1. Lighter, delicate backdrop with wide 85px soft feathering on the outer column seam */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -92,7 +92,7 @@ export function StationModal({ item, portionIndex = 2, onClose }: StationModalPr
         transition={{ duration: 0.22, ease: "easeOut" }}
         onClick={onClose}
         style={maskStyle}
-        className="absolute inset-0 z-30 bg-[#F8F8F6]/78 backdrop-blur-[3.5px] cursor-pointer"
+        className="absolute inset-0 z-30 bg-[#F8F8F6]/52 backdrop-blur-[2px] cursor-pointer"
         aria-label="Chiudi"
       />
 
