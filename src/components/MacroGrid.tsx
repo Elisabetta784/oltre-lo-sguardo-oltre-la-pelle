@@ -508,7 +508,6 @@ interface StationColumnProps {
   portionIndex: 1 | 2 | 3;
   activeItemId: string;
   isFilterOpen: boolean;
-  hasAnyModalOpen: boolean;
   stationModal: ArchiveItem | null;
   hoveredTileItem: ArchiveItem | null;
   onSelectItem: (item: ArchiveItem) => void;
@@ -521,7 +520,6 @@ function StationColumn({
   portionIndex,
   activeItemId,
   isFilterOpen,
-  hasAnyModalOpen,
   stationModal,
   hoveredTileItem,
   onSelectItem,
@@ -532,6 +530,8 @@ function StationColumn({
   const trackRef = useRef<HTMLDivElement>(null);
   const heightRef = useRef(0);
   const [height, setHeight] = useState(0);
+
+  const isThisModalOpen = Boolean(stationModal);
 
   const offsetYRef = useRef(0);
   const isDraggingRef = useRef(false);
@@ -578,7 +578,7 @@ function StationColumn({
 
   // Pointer drag gestures (Touch screen on LED wall & mouse drag)
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (hasAnyModalOpen) return;
+    if (isThisModalOpen) return;
     if (e.button !== 0) return;
 
     if (rafIdRef.current) {
@@ -657,7 +657,7 @@ function StationColumn({
     if (!el) return;
 
     const handleWheel = (e: WheelEvent) => {
-      if (hasAnyModalOpen) return;
+      if (isThisModalOpen) return;
       if (e.ctrlKey) return; // allow pinch-zoom to pass to global handler
 
       e.preventDefault();
@@ -675,7 +675,7 @@ function StationColumn({
 
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
-  }, [hasAnyModalOpen, applyTransform]);
+  }, [isThisModalOpen, applyTransform]);
 
   // Clean-up animation frame on unmount
   useEffect(() => {
@@ -693,7 +693,7 @@ function StationColumn({
   const renderTilesCopy = (copyIdx: 0 | 1 | 2) => {
     const isClone = copyIdx !== 1;
     return portion.placements.map((p) => {
-      const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
+      const isHovered = !isThisModalOpen && hoveredTileItem?.id === p.item.id;
       return (
         <MacroTile
           key={`c${copyIdx}-${p.item.id}-${p.row}-${p.col}`}
@@ -709,7 +709,7 @@ function StationColumn({
           isClone={isClone}
           onSelect={handleSelectTile}
           onHover={(item) => {
-            if (!hasAnyModalOpen && !isDraggingRef.current) {
+            if (!isThisModalOpen && !isDraggingRef.current) {
               onHoverTile(item);
             }
           }}
@@ -1061,7 +1061,6 @@ export function MacroGrid({
               portionIndex={1}
               activeItemId={activeItemId}
               isFilterOpen={isFilterOpen}
-              hasAnyModalOpen={hasAnyModalOpen}
               stationModal={stationModals[1]}
               hoveredTileItem={hoveredTileItem}
               onSelectItem={(item) => {
@@ -1079,7 +1078,6 @@ export function MacroGrid({
               portionIndex={2}
               activeItemId={activeItemId}
               isFilterOpen={isFilterOpen}
-              hasAnyModalOpen={hasAnyModalOpen}
               stationModal={stationModals[2]}
               hoveredTileItem={hoveredTileItem}
               onSelectItem={(item) => {
@@ -1097,7 +1095,6 @@ export function MacroGrid({
               portionIndex={3}
               activeItemId={activeItemId}
               isFilterOpen={isFilterOpen}
-              hasAnyModalOpen={hasAnyModalOpen}
               stationModal={stationModals[3]}
               hoveredTileItem={hoveredTileItem}
               onSelectItem={(item) => {
