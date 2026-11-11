@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Info, ArrowLeft } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ITEMS, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
@@ -353,15 +353,16 @@ export function StationModal({
               </div>
             </div>
 
-            {/* Bottom Bar: [ VEDI OPERA ] | [ OLTRE ] | [ CHIUDI ] */}
+            {/* Bottom Bar: [ < ] | [ OLTRE ] | [ CHIUDI ] */}
             <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1 sm:gap-1.5 shrink-0 select-none">
               <button
                 type="button"
                 onClick={() => setViewMode("image")}
-                className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1"
+                aria-label="Torna all'opera"
+                title="Torna all'opera"
+                className="w-8 py-1.5 bg-[#F8F8F6] text-black hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center shrink-0"
               >
-                <ArrowLeft className="w-3 h-3" />
-                <span>VEDI OPERA</span>
+                <ArrowLeft className="w-3.5 h-3.5" />
               </button>
 
               <button
@@ -387,7 +388,7 @@ export function StationModal({
         {viewMode === "oltre" && (
           /* ========================================================== */
           /* VIEW 3: OLTRE (Categorical Network inspired by oltre.jpg)  */
-          /* Allows navigating to all 76 case studies across 3 screens   */
+          /* Horizontal drag-to-scroll rows, active item first & red   */
           /* ========================================================== */
           <motion.div
             key="oltre-view"
@@ -396,17 +397,13 @@ export function StationModal({
             exit={{ opacity: 0, scale: 0.94, y: 10 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative z-50 flex flex-col w-[96%] sm:w-[94%] max-w-[560px] max-h-[72vh] my-auto bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 overflow-hidden text-black select-none"
+            className="relative z-50 flex flex-col w-[96%] sm:w-[94%] max-w-[560px] max-h-[76vh] my-auto bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 overflow-hidden text-black select-none"
           >
-            {/* Header Bar */}
+            {/* Header Bar: Only Category number & label (no selected case number) */}
             <div className="h-8 px-3 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
               <div className="flex items-center gap-2">
-                <span className="font-display text-[9.5px] sm:text-[10px] font-bold tracking-widest uppercase text-black">
+                <span className="font-display text-[10px] font-bold tracking-widest uppercase text-black">
                   {currentCatConfig.num} {currentCatConfig.label}
-                </span>
-                <span className="text-black/30 text-[9px]">•</span>
-                <span className="font-display text-[8.5px] tracking-wider uppercase text-black/50 font-semibold">
-                  CASO {item.number} SELEZIONATO
                 </span>
               </div>
 
@@ -420,78 +417,36 @@ export function StationModal({
               </button>
             </div>
 
-            {/* Subcategories Columns (Categorical clusters from oltre.jpg) */}
-            <div className="p-3 flex-1 min-h-0 bg-[#F8F8F6] overflow-y-auto custom-scrollbar">
-              <div
-                className={`grid gap-2 sm:gap-3 w-full h-full items-start ${
-                  currentCatConfig.subcategories.length === 3 ? "grid-cols-3" : "grid-cols-4"
-                }`}
-              >
-                {currentCatConfig.subcategories.map((subcat) => {
-                  const list = subcategoryItems[subcat] || [];
-                  return (
-                    <div key={subcat} className="flex flex-col items-center min-w-0">
-                      {/* Subcategory title */}
-                      <div className="w-full text-center pb-1.5 mb-1.5 border-b border-black/15 shrink-0">
-                        <span className="font-display text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-black block line-clamp-2">
-                          {subcat}
-                        </span>
-                      </div>
-
-                      {/* Cluster of case study thumbnails */}
-                      <div className="flex flex-wrap justify-center items-center gap-1 sm:gap-1.5 max-h-[46vh] overflow-y-auto custom-scrollbar p-1">
-                        {list.map((c) => {
-                          const isCurrent = c.id === item.id;
-                          return (
-                            <button
-                              key={c.id}
-                              type="button"
-                              title={`Caso ${c.number}: ${c.title}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectCaseFromOltre(c);
-                              }}
-                              className={`w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 relative overflow-hidden cursor-pointer transition-all duration-150 select-none flex-shrink-0 ${
-                                isCurrent
-                                  ? "border-[2.5px] border-black shadow-lg shadow-black/40 scale-110 z-20"
-                                  : "border border-black/25 hover:border-black hover:scale-115 hover:z-10 bg-[#ECECE8]"
-                              }`}
-                            >
-                              <img
-                                src={c.thumbnailUrl || c.imageUrl || ""}
-                                alt={c.title}
-                                draggable={false}
-                                loading="lazy"
-                                className="w-full h-full object-cover block filter-none pointer-events-none"
-                              />
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+            {/* Subcategories Horizontal Rows (Scrollable with mouse drag / touch / wheel, no scrollbars) */}
+            <div className="p-3 flex-1 min-h-0 bg-[#F8F8F6] overflow-y-auto no-scrollbar flex flex-col gap-2.5 sm:gap-3">
+              {currentCatConfig.subcategories.map((subcat) => {
+                const list = subcategoryItems[subcat] || [];
+                return (
+                  <OltreHorizontalRow
+                    key={subcat}
+                    title={subcat}
+                    items={list}
+                    currentItemId={item.id}
+                    onSelectCase={handleSelectCaseFromOltre}
+                  />
+                );
+              })}
             </div>
 
-            {/* Bottom Bar: [ VEDI OPERA ] and 5 Category selectors on the right */}
-            <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1 sm:gap-1.5 shrink-0 select-none">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("image")}
-                  className="py-1 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center gap-1"
-                >
-                  <ArrowLeft className="w-2.5 h-2.5" />
-                  <span>VEDI OPERA</span>
-                </button>
-                <span className="font-display text-[9px] font-bold tracking-wider uppercase text-black/50 hidden sm:inline">
-                  OLTRE
-                </span>
-              </div>
+            {/* Bottom Bar: Back arrow button on left, 5 Category tabs on right */}
+            <div className="h-9 px-2 sm:px-2.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1 sm:gap-2 shrink-0 select-none">
+              <button
+                type="button"
+                onClick={() => setViewMode("image")}
+                aria-label="Torna indietro"
+                title="Torna all'opera"
+                className="w-7 h-7 sm:w-7.5 sm:h-7.5 bg-[#F8F8F6] text-black hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center shrink-0"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+              </button>
 
               {/* 5 Category Selector tabs (Origine, Intenzione, Sguardo, Scala, Cromia) */}
-              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto select-none">
+              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar select-none">
                 {OLTRE_CATEGORIES.map((cat) => {
                   const isActive = cat.id === activeCatKey;
                   return (
@@ -502,7 +457,7 @@ export function StationModal({
                       className={`font-display text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wider transition-colors cursor-pointer px-1.5 sm:px-2 py-0.5 sm:py-1 ${
                         isActive
                           ? "bg-black text-[#F8F8F6] border border-black shadow-sm"
-                          : "text-black/60 hover:text-black hover:bg-black/5"
+                          : "text-black/60 hover:text-black hover:bg-black/5 border border-transparent"
                       }`}
                     >
                       {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
@@ -514,6 +469,185 @@ export function StationModal({
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/* ========================================================================== */
+/* OltreHorizontalRow: Horizontal row with mouse/touch drag-to-scroll,        */
+/* wheel support, active case study placed first and highlighted in red.      */
+/* ========================================================================== */
+
+interface OltreHorizontalRowProps {
+  title: string;
+  items: ArchiveItem[];
+  currentItemId: string;
+  onSelectCase: (item: ArchiveItem) => void;
+}
+
+function OltreHorizontalRow({
+  title,
+  items,
+  currentItemId,
+  onSelectCase,
+}: OltreHorizontalRowProps) {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const isPointerDownRef = useRef(false);
+  const startXRef = useRef(0);
+  const startScrollLeftRef = useRef(0);
+  const hasDraggedRef = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Check if this row contains the current item
+  const containsCurrent = useMemo(
+    () => items.some((it) => it.id === currentItemId),
+    [items, currentItemId]
+  );
+
+  // Sort items: always place the active item at index 0 (first in row)
+  const sortedItems = useMemo(() => {
+    return [...items].sort((a, b) => {
+      if (a.id === currentItemId) return -1;
+      if (b.id === currentItemId) return 1;
+      return 0;
+    });
+  }, [items, currentItemId]);
+
+  // Support mouse wheel horizontal scrolling
+  useEffect(() => {
+    const el = rowRef.current;
+    if (!el) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.deltaY !== 0 && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    };
+
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, []);
+
+  // Window listeners during pointer down so dragging works smoothly anywhere on screen
+  useEffect(() => {
+    const handleGlobalPointerMove = (e: PointerEvent) => {
+      if (!isPointerDownRef.current || !rowRef.current) return;
+      const dx = e.clientX - startXRef.current;
+      if (Math.abs(dx) > 4) {
+        hasDraggedRef.current = true;
+        setIsDragging(true);
+        rowRef.current.scrollLeft = startScrollLeftRef.current - dx;
+      }
+    };
+
+    const handleGlobalPointerUp = () => {
+      if (!isPointerDownRef.current) return;
+      isPointerDownRef.current = false;
+      setIsDragging(false);
+      if (hasDraggedRef.current) {
+        setTimeout(() => {
+          hasDraggedRef.current = false;
+        }, 80);
+      }
+    };
+
+    window.addEventListener("pointermove", handleGlobalPointerMove);
+    window.addEventListener("pointerup", handleGlobalPointerUp);
+    window.addEventListener("pointercancel", handleGlobalPointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handleGlobalPointerMove);
+      window.removeEventListener("pointerup", handleGlobalPointerUp);
+      window.removeEventListener("pointercancel", handleGlobalPointerUp);
+    };
+  }, []);
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    isPointerDownRef.current = true;
+    startXRef.current = e.clientX;
+    startScrollLeftRef.current = rowRef.current?.scrollLeft || 0;
+    hasDraggedRef.current = false;
+  };
+
+  return (
+    <div className="flex flex-col gap-1 border-b border-black/10 last:border-b-0 pb-2">
+      {/* Subcategory Label & Count */}
+      <div className="flex items-center justify-between px-1 shrink-0 select-none">
+        <div className="flex items-center gap-1.5">
+          <span className="font-display text-[9px] sm:text-[9.5px] font-bold uppercase tracking-wider text-black">
+            {title}
+          </span>
+          {containsCurrent && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.2 bg-[#FF3B30]/10 text-[#FF3B30] border border-[#FF3B30]/30 rounded-xs text-[7px] sm:text-[7.5px] font-bold font-display uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B30]" />
+              CASO ATTIVO
+            </span>
+          )}
+        </div>
+        <span className="font-display text-[8px] sm:text-[8.5px] font-semibold text-black/40 tracking-wider">
+          {sortedItems.length} OPERE
+        </span>
+      </div>
+
+      {/* Horizontal Drag-To-Scroll Row */}
+      <div
+        ref={rowRef}
+        onPointerDown={handlePointerDown}
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+          WebkitOverflowScrolling: "touch",
+        }}
+        className={`flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 px-1 touch-pan-x select-none ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
+        }`}
+      >
+        {sortedItems.map((c) => {
+          const isCurrent = c.id === currentItemId;
+          return (
+            <button
+              key={c.id}
+              type="button"
+              draggable={false}
+              title={`Caso ${c.number}: ${c.title}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (hasDraggedRef.current) return;
+                onSelectCase(c);
+              }}
+              className={`relative flex-shrink-0 cursor-pointer overflow-hidden transition-all duration-150 select-none ${
+                isCurrent
+                  ? "w-11 h-11 sm:w-12 sm:h-12 border-2 border-[#FF3B30] ring-2 ring-[#FF3B30]/35 shadow-md shadow-[#FF3B30]/30 scale-105 z-20 bg-white"
+                  : "w-10 h-10 sm:w-11 sm:h-11 border border-black/25 hover:border-black hover:scale-105 z-0 bg-[#ECECE8]"
+              }`}
+            >
+              <img
+                src={c.thumbnailUrl || c.imageUrl || ""}
+                alt={c.title}
+                draggable={false}
+                loading="lazy"
+                className="w-full h-full object-cover block filter-none pointer-events-none"
+              />
+
+              {/* Red dot indicator on active case */}
+              {isCurrent && (
+                <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-[#FF3B30] ring-1 ring-white pointer-events-none z-10" />
+              )}
+
+              {/* Discrete Case Number Tag */}
+              <div
+                className={`absolute bottom-0 inset-x-0 font-display text-[6.5px] sm:text-[7px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter ${
+                  isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/65 text-white/95"
+                }`}
+              >
+                {c.number}
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

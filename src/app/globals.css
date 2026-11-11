@@ -124,3 +124,19 @@ html, body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #000000;
 }
+
+/* Hide scrollbars completely where requested (Oltre horizontal drag rows, etc.) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Prevent native ghost image drag when dragging to scroll */
+img {
+  -webkit-user-drag: none;
+}
