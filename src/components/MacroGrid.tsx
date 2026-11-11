@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useRef, useEffect, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Volume2 } from "lucide-react";
+import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
+import { Volume2, ArrowUp } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 import { StationModal } from "./StationModal";
 
@@ -404,11 +404,25 @@ const MacroTile = React.memo(function MacroTile({
     ratio: item.aspectRatio || 1.33,
   };
 
+  // Track pointer down coordinate to distinguish drag from tap
+  const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
+
   return (
     <div
+      onPointerDown={(e) => {
+        pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
+      }}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (pointerDownPosRef.current) {
+          const dx = Math.abs(e.clientX - pointerDownPosRef.current.x);
+          const dy = Math.abs(e.clientY - pointerDownPosRef.current.y);
+          if (dx > 6 || dy > 6) {
+            // Drag gesture occurred: ignore click
+            return;
+          }
+        }
         onSelect(item);
       }}
       role="button"
@@ -528,6 +542,26 @@ export function MacroGrid({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  // Independent vertical pull-down motion values for the 3 stations (LED wall physical accessibility)
+  const y1 = useMotionValue(0);
+  const y2 = useMotionValue(0);
+  const y3 = useMotionValue(0);
+
+  const [isPulled1, setIsPulled1] = useState(false);
+  const [isPulled2, setIsPulled2] = useState(false);
+  const [isPulled3, setIsPulled3] = useState(false);
+
+  useEffect(() => {
+    const unsub1 = y1.on("change", (latest) => setIsPulled1(latest > 50));
+    const unsub2 = y2.on("change", (latest) => setIsPulled2(latest > 50));
+    const unsub3 = y3.on("change", (latest) => setIsPulled3(latest > 50));
+    return () => {
+      unsub1();
+      unsub2();
+      unsub3();
+    };
+  }, [y1, y2, y3]);
 
   const displayItems = items;
 
@@ -721,6 +755,21 @@ export function MacroGrid({
       <div className="fixed top-0 bottom-0 right-0 w-4 sm:w-6 edge-fade-right z-20 pointer-events-none" />
 
 
+      {/* 2. UNIFIED NATURAL FULL-SCREEN BACKDROP: Seamless blur across the entire 5m LED wall with zero column seams */}
+      <AnimatePresence>
+        {hasAnyModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.32, ease: "easeOut" }}
+            onClick={() => setStationModals({ 1: null, 2: null, 3: null })}
+            className="fixed inset-0 z-30 bg-[#F8F8F6]/68 backdrop-blur-[3.5px] cursor-pointer"
+            aria-label="Chiudi modale"
+          />
+        )}
+      </AnimatePresence>
+
       {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS */}
       <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-1.5 sm:p-2">
         {displayItems.length === 0 ? (
@@ -744,51 +793,80 @@ export function MacroGrid({
             {/* ======================================================== */}
             {/* PORTION 1: LEFT STATION (CASI 001 - 026)                */}
             {/* ======================================================== */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${portion1.cols}, minmax(0, 1fr))`,
-                gridTemplateRows: portion1.rowTemplate,
-                gap: "5px",
-                width: "100%",
-                height: "100%",
-              }}
-              className="items-center justify-items-center relative min-h-0 min-w-0 overflow-hidden"
-            >
-              {portion1.placements.map((p) => {
-                const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
-                return (
-                  <MacroTile
-                    key={p.item.id}
-                    item={p.item}
-                    isActive={activeItemId === p.item.id}
-                    isHovered={isHovered}
-                    hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
-                    isFilterOpen={isFilterOpen}
-                    row={p.row}
-                    col={p.col}
-                    colSpan={p.colSpan}
-                    staggerY={p.staggerY}
-                    sizeFactor={p.sizeFactor}
-                    onSelect={(selectedItem) => {
-                      setStationModals((prev) => ({ ...prev, 1: selectedItem }));
-                      setHoveredTileItem(null);
-                      onSelectItem(selectedItem);
-                    }}
-                    onHover={(item) => {
-                      if (!hasAnyModalOpen) setHoveredTileItem(item);
-                    }}
-                  />
-                );
-              })}
+            <div className="relative min-h-0 min-w-0 overflow-hidden w-full h-full flex flex-col">
+              {/* Subtle top grab handle for pull-down affordance */}
+              <div className="absolute top-1 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex items-center justify-center opacity-30">
+                <div className="w-8 h-1 bg-black/40 rounded-full" />
+              </div>
 
-              {/* Station 1 Modal: strictly bounded inside Station 1 */}
+              {/* Reset button when pulled down */}
+              <AnimatePresence>
+                {isPulled1 && !hasAnyModalOpen && (
+                  <motion.button
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    type="button"
+                    onClick={() => animate(y1, 0, { type: "spring", stiffness: 350, damping: 30 })}
+                    className="absolute top-2 left-1/2 -translate-x-1/2 z-30 bg-black text-[#F8F8F6] px-2.5 py-1 font-display text-[9px] font-bold uppercase tracking-wider shadow-lg border border-black cursor-pointer flex items-center gap-1 hover:bg-black/80 transition-colors"
+                  >
+                    <ArrowUp className="w-2.5 h-2.5" />
+                    <span>RIPRISTINA IN ALTO</span>
+                  </motion.button>
+                )}
+              </AnimatePresence>
+
+              {/* Draggable grid for physical LED wall reachability */}
+              <motion.div
+                drag={!hasAnyModalOpen ? "y" : false}
+                dragConstraints={{ top: 0, bottom: 320 }}
+                dragElastic={0.12}
+                dragTransition={{ bounceStiffness: 380, bounceDamping: 32 }}
+                style={{
+                  y: y1,
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${portion1.cols}, minmax(0, 1fr))`,
+                  gridTemplateRows: portion1.rowTemplate,
+                  gap: "5px",
+                  width: "100%",
+                  height: "100%",
+                }}
+                className="items-center justify-items-center relative min-h-0 min-w-0 cursor-grab active:cursor-grabbing touch-none select-none will-change-transform"
+              >
+                {portion1.placements.map((p) => {
+                  const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
+                  return (
+                    <MacroTile
+                      key={p.item.id}
+                      item={p.item}
+                      isActive={activeItemId === p.item.id}
+                      isHovered={isHovered}
+                      hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
+                      isFilterOpen={isFilterOpen}
+                      row={p.row}
+                      col={p.col}
+                      colSpan={p.colSpan}
+                      staggerY={p.staggerY}
+                      sizeFactor={p.sizeFactor}
+                      onSelect={(selectedItem) => {
+                        setStationModals((prev) => ({ ...prev, 1: selectedItem }));
+                        setHoveredTileItem(null);
+                        onSelectItem(selectedItem);
+                      }}
+                      onHover={(item) => {
+                        if (!hasAnyModalOpen) setHoveredTileItem(item);
+                      }}
+                    />
+                  );
+                })}
+              </motion.div>
+
+              {/* Station 1 Modal: strictly bounded inside Station 1, scaled down with generous breathing room */}
               <AnimatePresence>
                 {stationModals[1] && (
                   <StationModal
                     key={stationModals[1].id}
                     item={stationModals[1]}
-                    portionIndex={1}
                     onClose={() => setStationModals((prev) => ({ ...prev, 1: null }))}
                   />
                 )}
@@ -798,51 +876,80 @@ export function MacroGrid({
             {/* ======================================================== */}
             {/* PORTION 2: CENTER STATION (CASI 027 - 051)              */}
             {/* ======================================================== */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${portion2.cols}, minmax(0, 1fr))`,
-                gridTemplateRows: portion2.rowTemplate,
-                gap: "5px",
-                width: "100%",
-                height: "100%",
-              }}
-              className="items-center justify-items-center relative min-h-0 min-w-0 overflow-hidden"
-            >
-              {portion2.placements.map((p) => {
-                const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
-                return (
-                  <MacroTile
-                    key={p.item.id}
-                    item={p.item}
-                    isActive={activeItemId === p.item.id}
-                    isHovered={isHovered}
-                    hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
-                    isFilterOpen={isFilterOpen}
-                    row={p.row}
-                    col={p.col}
-                    colSpan={p.colSpan}
-                    staggerY={p.staggerY}
-                    sizeFactor={p.sizeFactor}
-                    onSelect={(selectedItem) => {
-                      setStationModals((prev) => ({ ...prev, 2: selectedItem }));
-                      setHoveredTileItem(null);
-                      onSelectItem(selectedItem);
-                    }}
-                    onHover={(item) => {
-                      if (!hasAnyModalOpen) setHoveredTileItem(item);
-                    }}
-                  />
-                );
-              })}
+            <div className="relative min-h-0 min-w-0 overflow-hidden w-full h-full flex flex-col">
+              {/* Subtle top grab handle for pull-down affordance */}
+              <div className="absolute top-1 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex items-center justify-center opacity-30">
+                <div className="w-8 h-1 bg-black/40 rounded-full" />
+              </div>
 
-              {/* Station 2 Modal: strictly bounded inside Station 2 */}
+              {/* Reset button when pulled down */}
+              <AnimatePresence>
+                {isPulled2 && !hasAnyModalOpen && (
+                  <motion.button
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    type="button"
+                    onClick={() => animate(y2, 0, { type: "spring", stiffness: 350, damping: 30 })}
+                    className="absolute top-2 left-1/2 -translate-x-1/2 z-30 bg-black text-[#F8F8F6] px-2.5 py-1 font-display text-[9px] font-bold uppercase tracking-wider shadow-lg border border-black cursor-pointer flex items-center gap-1 hover:bg-black/80 transition-colors"
+                  >
+                    <ArrowUp className="w-2.5 h-2.5" />
+                    <span>RIPRISTINA IN ALTO</span>
+                  </motion.button>
+                )}
+              </AnimatePresence>
+
+              {/* Draggable grid for physical LED wall reachability */}
+              <motion.div
+                drag={!hasAnyModalOpen ? "y" : false}
+                dragConstraints={{ top: 0, bottom: 320 }}
+                dragElastic={0.12}
+                dragTransition={{ bounceStiffness: 380, bounceDamping: 32 }}
+                style={{
+                  y: y2,
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${portion2.cols}, minmax(0, 1fr))`,
+                  gridTemplateRows: portion2.rowTemplate,
+                  gap: "5px",
+                  width: "100%",
+                  height: "100%",
+                }}
+                className="items-center justify-items-center relative min-h-0 min-w-0 cursor-grab active:cursor-grabbing touch-none select-none will-change-transform"
+              >
+                {portion2.placements.map((p) => {
+                  const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
+                  return (
+                    <MacroTile
+                      key={p.item.id}
+                      item={p.item}
+                      isActive={activeItemId === p.item.id}
+                      isHovered={isHovered}
+                      hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
+                      isFilterOpen={isFilterOpen}
+                      row={p.row}
+                      col={p.col}
+                      colSpan={p.colSpan}
+                      staggerY={p.staggerY}
+                      sizeFactor={p.sizeFactor}
+                      onSelect={(selectedItem) => {
+                        setStationModals((prev) => ({ ...prev, 2: selectedItem }));
+                        setHoveredTileItem(null);
+                        onSelectItem(selectedItem);
+                      }}
+                      onHover={(item) => {
+                        if (!hasAnyModalOpen) setHoveredTileItem(item);
+                      }}
+                    />
+                  );
+                })}
+              </motion.div>
+
+              {/* Station 2 Modal: strictly bounded inside Station 2, scaled down with generous breathing room */}
               <AnimatePresence>
                 {stationModals[2] && (
                   <StationModal
                     key={stationModals[2].id}
                     item={stationModals[2]}
-                    portionIndex={2}
                     onClose={() => setStationModals((prev) => ({ ...prev, 2: null }))}
                   />
                 )}
@@ -852,51 +959,80 @@ export function MacroGrid({
             {/* ======================================================== */}
             {/* PORTION 3: RIGHT STATION (CASI 052 - 076)               */}
             {/* ======================================================== */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${portion3.cols}, minmax(0, 1fr))`,
-                gridTemplateRows: portion3.rowTemplate,
-                gap: "5px",
-                width: "100%",
-                height: "100%",
-              }}
-              className="items-center justify-items-center relative min-h-0 min-w-0 overflow-hidden"
-            >
-              {portion3.placements.map((p) => {
-                const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
-                return (
-                  <MacroTile
-                    key={p.item.id}
-                    item={p.item}
-                    isActive={activeItemId === p.item.id}
-                    isHovered={isHovered}
-                    hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
-                    isFilterOpen={isFilterOpen}
-                    row={p.row}
-                    col={p.col}
-                    colSpan={p.colSpan}
-                    staggerY={p.staggerY}
-                    sizeFactor={p.sizeFactor}
-                    onSelect={(selectedItem) => {
-                      setStationModals((prev) => ({ ...prev, 3: selectedItem }));
-                      setHoveredTileItem(null);
-                      onSelectItem(selectedItem);
-                    }}
-                    onHover={(item) => {
-                      if (!hasAnyModalOpen) setHoveredTileItem(item);
-                    }}
-                  />
-                );
-              })}
+            <div className="relative min-h-0 min-w-0 overflow-hidden w-full h-full flex flex-col">
+              {/* Subtle top grab handle for pull-down affordance */}
+              <div className="absolute top-1 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex items-center justify-center opacity-30">
+                <div className="w-8 h-1 bg-black/40 rounded-full" />
+              </div>
 
-              {/* Station 3 Modal: strictly bounded inside Station 3 */}
+              {/* Reset button when pulled down */}
+              <AnimatePresence>
+                {isPulled3 && !hasAnyModalOpen && (
+                  <motion.button
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    type="button"
+                    onClick={() => animate(y3, 0, { type: "spring", stiffness: 350, damping: 30 })}
+                    className="absolute top-2 left-1/2 -translate-x-1/2 z-30 bg-black text-[#F8F8F6] px-2.5 py-1 font-display text-[9px] font-bold uppercase tracking-wider shadow-lg border border-black cursor-pointer flex items-center gap-1 hover:bg-black/80 transition-colors"
+                  >
+                    <ArrowUp className="w-2.5 h-2.5" />
+                    <span>RIPRISTINA IN ALTO</span>
+                  </motion.button>
+                )}
+              </AnimatePresence>
+
+              {/* Draggable grid for physical LED wall reachability */}
+              <motion.div
+                drag={!hasAnyModalOpen ? "y" : false}
+                dragConstraints={{ top: 0, bottom: 320 }}
+                dragElastic={0.12}
+                dragTransition={{ bounceStiffness: 380, bounceDamping: 32 }}
+                style={{
+                  y: y3,
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${portion3.cols}, minmax(0, 1fr))`,
+                  gridTemplateRows: portion3.rowTemplate,
+                  gap: "5px",
+                  width: "100%",
+                  height: "100%",
+                }}
+                className="items-center justify-items-center relative min-h-0 min-w-0 cursor-grab active:cursor-grabbing touch-none select-none will-change-transform"
+              >
+                {portion3.placements.map((p) => {
+                  const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
+                  return (
+                    <MacroTile
+                      key={p.item.id}
+                      item={p.item}
+                      isActive={activeItemId === p.item.id}
+                      isHovered={isHovered}
+                      hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
+                      isFilterOpen={isFilterOpen}
+                      row={p.row}
+                      col={p.col}
+                      colSpan={p.colSpan}
+                      staggerY={p.staggerY}
+                      sizeFactor={p.sizeFactor}
+                      onSelect={(selectedItem) => {
+                        setStationModals((prev) => ({ ...prev, 3: selectedItem }));
+                        setHoveredTileItem(null);
+                        onSelectItem(selectedItem);
+                      }}
+                      onHover={(item) => {
+                        if (!hasAnyModalOpen) setHoveredTileItem(item);
+                      }}
+                    />
+                  );
+                })}
+              </motion.div>
+
+              {/* Station 3 Modal: strictly bounded inside Station 3, scaled down with generous breathing room */}
               <AnimatePresence>
                 {stationModals[3] && (
                   <StationModal
                     key={stationModals[3].id}
                     item={stationModals[3]}
-                    portionIndex={3}
                     onClose={() => setStationModals((prev) => ({ ...prev, 3: null }))}
                   />
                 )}
