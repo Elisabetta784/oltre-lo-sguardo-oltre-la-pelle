@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, ArrowUp } from "lucide-react";
+import { Volume2 } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 import { StationModal } from "./StationModal";
 
@@ -404,18 +404,19 @@ const MacroTile = React.memo(function MacroTile({
       onPointerDown={(e) => {
         pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
       }}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      onPointerUp={(e) => {
         if (pointerDownPosRef.current) {
           const dx = Math.abs(e.clientX - pointerDownPosRef.current.x);
           const dy = Math.abs(e.clientY - pointerDownPosRef.current.y);
-          if (dx > 6 || dy > 6) {
-            // Drag gesture occurred: ignore click
-            return;
+          pointerDownPosRef.current = null;
+          if (dx <= 6 && dy <= 6) {
+            onSelect(item);
           }
         }
-        onSelect(item);
+      }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
       }}
       role="button"
       tabIndex={0}
@@ -531,7 +532,6 @@ function StationColumn({
   const trackRef = useRef<HTMLDivElement>(null);
   const heightRef = useRef(0);
   const [height, setHeight] = useState(0);
-  const [isMoved, setIsMoved] = useState(false);
 
   const offsetYRef = useRef(0);
   const isDraggingRef = useRef(false);
@@ -567,9 +567,6 @@ function StationColumn({
     const trackY = -cycleHeight + normY;
 
     trackRef.current.style.transform = `translate3d(0px, ${trackY.toFixed(2)}px, 0px)`;
-
-    const distFromOrigin = Math.min(normY, cycleHeight - normY);
-    setIsMoved(distFromOrigin > 25);
   }, []);
 
   // Update transform whenever height changes
@@ -596,61 +593,62 @@ function StationColumn({
     lastTimeRef.current = performance.now();
     velocityRef.current = 0;
 
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
-  };
+    const onPointerMove = (moveEvt: PointerEvent) => {
+      if (!isDraggingRef.current) return;
+      const currentY = moveEvt.clientY;
+      const delta = currentY - lastYRef.current;
 
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDraggingRef.current) return;
-    const currentY = e.clientY;
-    const delta = currentY - lastYRef.current;
+      if (Math.abs(currentY - startYRef.current) > 6) {
+        hasMovedRef.current = true;
+      }
 
-    if (Math.abs(currentY - startYRef.current) > 6) {
-      hasMovedRef.current = true;
-    }
+      const now = performance.now();
+      const dt = Math.max(1, now - lastTimeRef.current);
+      velocityRef.current = delta / dt;
 
-    const now = performance.now();
-    const dt = Math.max(1, now - lastTimeRef.current);
-    velocityRef.current = delta / dt;
+      lastYRef.current = currentY;
+      lastTimeRef.current = now;
 
-    lastYRef.current = currentY;
-    lastTimeRef.current = now;
+      offsetYRef.current += delta;
+      applyTransform();
+    };
 
-    offsetYRef.current += delta;
-    applyTransform();
-  };
+    const onPointerUp = () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
+      isDraggingRef.current = false;
 
-    try {
-      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
+      if (hasMovedRef.current) {
+        // Natural momentum glide with inertia
+        let v = velocityRef.current * 16;
+        v = Math.max(-45, Math.min(45, v));
 
-    // Natural momentum glide with inertia
-    let v = velocityRef.current * 16;
-    v = Math.max(-45, Math.min(45, v));
-
-    if (Math.abs(v) > 0.5) {
-      const friction = 0.94;
-      const glide = () => {
-        if (Math.abs(v) < 0.15) {
-          rafIdRef.current = null;
-          return;
+        if (Math.abs(v) > 0.5) {
+          const friction = 0.94;
+          const glide = () => {
+            if (Math.abs(v) < 0.15) {
+              rafIdRef.current = null;
+              return;
+            }
+            offsetYRef.current += v;
+            v *= friction;
+            applyTransform();
+            rafIdRef.current = requestAnimationFrame(glide);
+          };
+          rafIdRef.current = requestAnimationFrame(glide);
         }
-        offsetYRef.current += v;
-        v *= friction;
-        applyTransform();
-        rafIdRef.current = requestAnimationFrame(glide);
-      };
-      rafIdRef.current = requestAnimationFrame(glide);
-    }
+
+        setTimeout(() => {
+          hasMovedRef.current = false;
+        }, 80);
+      }
+    };
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerup", onPointerUp, { passive: true });
+    window.addEventListener("pointercancel", onPointerUp, { passive: true });
   };
 
   // Mouse wheel / trackpad scroll on this station
@@ -688,40 +686,7 @@ function StationColumn({
     };
   }, []);
 
-  // Reset alignment smoothly to nearest aligned cycle
-  const resetToOrigin = () => {
-    if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-    const startOffset = offsetYRef.current;
-    const H = heightRef.current;
-    if (H <= 0) return;
-    const cycleHeight = H + 5;
-
-    const targetOffset = Math.round(startOffset / cycleHeight) * cycleHeight;
-    const diff = targetOffset - startOffset;
-    const duration = 380;
-    const startTime = performance.now();
-
-    const step = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(1, elapsed / duration);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      offsetYRef.current = startOffset + diff * ease;
-      applyTransform();
-
-      if (progress < 1) {
-        rafIdRef.current = requestAnimationFrame(step);
-      } else {
-        rafIdRef.current = null;
-        setIsMoved(false);
-      }
-    };
-    rafIdRef.current = requestAnimationFrame(step);
-  };
-
   const handleSelectTile = (item: ArchiveItem) => {
-    if (hasMovedRef.current) {
-      return;
-    }
     onSelectItem(item);
   };
 
@@ -757,36 +722,14 @@ function StationColumn({
     <div
       ref={containerRef}
       onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
+      onClickCapture={(e) => {
+        if (hasMovedRef.current) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      }}
       className="relative min-h-0 min-w-0 overflow-hidden w-full h-full flex flex-col cursor-grab active:cursor-grabbing touch-none select-none"
     >
-      {/* Subtle top grab handle for pull affordance */}
-      <div className="absolute top-1 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex items-center justify-center opacity-30">
-        <div className="w-8 h-1 bg-black/40 rounded-full" />
-      </div>
-
-      {/* Reset button when scrolled away from default alignment */}
-      <AnimatePresence>
-        {isMoved && !hasAnyModalOpen && (
-          <motion.button
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              resetToOrigin();
-            }}
-            className="absolute top-2 left-1/2 -translate-x-1/2 z-30 bg-black text-[#F8F8F6] px-2.5 py-1 font-display text-[9px] font-bold uppercase tracking-wider shadow-lg border border-black cursor-pointer flex items-center gap-1 hover:bg-black/80 transition-colors pointer-events-auto"
-          >
-            <ArrowUp className="w-2.5 h-2.5" />
-            <span>RIPRISTINA IN ALTO</span>
-          </motion.button>
-        )}
-      </AnimatePresence>
-
       {/* Moving track with 3 seamlessly repeating copies for infinite continuous loop */}
       <div
         ref={trackRef}
