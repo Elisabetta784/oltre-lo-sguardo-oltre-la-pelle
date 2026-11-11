@@ -853,6 +853,7 @@ export function MacroGrid({
                   <StationModal
                     key={stationModals[1].id}
                     item={stationModals[1]}
+                    portionIndex={1}
                     onClose={() => setStationModals((prev) => ({ ...prev, 1: null }))}
                   />
                 )}
@@ -936,6 +937,7 @@ export function MacroGrid({
                   <StationModal
                     key={stationModals[2].id}
                     item={stationModals[2]}
+                    portionIndex={2}
                     onClose={() => setStationModals((prev) => ({ ...prev, 2: null }))}
                   />
                 )}
@@ -1019,6 +1021,7 @@ export function MacroGrid({
                   <StationModal
                     key={stationModals[3].id}
                     item={stationModals[3]}
+                    portionIndex={3}
                     onClose={() => setStationModals((prev) => ({ ...prev, 3: null }))}
                   />
                 )}

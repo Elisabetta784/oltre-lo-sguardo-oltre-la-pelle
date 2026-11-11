@@ -11,13 +11,42 @@ interface StationModalProps {
   onClose: () => void;
 }
 
-export function StationModal({ item, onClose }: StationModalProps) {
+export function StationModal({ item, portionIndex = 2, onClose }: StationModalProps) {
   // Mode: "image" opens first (artwork in natural original format), "info" shows detailed text
   const [viewMode, setViewMode] = useState<"image" | "info">("image");
   const [imgIdx, setImgIdx] = useState(0);
 
   // Natural dimensions from archive
   const dim = ARCHIVE_ASPECT_RATIOS[item.id];
+
+  // Seamless edge feathering only on the boundary bordering the neighboring column(s)
+  const maskStyle = useMemo(() => {
+    if (portionIndex === 1) {
+      // Station 1: right edge borders Station 2 -> soft feather on right seam only
+      return {
+        maskImage:
+          "linear-gradient(to right, black 0%, black calc(100% - 28px), transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, black 0%, black calc(100% - 28px), transparent 100%)",
+      };
+    }
+    if (portionIndex === 3) {
+      // Station 3: left edge borders Station 2 -> soft feather on left seam only
+      return {
+        maskImage:
+          "linear-gradient(to right, transparent 0%, black 28px, black 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 0%, black 28px, black 100%)",
+      };
+    }
+    // Station 2 (center): borders both Station 1 and 3 -> soft feather on both seams
+    return {
+      maskImage:
+        "linear-gradient(to right, transparent 0%, black 28px, black calc(100% - 28px), transparent 100%)",
+      WebkitMaskImage:
+        "linear-gradient(to right, transparent 0%, black 28px, black calc(100% - 28px), transparent 100%)",
+    };
+  }, [portionIndex]);
 
   // Collect all available images for this case study (main image + gallery)
   const allImages = useMemo(() => {
@@ -55,20 +84,15 @@ export function StationModal({ item, onClose }: StationModalProps) {
 
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto overflow-hidden">
-      {/* Soft, naturally feathered backdrop confined strictly behind this column (zero blur on the rest of the wall) */}
+      {/* 1. Original backdrop from first version, with softly feathered outer column seam */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.22, ease: "easeOut" }}
         onClick={onClose}
-        style={{
-          maskImage:
-            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-        }}
-        className="absolute inset-0 z-30 bg-[#F8F8F6]/75 backdrop-blur-[3px] cursor-pointer"
+        style={maskStyle}
+        className="absolute inset-0 z-30 bg-[#F8F8F6]/78 backdrop-blur-[3.5px] cursor-pointer"
         aria-label="Chiudi"
       />
 
