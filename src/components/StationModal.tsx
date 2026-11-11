@@ -498,12 +498,6 @@ function OltreHorizontalRow({
   const hasDraggedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Check if this row contains the current item
-  const containsCurrent = useMemo(
-    () => items.some((it) => it.id === currentItemId),
-    [items, currentItemId]
-  );
-
   // Sort items: always place the active item at index 0 (first in row)
   const sortedItems = useMemo(() => {
     return [...items].sort((a, b) => {
@@ -575,17 +569,9 @@ function OltreHorizontalRow({
     <div className="flex flex-col gap-1 border-b border-black/10 last:border-b-0 pb-2">
       {/* Subcategory Label & Count */}
       <div className="flex items-center justify-between px-1 shrink-0 select-none">
-        <div className="flex items-center gap-1.5">
-          <span className="font-display text-[9px] sm:text-[9.5px] font-bold uppercase tracking-wider text-black">
-            {title}
-          </span>
-          {containsCurrent && (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.2 bg-[#FF3B30]/10 text-[#FF3B30] border border-[#FF3B30]/30 rounded-xs text-[7px] sm:text-[7.5px] font-bold font-display uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B30]" />
-              CASO ATTIVO
-            </span>
-          )}
-        </div>
+        <span className="font-display text-[9px] sm:text-[9.5px] font-bold uppercase tracking-wider text-black">
+          {title}
+        </span>
         <span className="font-display text-[8px] sm:text-[8.5px] font-semibold text-black/40 tracking-wider">
           {sortedItems.length} OPERE
         </span>
@@ -630,11 +616,6 @@ function OltreHorizontalRow({
                 loading="lazy"
                 className="w-full h-full object-cover block filter-none pointer-events-none"
               />
-
-              {/* Red dot indicator on active case */}
-              {isCurrent && (
-                <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-[#FF3B30] ring-1 ring-white pointer-events-none z-10" />
-              )}
 
               {/* Discrete Case Number Tag */}
               <div
