@@ -54,12 +54,25 @@ export function StationModal({ item, onClose }: StationModalProps) {
   const currentImg = allImages[imgIdx] || item.imageUrl || item.thumbnailUrl || "";
 
   return (
-    <div
-      className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto"
-      onClick={onClose}
-    >
+    <div className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto overflow-hidden">
+      {/* Soft, naturally feathered backdrop confined strictly behind this column (zero blur on the rest of the wall) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+        onClick={onClose}
+        style={{
+          maskImage:
+            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+        }}
+        className="absolute inset-0 z-30 bg-[#F8F8F6]/75 backdrop-blur-[3px] cursor-pointer"
+        aria-label="Chiudi"
+      />
+
       {/* AnimatePresence for seamless transition between IMAGE ONLY and INFO ONLY */}
-      {/* Notice: No local backdrop here! The backdrop is rendered full-screen in MacroGrid for a unified, seamless wall look */}
       <AnimatePresence mode="wait">
         {viewMode === "image" ? (
           /* ========================================================== */

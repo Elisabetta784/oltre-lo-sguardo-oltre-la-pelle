@@ -755,20 +755,6 @@ export function MacroGrid({
       <div className="fixed top-0 bottom-0 right-0 w-4 sm:w-6 edge-fade-right z-20 pointer-events-none" />
 
 
-      {/* 2. UNIFIED NATURAL FULL-SCREEN BACKDROP: Seamless blur across the entire 5m LED wall with zero column seams */}
-      <AnimatePresence>
-        {hasAnyModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.32, ease: "easeOut" }}
-            onClick={() => setStationModals({ 1: null, 2: null, 3: null })}
-            className="fixed inset-0 z-30 bg-[#F8F8F6]/68 backdrop-blur-[3.5px] cursor-pointer"
-            aria-label="Chiudi modale"
-          />
-        )}
-      </AnimatePresence>
 
       {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS */}
       <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-1.5 sm:p-2">
