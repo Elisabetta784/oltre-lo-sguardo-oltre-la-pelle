@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, ArrowUpRight } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
+import { StationModal } from "./StationModal";
 
 interface MacroGridProps {
   items: ArchiveItem[];
@@ -509,6 +510,25 @@ export function MacroGrid({
 
   const [hoveredTileItem, setHoveredTileItem] = useState<ArchiveItem | null>(null);
 
+  // Independent modal state for each of the 3 stations (LED wall portions)
+  const [stationModals, setStationModals] = useState<{ [portion: number]: ArchiveItem | null }>({
+    1: null,
+    2: null,
+    3: null,
+  });
+  const hasAnyModalOpen = Boolean(stationModals[1] || stationModals[2] || stationModals[3]);
+
+  // Global ESC key listener to dismiss any active station modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setStationModals({ 1: null, 2: null, 3: null });
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const displayItems = items;
 
   // 3-Portion Layout: strictly separates Left, Center, and Right bays with zero items bridging them
@@ -646,7 +666,7 @@ export function MacroGrid({
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      if (isLocked) return;
+      if (isLocked || hasAnyModalOpen) return;
 
       let delta = 0;
       if (e.ctrlKey) {
@@ -687,7 +707,7 @@ export function MacroGrid({
       el.removeEventListener("wheel", handleWheel);
       if (dezoomTimer) clearTimeout(dezoomTimer);
     };
-  }, [onGoToBeyond]);
+  }, [onGoToBeyond, hasAnyModalOpen]);
 
   return (
     <div
@@ -700,9 +720,9 @@ export function MacroGrid({
       <div className="fixed top-0 bottom-0 left-0 w-4 sm:w-6 edge-fade-left z-20 pointer-events-none" />
       <div className="fixed top-0 bottom-0 right-0 w-4 sm:w-6 edge-fade-right z-20 pointer-events-none" />
 
-      {/* 2. FLOATING PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER OVER A CASE STUDY */}
+      {/* 2. FLOATING PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER OVER A CASE STUDY (WHEN NO MODAL IS OPEN) */}
       <AnimatePresence>
-        {hoveredTileItem && (
+        {!hasAnyModalOpen && hoveredTileItem && (
           <motion.div
             key={hoveredTileItem.id}
             initial={{ opacity: 0, y: 15, scale: 0.96 }}
@@ -711,7 +731,16 @@ export function MacroGrid({
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => {
               e.stopPropagation();
-              onSelectItem(hoveredTileItem);
+              const item = hoveredTileItem;
+              if (portion1.placements.some((p) => p.item.id === item.id)) {
+                setStationModals((prev) => ({ ...prev, 1: item }));
+              } else if (portion2.placements.some((p) => p.item.id === item.id)) {
+                setStationModals((prev) => ({ ...prev, 2: item }));
+              } else {
+                setStationModals((prev) => ({ ...prev, 3: item }));
+              }
+              setHoveredTileItem(null);
+              onSelectItem(item);
             }}
             className="fixed bottom-4 right-4 z-40 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
           >
@@ -779,28 +808,46 @@ export function MacroGrid({
                 width: "100%",
                 height: "100%",
               }}
-              className="items-center justify-items-center relative min-h-0 min-w-0"
+              className="items-center justify-items-center relative min-h-0 min-w-0 overflow-hidden"
             >
               {portion1.placements.map((p) => {
-                const isHovered = hoveredTileItem?.id === p.item.id;
+                const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
                 return (
                   <MacroTile
                     key={p.item.id}
                     item={p.item}
                     isActive={activeItemId === p.item.id}
                     isHovered={isHovered}
-                    hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                    hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
                     isFilterOpen={isFilterOpen}
                     row={p.row}
                     col={p.col}
                     colSpan={p.colSpan}
                     staggerY={p.staggerY}
                     sizeFactor={p.sizeFactor}
-                    onSelect={onSelectItem}
-                    onHover={setHoveredTileItem}
+                    onSelect={(selectedItem) => {
+                      setStationModals((prev) => ({ ...prev, 1: selectedItem }));
+                      setHoveredTileItem(null);
+                      onSelectItem(selectedItem);
+                    }}
+                    onHover={(item) => {
+                      if (!hasAnyModalOpen) setHoveredTileItem(item);
+                    }}
                   />
                 );
               })}
+
+              {/* Station 1 Modal: strictly bounded inside Station 1 */}
+              <AnimatePresence>
+                {stationModals[1] && (
+                  <StationModal
+                    key={stationModals[1].id}
+                    item={stationModals[1]}
+                    portionIndex={1}
+                    onClose={() => setStationModals((prev) => ({ ...prev, 1: null }))}
+                  />
+                )}
+              </AnimatePresence>
             </div>
 
             {/* ======================================================== */}
@@ -815,28 +862,46 @@ export function MacroGrid({
                 width: "100%",
                 height: "100%",
               }}
-              className="items-center justify-items-center relative min-h-0 min-w-0"
+              className="items-center justify-items-center relative min-h-0 min-w-0 overflow-hidden"
             >
               {portion2.placements.map((p) => {
-                const isHovered = hoveredTileItem?.id === p.item.id;
+                const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
                 return (
                   <MacroTile
                     key={p.item.id}
                     item={p.item}
                     isActive={activeItemId === p.item.id}
                     isHovered={isHovered}
-                    hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                    hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
                     isFilterOpen={isFilterOpen}
                     row={p.row}
                     col={p.col}
                     colSpan={p.colSpan}
                     staggerY={p.staggerY}
                     sizeFactor={p.sizeFactor}
-                    onSelect={onSelectItem}
-                    onHover={setHoveredTileItem}
+                    onSelect={(selectedItem) => {
+                      setStationModals((prev) => ({ ...prev, 2: selectedItem }));
+                      setHoveredTileItem(null);
+                      onSelectItem(selectedItem);
+                    }}
+                    onHover={(item) => {
+                      if (!hasAnyModalOpen) setHoveredTileItem(item);
+                    }}
                   />
                 );
               })}
+
+              {/* Station 2 Modal: strictly bounded inside Station 2 */}
+              <AnimatePresence>
+                {stationModals[2] && (
+                  <StationModal
+                    key={stationModals[2].id}
+                    item={stationModals[2]}
+                    portionIndex={2}
+                    onClose={() => setStationModals((prev) => ({ ...prev, 2: null }))}
+                  />
+                )}
+              </AnimatePresence>
             </div>
 
             {/* ======================================================== */}
@@ -851,28 +916,46 @@ export function MacroGrid({
                 width: "100%",
                 height: "100%",
               }}
-              className="items-center justify-items-center relative min-h-0 min-w-0"
+              className="items-center justify-items-center relative min-h-0 min-w-0 overflow-hidden"
             >
               {portion3.placements.map((p) => {
-                const isHovered = hoveredTileItem?.id === p.item.id;
+                const isHovered = !hasAnyModalOpen && hoveredTileItem?.id === p.item.id;
                 return (
                   <MacroTile
                     key={p.item.id}
                     item={p.item}
                     isActive={activeItemId === p.item.id}
                     isHovered={isHovered}
-                    hasHoveredSibling={hoveredTileItem !== null && !isHovered}
+                    hasHoveredSibling={!hasAnyModalOpen && hoveredTileItem !== null && !isHovered}
                     isFilterOpen={isFilterOpen}
                     row={p.row}
                     col={p.col}
                     colSpan={p.colSpan}
                     staggerY={p.staggerY}
                     sizeFactor={p.sizeFactor}
-                    onSelect={onSelectItem}
-                    onHover={setHoveredTileItem}
+                    onSelect={(selectedItem) => {
+                      setStationModals((prev) => ({ ...prev, 3: selectedItem }));
+                      setHoveredTileItem(null);
+                      onSelectItem(selectedItem);
+                    }}
+                    onHover={(item) => {
+                      if (!hasAnyModalOpen) setHoveredTileItem(item);
+                    }}
                   />
                 );
               })}
+
+              {/* Station 3 Modal: strictly bounded inside Station 3 */}
+              <AnimatePresence>
+                {stationModals[3] && (
+                  <StationModal
+                    key={stationModals[3].id}
+                    item={stationModals[3]}
+                    portionIndex={3}
+                    onClose={() => setStationModals((prev) => ({ ...prev, 3: null }))}
+                  />
+                )}
+              </AnimatePresence>
             </div>
           </div>
         )}

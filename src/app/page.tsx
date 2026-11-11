@@ -172,7 +172,6 @@ export default function Home() {
 
   const handleSelectItem = (item: ArchiveItem) => {
     setActiveItemId(item.id);
-    setView("micro");
   };
 
   const handleNext = () => {
