@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, ArrowUpRight } from "lucide-react";
+import { Volume2 } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 import { StationModal } from "./StationModal";
 
@@ -720,61 +720,6 @@ export function MacroGrid({
       <div className="fixed top-0 bottom-0 left-0 w-4 sm:w-6 edge-fade-left z-20 pointer-events-none" />
       <div className="fixed top-0 bottom-0 right-0 w-4 sm:w-6 edge-fade-right z-20 pointer-events-none" />
 
-      {/* 2. FLOATING PREVIEW DOCK: ONLY APPEARS ON CURSOR HOVER OVER A CASE STUDY (WHEN NO MODAL IS OPEN) */}
-      <AnimatePresence>
-        {!hasAnyModalOpen && hoveredTileItem && (
-          <motion.div
-            key={hoveredTileItem.id}
-            initial={{ opacity: 0, y: 15, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.96 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(e) => {
-              e.stopPropagation();
-              const item = hoveredTileItem;
-              if (portion1.placements.some((p) => p.item.id === item.id)) {
-                setStationModals((prev) => ({ ...prev, 1: item }));
-              } else if (portion2.placements.some((p) => p.item.id === item.id)) {
-                setStationModals((prev) => ({ ...prev, 2: item }));
-              } else {
-                setStationModals((prev) => ({ ...prev, 3: item }));
-              }
-              setHoveredTileItem(null);
-              onSelectItem(item);
-            }}
-            className="fixed bottom-4 right-4 z-40 w-64 sm:w-72 bg-[#F8F8F6] border-2 border-black p-3 shadow-2xl shadow-black/25 cursor-pointer group pointer-events-auto"
-          >
-            <div className="relative w-full aspect-[4/3] bg-white overflow-hidden mb-2.5 border border-black/15">
-              <img
-                src={hoveredTileItem.imageUrl || hoveredTileItem.thumbnailUrl || ""}
-                alt={hoveredTileItem.title}
-                loading="eager"
-                style={{ imageRendering: "-webkit-optimize-contrast" }}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 filter-none"
-              />
-              <div className="absolute top-2 left-2 bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[9px] font-bold tracking-wider">
-                SEG-{hoveredTileItem.number}
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <h3 className="font-display font-bold text-xs text-black uppercase tracking-tight line-clamp-1 group-hover:underline">
-                {hoveredTileItem.title}
-              </h3>
-              <div className="flex items-center justify-between font-display text-[10px] text-black/70 uppercase">
-                <span>{hoveredTileItem.authorOrSubject}</span>
-                <span>{hoveredTileItem.year}</span>
-              </div>
-              <div className="pt-1.5 border-t border-black/10 flex items-center justify-between text-[9.5px] font-display text-black uppercase tracking-wider">
-                <span className="font-bold text-black/80">{hoveredTileItem.segno}</span>
-                <span className="flex items-center gap-0.5 text-black font-bold group-hover:translate-x-0.5 transition-transform">
-                  ESPLORA <ArrowUpRight className="w-3 h-3" />
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS */}
       <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-1.5 sm:p-2">
