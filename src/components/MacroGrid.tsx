@@ -539,8 +539,19 @@ function StationColumn({
   const lastYRef = useRef(0);
   const lastTimeRef = useRef(0);
   const velocityRef = useRef(0);
-  const rafIdRef = useRef<number | null>(null);
+  const glideRafIdRef = useRef<number | null>(null);
   const hasMovedRef = useRef(false);
+
+  // Micro-scorrimento autonomo (Idle Drift):
+  // Velocità ultra-lenta (11-15 px/s) e non invadente, con lieve sfasamento tra le 3 stazioni
+  const targetDriftSpeed = useMemo(() => {
+    if (portionIndex === 1) return 11;
+    if (portionIndex === 2) return 14;
+    return 12;
+  }, [portionIndex]);
+
+  const currentDriftSpeedRef = useRef(0);
+  const lastInteractionTimeRef = useRef<number>(performance.now());
 
   // Measure container height with ResizeObserver
   useEffect(() => {
@@ -576,17 +587,76 @@ function StationColumn({
     }
   }, [height, applyTransform]);
 
+  // Loop di animazione per il micro-scorrimento autonomo quando nessuno tocca lo schermo
+  useEffect(() => {
+    let animId: number;
+    let prevTime = performance.now();
+
+    const loop = (currentTime: number) => {
+      // Capped dt (max 50ms) to prevent sudden jumps on tab switch or lag spikes
+      const dt = Math.min(0.05, (currentTime - prevTime) / 1000);
+      prevTime = currentTime;
+
+      const isModalActive = isThisModalOpen;
+      const isDragging = isDraggingRef.current;
+      const isGliding = Boolean(glideRafIdRef.current);
+      // Se l'utente sta passando con il mouse su un caso di questa stazione, rallenta per consentire il click
+      const isHoveringThisStation = Boolean(
+        hoveredTileItem && portion.placements.some((p) => p.item.id === hoveredTileItem.id)
+      );
+
+      if (isDragging || isGliding || isModalActive) {
+        lastInteractionTimeRef.current = currentTime;
+        currentDriftSpeedRef.current = 0;
+      } else if (isHoveringThisStation) {
+        // Rallenta delicatamente verso 0 se il mouse è posizionato su un'opera
+        currentDriftSpeedRef.current = Math.max(
+          0,
+          currentDriftSpeedRef.current - targetDriftSpeed * dt * 2.5
+        );
+        lastInteractionTimeRef.current = currentTime;
+      } else {
+        // Stato inattivo (Idle): dopo 4 secondi di quiete, avvia la discesa lenta e continua
+        const idleDuration = currentTime - lastInteractionTimeRef.current;
+        const IDLE_WAIT_MS = 4000;
+
+        if (idleDuration > IDLE_WAIT_MS) {
+          // Accelera in modo ultra-morbido nell'arco di 2 secondi
+          const rampRate = targetDriftSpeed / 2.0;
+          currentDriftSpeedRef.current = Math.min(
+            targetDriftSpeed,
+            currentDriftSpeedRef.current + rampRate * dt
+          );
+
+          if (currentDriftSpeedRef.current > 0.01 && heightRef.current > 0) {
+            offsetYRef.current += currentDriftSpeedRef.current * dt;
+            applyTransform();
+          }
+        } else {
+          currentDriftSpeedRef.current = 0;
+        }
+      }
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, [isThisModalOpen, hoveredTileItem, portion.placements, targetDriftSpeed, applyTransform]);
+
   // Pointer drag gestures (Touch screen on LED wall & mouse drag)
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isThisModalOpen) return;
     if (e.button !== 0) return;
 
-    if (rafIdRef.current) {
-      cancelAnimationFrame(rafIdRef.current);
-      rafIdRef.current = null;
+    if (glideRafIdRef.current) {
+      cancelAnimationFrame(glideRafIdRef.current);
+      glideRafIdRef.current = null;
     }
 
     isDraggingRef.current = true;
+    currentDriftSpeedRef.current = 0;
+    lastInteractionTimeRef.current = performance.now();
     hasMovedRef.current = false;
     startYRef.current = e.clientY;
     lastYRef.current = e.clientY;
@@ -619,6 +689,7 @@ function StationColumn({
       window.removeEventListener("pointercancel", onPointerUp);
 
       isDraggingRef.current = false;
+      lastInteractionTimeRef.current = performance.now();
 
       if (hasMovedRef.current) {
         // Natural momentum glide with inertia
@@ -628,16 +699,18 @@ function StationColumn({
         if (Math.abs(v) > 0.5) {
           const friction = 0.94;
           const glide = () => {
-            if (Math.abs(v) < 0.15) {
-              rafIdRef.current = null;
+            if (Math.abs(v) < 0.15 || isDraggingRef.current) {
+              glideRafIdRef.current = null;
+              lastInteractionTimeRef.current = performance.now();
               return;
             }
             offsetYRef.current += v;
             v *= friction;
             applyTransform();
-            rafIdRef.current = requestAnimationFrame(glide);
+            lastInteractionTimeRef.current = performance.now();
+            glideRafIdRef.current = requestAnimationFrame(glide);
           };
-          rafIdRef.current = requestAnimationFrame(glide);
+          glideRafIdRef.current = requestAnimationFrame(glide);
         }
 
         setTimeout(() => {
@@ -663,10 +736,13 @@ function StationColumn({
       e.preventDefault();
       e.stopPropagation();
 
-      if (rafIdRef.current) {
-        cancelAnimationFrame(rafIdRef.current);
-        rafIdRef.current = null;
+      if (glideRafIdRef.current) {
+        cancelAnimationFrame(glideRafIdRef.current);
+        glideRafIdRef.current = null;
       }
+
+      currentDriftSpeedRef.current = 0;
+      lastInteractionTimeRef.current = performance.now();
 
       // Natural wheel scroll
       offsetYRef.current -= e.deltaY;
@@ -680,8 +756,8 @@ function StationColumn({
   // Clean-up animation frame on unmount
   useEffect(() => {
     return () => {
-      if (rafIdRef.current) {
-        cancelAnimationFrame(rafIdRef.current);
+      if (glideRafIdRef.current) {
+        cancelAnimationFrame(glideRafIdRef.current);
       }
     };
   }, []);
