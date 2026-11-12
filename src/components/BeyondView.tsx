@@ -490,7 +490,7 @@ export function BeyondView({
                     </div>
                   </div>
 
-                  <div className="font-body text-[10.5px] text-black leading-relaxed text-justify opacity-95 pt-2 border-t border-black/10 whitespace-pre-line">
+                  <div className="font-body text-[10.5px] text-black leading-relaxed text-justify hyphens-auto opacity-95 pt-2 border-t border-black/10 whitespace-pre-line">
                     {activeCategory.considerations}
                   </div>
 

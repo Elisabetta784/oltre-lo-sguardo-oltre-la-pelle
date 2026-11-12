@@ -140,3 +140,11 @@ html, body {
 img {
   -webkit-user-drag: none;
 }
+
+/* Typography: Enhanced Text Justification with hyphenation */
+.text-justify {
+  text-align: justify !important;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}

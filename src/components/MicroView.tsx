@@ -325,7 +325,7 @@ export function MicroView({
                 {item.stileVisivo && item.stileVisivo !== "—" && (
                   <div className="py-1.5 border-b border-black/10">
                     <span className="text-black/50 text-[10px] uppercase block mb-0.5 font-semibold">STILE VISIVO</span>
-                    <span className="text-black text-[11px] font-body">{item.stileVisivo}</span>
+                    <span className="text-black text-[11px] font-body text-justify hyphens-auto block">{item.stileVisivo}</span>
                   </div>
                 )}
 
@@ -360,7 +360,7 @@ export function MicroView({
 
               {/* Extra notes / context */}
               {item.notes && item.notes !== "Conservato nell'archivio." && (
-                <div className="bg-black/[0.03] border-l-2 border-black p-3 font-body text-xs text-black/80 mb-4">
+                <div className="bg-black/[0.03] border-l-2 border-black p-3 font-body text-xs text-black/80 mb-4 text-justify hyphens-auto">
                   <span className="text-[10px] uppercase font-display font-bold text-black block mb-1">
                     NOTE & CONTESTO CURATORIALE:
                   </span>
