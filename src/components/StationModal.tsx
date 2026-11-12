@@ -152,7 +152,7 @@ export function StationModal({
             className="relative z-50 flex flex-col items-center w-[78%] sm:w-[74%] max-w-[310px] sm:max-w-[320px] my-auto"
           >
             <div className="w-full bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 flex flex-col overflow-hidden">
-              {/* Header Bar */}
+              {/* Header Bar (No top X - close button is exclusively at the bottom) */}
               <div className="h-8 px-2.5 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
                 <span className="bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[9px] font-bold tracking-wider uppercase">
                   CASO {item.number}
@@ -163,15 +163,6 @@ export function StationModal({
                     {imgIdx + 1} / {allImages.length}
                   </span>
                 )}
-
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label="Chiudi scheda"
-                  className="w-5 h-5 flex items-center justify-center border border-black/30 hover:border-black hover:bg-black hover:text-[#F8F8F6] transition-colors cursor-pointer text-xs font-bold"
-                >
-                  <X className="w-3 h-3" />
-                </button>
               </div>
 
               {/* Natural uncropped artwork container */}
@@ -216,12 +207,32 @@ export function StationModal({
                 )}
               </div>
 
-              {/* Bottom Bar: [ INFORMAZIONI ] | [ OLTRE ] | [ CHIUDI ] */}
-              <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1 sm:gap-1.5 shrink-0 select-none">
+              {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
+              <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
+                <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("image")}
+                    className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer bg-black text-[#F8F8F6] shadow-sm"
+                  >
+                    OPERA
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("oltre")}
+                    className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-black/60 hover:text-black hover:bg-black/5"
+                  >
+                    OLTRE
+                  </button>
+                </div>
+              </div>
+
+              {/* Bottom Bar: [ INFORMAZIONI ] | [ CHIUDI ] (No middle button) */}
+              <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
                 <button
                   type="button"
                   onClick={() => setViewMode("info")}
-                  className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1"
+                  className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Info className="w-3 h-3" />
                   <span>INFORMAZIONI</span>
@@ -229,16 +240,8 @@ export function StationModal({
 
                 <button
                   type="button"
-                  onClick={() => setViewMode("oltre")}
-                  className="flex-1 py-1.5 px-2 bg-black text-[#F8F8F6] font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black/85 transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1"
-                >
-                  <span>OLTRE</span>
-                </button>
-
-                <button
-                  type="button"
                   onClick={onClose}
-                  className="py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1"
+                  className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <span>CHIUDI</span>
                   <X className="w-2.5 h-2.5" />
@@ -262,20 +265,11 @@ export function StationModal({
             onClick={(e) => e.stopPropagation()}
             className="relative z-50 w-[78%] sm:w-[74%] max-w-[310px] sm:max-w-[320px] max-h-[50vh] bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 flex flex-col overflow-hidden text-black select-none my-auto"
           >
-            {/* Header Bar */}
+            {/* Header Bar (No top X - close button is exclusively at the bottom) */}
             <div className="h-8 px-2.5 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0">
               <span className="bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[8.5px] font-bold tracking-wider uppercase">
                 CASO {item.number} — INFO
               </span>
-
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Chiudi scheda"
-                className="w-5 h-5 flex items-center justify-center border border-black/30 hover:border-black hover:bg-black hover:text-[#F8F8F6] transition-colors cursor-pointer text-xs font-bold"
-              >
-                <X className="w-3 h-3" />
-              </button>
             </div>
 
             {/* Essential Content Body */}
@@ -353,30 +347,43 @@ export function StationModal({
               </div>
             </div>
 
-            {/* Bottom Bar: [ < ] | [ OLTRE ] | [ CHIUDI ] */}
-            <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1 sm:gap-1.5 shrink-0 select-none">
+            {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
+            <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
+              <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("image")}
+                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer bg-black text-[#F8F8F6] shadow-sm"
+                >
+                  OPERA
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("oltre")}
+                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-black/60 hover:text-black hover:bg-black/5"
+                >
+                  OLTRE
+                </button>
+              </div>
+            </div>
+
+            {/* Bottom Bar: [ TORNA ALL'OPERA ] | [ CHIUDI ] */}
+            <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
               <button
                 type="button"
                 onClick={() => setViewMode("image")}
                 aria-label="Torna all'opera"
                 title="Torna all'opera"
-                className="w-8 py-1.5 bg-[#F8F8F6] text-black hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center shrink-0"
+                className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setViewMode("oltre")}
-                className="flex-1 py-1.5 px-2 bg-black text-[#F8F8F6] font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black/85 transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1"
-              >
-                <span>OLTRE</span>
+                <ArrowLeft className="w-3 h-3" />
+                <span>TORNA ALL'OPERA</span>
               </button>
 
               <button
                 type="button"
                 onClick={onClose}
-                className="py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1"
+                className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
               >
                 <span>CHIUDI</span>
                 <X className="w-2.5 h-2.5" />
@@ -399,22 +406,13 @@ export function StationModal({
             onClick={(e) => e.stopPropagation()}
             className="relative z-50 flex flex-col w-[96%] sm:w-[94%] max-w-[560px] max-h-[76vh] my-auto bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 overflow-hidden text-black select-none"
           >
-            {/* Header Bar: Only Category number & label (no selected case number) */}
+            {/* Header Bar: Only Category number & label (No top X - close button is exclusively at the bottom) */}
             <div className="h-8 px-3 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
               <div className="flex items-center gap-2">
                 <span className="font-display text-[10px] font-bold tracking-widest uppercase text-black">
                   {currentCatConfig.num} {currentCatConfig.label}
                 </span>
               </div>
-
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Chiudi scheda"
-                className="w-5 h-5 flex items-center justify-center border border-black/30 hover:border-black hover:bg-black hover:text-[#F8F8F6] transition-colors cursor-pointer text-xs font-bold"
-              >
-                <X className="w-3 h-3" />
-              </button>
             </div>
 
             {/* Subcategories Horizontal Rows (Scrollable with mouse drag / touch / wheel, no scrollbars) */}
@@ -433,20 +431,30 @@ export function StationModal({
               })}
             </div>
 
-            {/* Bottom Bar: Back arrow button on left, 5 Category tabs on right */}
-            <div className="h-9 px-2 sm:px-2.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1 sm:gap-2 shrink-0 select-none">
-              <button
-                type="button"
-                onClick={() => setViewMode("image")}
-                aria-label="Torna indietro"
-                title="Torna all'opera"
-                className="w-7 h-7 sm:w-7.5 sm:h-7.5 bg-[#F8F8F6] text-black hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center shrink-0"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-              </button>
+            {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
+            <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
+              <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("image")}
+                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-black/60 hover:text-black hover:bg-black/5"
+                >
+                  OPERA
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("oltre")}
+                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer bg-black text-[#F8F8F6] shadow-sm"
+                >
+                  OLTRE
+                </button>
+              </div>
+            </div>
 
+            {/* Bottom Bar: 5 Category Selector tabs & CHIUDI */}
+            <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
               {/* 5 Category Selector tabs (Origine, Intenzione, Sguardo, Scala, Cromia) */}
-              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar select-none">
+              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar select-none flex-1 min-w-0">
                 {OLTRE_CATEGORIES.map((cat) => {
                   const isActive = cat.id === activeCatKey;
                   return (
@@ -454,7 +462,7 @@ export function StationModal({
                       key={cat.id}
                       type="button"
                       onClick={() => setActiveCatKey(cat.id)}
-                      className={`font-display text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wider transition-colors cursor-pointer px-1.5 sm:px-2 py-0.5 sm:py-1 ${
+                      className={`font-display text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wider transition-colors cursor-pointer px-1.5 sm:px-2 py-1 shrink-0 ${
                         isActive
                           ? "bg-black text-[#F8F8F6] border border-black shadow-sm"
                           : "text-black/60 hover:text-black hover:bg-black/5 border border-transparent"
@@ -465,6 +473,16 @@ export function StationModal({
                   );
                 })}
               </div>
+
+              {/* Close Button in bottom bar */}
+              <button
+                type="button"
+                onClick={onClose}
+                className="py-1 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center gap-1 shrink-0"
+              >
+                <span>CHIUDI</span>
+                <X className="w-2.5 h-2.5" />
+              </button>
             </div>
           </motion.div>
         )}
