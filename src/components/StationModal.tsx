@@ -298,7 +298,7 @@ export function StationModal({
                 <span className="block font-display font-bold text-[7.5px] uppercase tracking-wider text-black/50 mb-0.5">
                   DESCRIZIONE
                 </span>
-                <p className="font-body text-[10.5px] leading-relaxed text-black/85 text-justify hyphens-auto">
+                <p className="font-body text-[10.5px] leading-relaxed text-black/85 text-justify">
                   {item.sintesiConcettuale || item.excerpt || item.notes}
                 </p>
               </div>
@@ -346,7 +346,7 @@ export function StationModal({
                   <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
                     STILE VISIVO
                   </span>
-                  <span className="font-body text-black/90 text-[10px] leading-relaxed text-justify hyphens-auto block">
+                  <span className="font-body text-black/90 text-[10px] leading-relaxed text-justify block">
                     {item.stileVisivo}
                   </span>
                 </div>
