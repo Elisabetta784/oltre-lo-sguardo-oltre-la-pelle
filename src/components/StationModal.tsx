@@ -121,6 +121,47 @@ export function StationModal({
     setViewMode("image");
   };
 
+  // Drag-to-scroll logic for INFO text view (no scrollbar, cursor drag)
+  const infoScrollRef = useRef<HTMLDivElement>(null);
+  const isInfoPointerDownRef = useRef(false);
+  const infoStartYRef = useRef(0);
+  const infoStartScrollTopRef = useRef(0);
+  const [isInfoDragging, setIsInfoDragging] = useState(false);
+
+  const handleInfoPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    isInfoPointerDownRef.current = true;
+    infoStartYRef.current = e.clientY;
+    infoStartScrollTopRef.current = infoScrollRef.current?.scrollTop || 0;
+  };
+
+  useEffect(() => {
+    const handleGlobalPointerMove = (e: PointerEvent) => {
+      if (!isInfoPointerDownRef.current || !infoScrollRef.current) return;
+      const dy = e.clientY - infoStartYRef.current;
+      if (Math.abs(dy) > 3) {
+        setIsInfoDragging(true);
+        infoScrollRef.current.scrollTop = infoStartScrollTopRef.current - dy;
+      }
+    };
+
+    const handleGlobalPointerUp = () => {
+      if (!isInfoPointerDownRef.current) return;
+      isInfoPointerDownRef.current = false;
+      setIsInfoDragging(false);
+    };
+
+    window.addEventListener("pointermove", handleGlobalPointerMove);
+    window.addEventListener("pointerup", handleGlobalPointerUp);
+    window.addEventListener("pointercancel", handleGlobalPointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handleGlobalPointerMove);
+      window.removeEventListener("pointerup", handleGlobalPointerUp);
+      window.removeEventListener("pointercancel", handleGlobalPointerUp);
+    };
+  }, []);
+
   return (
     <div className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto overflow-hidden">
       {/* 1. Lighter, delicate backdrop with wide 85px soft feathering on the outer column seam */}
@@ -135,25 +176,32 @@ export function StationModal({
         aria-label="Chiudi"
       />
 
-      {/* AnimatePresence for seamless transition between IMAGE, INFO, and OLTRE */}
-      <AnimatePresence mode="wait">
-        {viewMode === "image" && (
-          /* ========================================================== */
-          /* VIEW 1: IMAGE ONLY (Original format & natural dimensions)  */
-          /* Scaled down with generous breathing room between columns   */
-          /* ========================================================== */
-          <motion.div
-            key="image-view"
-            initial={{ opacity: 0, scale: 0.94, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 10 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative z-50 flex flex-col items-center w-[78%] sm:w-[74%] max-w-[310px] sm:max-w-[320px] my-auto"
-          >
-            <div className="w-full bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 flex flex-col overflow-hidden">
-              {/* Header Bar (No top X - close button is exclusively at the bottom) */}
-              <div className="h-8 px-2.5 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
+      {/* 2. Unified Morphing Modal Window (Ultra-smooth width/height transition between OPERA and OLTRE) */}
+      <motion.div
+        key="station-modal-unified"
+        initial={{ opacity: 0, scale: 0.95, y: 8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 8 }}
+        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className={`relative z-50 flex flex-col my-auto bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 overflow-hidden text-black select-none transition-[max-width,width,max-height] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          viewMode === "oltre"
+            ? "w-[96%] sm:w-[94%] max-w-[560px] max-h-[76vh]"
+            : "w-[78%] sm:w-[74%] max-w-[310px] sm:max-w-[320px] max-h-[52vh]"
+        }`}
+      >
+        {/* Header Bar */}
+        <div className="h-8 px-2.5 sm:px-3 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
+          <AnimatePresence mode="wait" initial={false}>
+            {viewMode === "image" && (
+              <motion.div
+                key="hdr-img"
+                initial={{ opacity: 0, y: -3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-between w-full"
+              >
                 <span className="bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[9px] font-bold tracking-wider uppercase">
                   CASO {item.number}
                 </span>
@@ -163,10 +211,55 @@ export function StationModal({
                     {imgIdx + 1} / {allImages.length}
                   </span>
                 )}
-              </div>
+              </motion.div>
+            )}
 
-              {/* Natural uncropped artwork container */}
-              <div className="relative bg-[#ECECE8] flex items-center justify-center overflow-hidden max-h-[42vh] select-none">
+            {viewMode === "info" && (
+              <motion.div
+                key="hdr-info"
+                initial={{ opacity: 0, y: -3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-between w-full"
+              >
+                <span className="bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[8.5px] font-bold tracking-wider uppercase">
+                  CASO {item.number} — INFO
+                </span>
+              </motion.div>
+            )}
+
+            {viewMode === "oltre" && (
+              <motion.div
+                key="hdr-oltre"
+                initial={{ opacity: 0, y: -3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-between w-full"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-display text-[10px] font-bold tracking-widest uppercase text-black">
+                    {currentCatConfig.num} {currentCatConfig.label}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Content Body: Image vs Draggable Info vs Horizontal Oltre Rows */}
+        <div className="relative flex-1 min-h-0 overflow-hidden bg-[#F8F8F6] flex flex-col">
+          <AnimatePresence mode="wait" initial={false}>
+            {viewMode === "image" && (
+              <motion.div
+                key="body-img"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="relative bg-[#ECECE8] flex items-center justify-center overflow-hidden max-h-[42vh] select-none flex-1 min-h-0"
+              >
                 <img
                   src={currentImg}
                   alt={item.title}
@@ -178,7 +271,6 @@ export function StationModal({
                   }}
                 />
 
-                {/* Gallery navigation controls if multiple images exist */}
                 {allImages.length > 1 && (
                   <>
                     <button
@@ -205,30 +297,171 @@ export function StationModal({
                     </button>
                   </>
                 )}
-              </div>
+              </motion.div>
+            )}
 
-              {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
-              <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
-                <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("image")}
-                    className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer bg-black text-[#F8F8F6] shadow-sm"
-                  >
-                    OPERA
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("oltre")}
-                    className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-black/60 hover:text-black hover:bg-black/5"
-                  >
-                    OLTRE
-                  </button>
+            {viewMode === "info" && (
+              <motion.div
+                key="body-info"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="flex-1 min-h-0 flex flex-col"
+              >
+                <div
+                  ref={infoScrollRef}
+                  onPointerDown={handleInfoPointerDown}
+                  style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    WebkitOverflowScrolling: "touch",
+                  }}
+                  className={`p-3 flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1 min-h-0 bg-[#F8F8F6] select-none touch-pan-y ${
+                    isInfoDragging ? "cursor-grabbing" : "cursor-grab"
+                  }`}
+                >
+                  {/* Nome caso (Titolo) */}
+                  <div>
+                    <h2 className="font-display font-bold text-[12px] sm:text-[12.5px] leading-tight uppercase text-black tracking-tight">
+                      {item.title}
+                    </h2>
+                    {/* Autore & Anno */}
+                    <div className="flex items-center gap-1.5 mt-0.5 font-display text-[9px] text-black/70 uppercase tracking-wider font-semibold">
+                      <span>{item.authorOrSubject}</span>
+                      <span className="text-black/30">•</span>
+                      <span>{item.year}</span>
+                    </div>
+                  </div>
+
+                  {/* Descrizione */}
+                  <div className="pt-1.5 border-t border-black/15">
+                    <span className="block font-display font-bold text-[7.5px] uppercase tracking-wider text-black/50 mb-0.5">
+                      DESCRIZIONE
+                    </span>
+                    <p className="font-body text-[10.5px] leading-relaxed text-black/85 text-justify">
+                      {item.sintesiConcettuale || item.excerpt || item.notes}
+                    </p>
+                  </div>
+
+                  {/* Essential Metadata Grid */}
+                  <div className="pt-1.5 border-t border-black/15 grid grid-cols-2 gap-x-2.5 gap-y-1.5 text-[10px]">
+                    <div>
+                      <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
+                        SEGNO
+                      </span>
+                      <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
+                        {item.segno}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
+                        TONO
+                      </span>
+                      <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
+                        {item.tono}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
+                        TIPOLOGIA
+                      </span>
+                      <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
+                        {item.tipologia}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
+                        TIPO DI MEDIA
+                      </span>
+                      <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
+                        {item.tipoDiMedia}
+                      </span>
+                    </div>
+
+                    {/* Stile Visivo */}
+                    <div className="col-span-2 pt-1 border-t border-black/10">
+                      <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
+                        STILE VISIVO
+                      </span>
+                      <span className="font-body text-black/90 text-[10px] leading-relaxed text-justify block">
+                        {item.stileVisivo}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
+            )}
 
-              {/* Bottom Bar: [ INFORMAZIONI ] | [ CHIUDI ] (No middle button) */}
-              <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
+            {viewMode === "oltre" && (
+              <motion.div
+                key="body-oltre"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="p-3 flex-1 min-h-0 bg-[#F8F8F6] overflow-y-auto no-scrollbar flex flex-col gap-2.5 sm:gap-3"
+              >
+                {currentCatConfig.subcategories.map((subcat) => {
+                  const list = subcategoryItems[subcat] || [];
+                  return (
+                    <OltreHorizontalRow
+                      key={subcat}
+                      title={subcat}
+                      items={list}
+                      currentItemId={item.id}
+                      onSelectCase={handleSelectCaseFromOltre}
+                    />
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
+        <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
+          <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
+            <button
+              type="button"
+              onClick={() => setViewMode("image")}
+              className={`px-3.5 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                viewMode === "image" || viewMode === "info"
+                  ? "bg-black text-[#F8F8F6] shadow-sm"
+                  : "text-black/60 hover:text-black hover:bg-black/5"
+              }`}
+            >
+              OPERA
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("oltre")}
+              className={`px-3.5 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                viewMode === "oltre"
+                  ? "bg-black text-[#F8F8F6] shadow-sm"
+                  : "text-black/60 hover:text-black hover:bg-black/5"
+              }`}
+            >
+              OLTRE
+            </button>
+          </div>
+        </div>
+
+        {/* Bottom Bar: Action Buttons & Category Tabs */}
+        <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
+          <AnimatePresence mode="wait" initial={false}>
+            {viewMode === "image" && (
+              <motion.div
+                key="btn-img"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-between gap-1.5 w-full"
+              >
                 <button
                   type="button"
                   onClick={() => setViewMode("info")}
@@ -246,247 +479,82 @@ export function StationModal({
                   <span>CHIUDI</span>
                   <X className="w-2.5 h-2.5" />
                 </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
+              </motion.div>
+            )}
 
-        {viewMode === "info" && (
-          /* ========================================================== */
-          /* VIEW 2: INFO ONLY (All essential metadata, fully readable)  */
-          /* Scaled down with generous breathing room between columns   */
-          /* ========================================================== */
-          <motion.div
-            key="info-view"
-            initial={{ opacity: 0, scale: 0.94, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 10 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative z-50 w-[78%] sm:w-[74%] max-w-[310px] sm:max-w-[320px] max-h-[50vh] bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 flex flex-col overflow-hidden text-black select-none my-auto"
-          >
-            {/* Header Bar (No top X - close button is exclusively at the bottom) */}
-            <div className="h-8 px-2.5 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0">
-              <span className="bg-black text-[#F8F8F6] px-1.5 py-0.5 font-display text-[8.5px] font-bold tracking-wider uppercase">
-                CASO {item.number} — INFO
-              </span>
-            </div>
-
-            {/* Essential Content Body */}
-            <div className="p-3 flex flex-col gap-2 overflow-y-auto custom-scrollbar flex-1 min-h-0 bg-[#F8F8F6]">
-              {/* Nome caso (Titolo) */}
-              <div>
-                <h2 className="font-display font-bold text-[12px] sm:text-[12.5px] leading-tight uppercase text-black tracking-tight">
-                  {item.title}
-                </h2>
-                {/* Autore & Anno */}
-                <div className="flex items-center gap-1.5 mt-0.5 font-display text-[9px] text-black/70 uppercase tracking-wider font-semibold">
-                  <span>{item.authorOrSubject}</span>
-                  <span className="text-black/30">•</span>
-                  <span>{item.year}</span>
-                </div>
-              </div>
-
-              {/* Descrizione */}
-              <div className="pt-1.5 border-t border-black/15">
-                <span className="block font-display font-bold text-[7.5px] uppercase tracking-wider text-black/50 mb-0.5">
-                  DESCRIZIONE
-                </span>
-                <p className="font-body text-[10.5px] leading-relaxed text-black/85 text-justify">
-                  {item.sintesiConcettuale || item.excerpt || item.notes}
-                </p>
-              </div>
-
-              {/* Essential Metadata Grid */}
-              <div className="pt-1.5 border-t border-black/15 grid grid-cols-2 gap-x-2.5 gap-y-1.5 text-[10px]">
-                <div>
-                  <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
-                    SEGNO
-                  </span>
-                  <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
-                    {item.segno}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
-                    TONO
-                  </span>
-                  <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
-                    {item.tono}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
-                    TIPOLOGIA
-                  </span>
-                  <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
-                    {item.tipologia}
-                  </span>
-                </div>
-
-                <div>
-                  <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
-                    TIPO DI MEDIA
-                  </span>
-                  <span className="font-body font-semibold text-black text-[10.5px] leading-tight">
-                    {item.tipoDiMedia}
-                  </span>
-                </div>
-
-                {/* Stile Visivo */}
-                <div className="col-span-2 pt-1 border-t border-black/10">
-                  <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
-                    STILE VISIVO
-                  </span>
-                  <span className="font-body text-black/90 text-[10px] leading-relaxed text-justify block">
-                    {item.stileVisivo}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
-            <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
-              <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
+            {viewMode === "info" && (
+              <motion.div
+                key="btn-info"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-between gap-1.5 w-full"
+              >
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
-                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer bg-black text-[#F8F8F6] shadow-sm"
+                  aria-label="Torna all'opera"
+                  title="Torna all'opera"
+                  className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  OPERA
+                  <ArrowLeft className="w-3 h-3" />
+                  <span>TORNA ALL'OPERA</span>
                 </button>
+
                 <button
                   type="button"
-                  onClick={() => setViewMode("oltre")}
-                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-black/60 hover:text-black hover:bg-black/5"
+                  onClick={onClose}
+                  className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  OLTRE
+                  <span>CHIUDI</span>
+                  <X className="w-2.5 h-2.5" />
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            )}
 
-            {/* Bottom Bar: [ TORNA ALL'OPERA ] | [ CHIUDI ] */}
-            <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
-              <button
-                type="button"
-                onClick={() => setViewMode("image")}
-                aria-label="Torna all'opera"
-                title="Torna all'opera"
-                className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+            {viewMode === "oltre" && (
+              <motion.div
+                key="btn-oltre"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="flex items-center justify-between gap-1.5 w-full"
               >
-                <ArrowLeft className="w-3 h-3" />
-                <span>TORNA ALL'OPERA</span>
-              </button>
+                <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar select-none flex-1 min-w-0">
+                  {OLTRE_CATEGORIES.map((cat) => {
+                    const isActive = cat.id === activeCatKey;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setActiveCatKey(cat.id)}
+                        className={`font-display text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wider transition-colors cursor-pointer px-1.5 sm:px-2 py-1 shrink-0 ${
+                          isActive
+                            ? "bg-black text-[#F8F8F6] border border-black shadow-sm"
+                            : "text-black/60 hover:text-black hover:bg-black/5 border border-transparent"
+                        }`}
+                      >
+                        {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
+                      </button>
+                    );
+                  })}
+                </div>
 
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <span>CHIUDI</span>
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {viewMode === "oltre" && (
-          /* ========================================================== */
-          /* VIEW 3: OLTRE (Categorical Network inspired by oltre.jpg)  */
-          /* Horizontal drag-to-scroll rows, active item first & red   */
-          /* ========================================================== */
-          <motion.div
-            key="oltre-view"
-            initial={{ opacity: 0, scale: 0.94, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 10 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative z-50 flex flex-col w-[96%] sm:w-[94%] max-w-[560px] max-h-[76vh] my-auto bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 overflow-hidden text-black select-none"
-          >
-            {/* Header Bar: Only Category number & label (No top X - close button is exclusively at the bottom) */}
-            <div className="h-8 px-3 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
-              <div className="flex items-center gap-2">
-                <span className="font-display text-[10px] font-bold tracking-widest uppercase text-black">
-                  {currentCatConfig.num} {currentCatConfig.label}
-                </span>
-              </div>
-            </div>
-
-            {/* Subcategories Horizontal Rows (Scrollable with mouse drag / touch / wheel, no scrollbars) */}
-            <div className="p-3 flex-1 min-h-0 bg-[#F8F8F6] overflow-y-auto no-scrollbar flex flex-col gap-2.5 sm:gap-3">
-              {currentCatConfig.subcategories.map((subcat) => {
-                const list = subcategoryItems[subcat] || [];
-                return (
-                  <OltreHorizontalRow
-                    key={subcat}
-                    title={subcat}
-                    items={list}
-                    currentItemId={item.id}
-                    onSelectCase={handleSelectCaseFromOltre}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
-            <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
-              <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
                 <button
                   type="button"
-                  onClick={() => setViewMode("image")}
-                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-black/60 hover:text-black hover:bg-black/5"
+                  onClick={onClose}
+                  className="py-1 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center gap-1 shrink-0"
                 >
-                  OPERA
+                  <span>CHIUDI</span>
+                  <X className="w-2.5 h-2.5" />
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("oltre")}
-                  className="px-3 sm:px-4 py-0.5 sm:py-1 font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer bg-black text-[#F8F8F6] shadow-sm"
-                >
-                  OLTRE
-                </button>
-              </div>
-            </div>
-
-            {/* Bottom Bar: 5 Category Selector tabs & CHIUDI */}
-            <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
-              {/* 5 Category Selector tabs (Origine, Intenzione, Sguardo, Scala, Cromia) */}
-              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar select-none flex-1 min-w-0">
-                {OLTRE_CATEGORIES.map((cat) => {
-                  const isActive = cat.id === activeCatKey;
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setActiveCatKey(cat.id)}
-                      className={`font-display text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wider transition-colors cursor-pointer px-1.5 sm:px-2 py-1 shrink-0 ${
-                        isActive
-                          ? "bg-black text-[#F8F8F6] border border-black shadow-sm"
-                          : "text-black/60 hover:text-black hover:bg-black/5 border border-transparent"
-                      }`}
-                    >
-                      {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Close Button in bottom bar */}
-              <button
-                type="button"
-                onClick={onClose}
-                className="py-1 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center gap-1 shrink-0"
-              >
-                <span>CHIUDI</span>
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </div>
   );
 }
