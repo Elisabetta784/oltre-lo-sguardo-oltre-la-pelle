@@ -7,6 +7,7 @@ import { ArchiveItem, ARCHIVE_ITEMS, ARCHIVE_ASPECT_RATIOS } from "@/data/archiv
 import {
   OLTRE_CATEGORIES,
   OltreCategoryKey,
+  OltreCategoryConfig,
   getItemsByOltreSubcategory,
 } from "@/data/oltreData";
 
@@ -184,14 +185,14 @@ export function StationModal({
         exit={{ opacity: 0, scale: 0.95, y: 8 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className={`relative z-50 flex flex-col my-auto bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/25 overflow-hidden text-black select-none transition-[max-width,width,max-height] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`relative z-50 flex flex-col my-auto bg-[#F8F8F6] border border-black/15 shadow-2xl shadow-black/20 overflow-hidden text-black select-none transition-[max-width,width,max-height] duration-320 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           viewMode === "oltre"
-            ? "w-[96%] sm:w-[94%] max-w-[560px] max-h-[76vh]"
+            ? "w-[98%] sm:w-[96%] max-w-[660px] sm:max-w-[720px] max-h-[84vh]"
             : "w-[78%] sm:w-[74%] max-w-[310px] sm:max-w-[320px] max-h-[52vh]"
         }`}
       >
         {/* Header Bar */}
-        <div className="h-8 px-2.5 sm:px-3 border-b border-black flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
+        <div className="h-8 px-2.5 sm:px-3 border-b border-black/10 flex items-center justify-between bg-[#F8F8F6] shrink-0 select-none">
           <AnimatePresence mode="wait" initial={false}>
             {viewMode === "image" && (
               <motion.div
@@ -248,7 +249,7 @@ export function StationModal({
           </AnimatePresence>
         </div>
 
-        {/* Content Body: Image vs Draggable Info vs Horizontal Oltre Rows */}
+        {/* Content Body: Image vs Draggable Info vs 3D Cards Carousel (oltree.jpg & oltre.jpg) */}
         <div className="relative flex-1 min-h-0 overflow-hidden bg-[#F8F8F6] flex flex-col">
           <AnimatePresence mode="wait" initial={false}>
             {viewMode === "image" && (
@@ -279,7 +280,7 @@ export function StationModal({
                         e.stopPropagation();
                         setImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length);
                       }}
-                      className="absolute left-1.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#F8F8F6]/90 border border-black flex items-center justify-center text-black hover:bg-black hover:text-[#F8F8F6] transition-colors cursor-pointer shadow-md"
+                      className="absolute left-1.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#F8F8F6]/90 border border-black/30 flex items-center justify-center text-black hover:bg-black hover:text-[#F8F8F6] transition-colors cursor-pointer shadow-md"
                       title="Immagine precedente"
                     >
                       <ChevronLeft className="w-3 h-3" />
@@ -290,7 +291,7 @@ export function StationModal({
                         e.stopPropagation();
                         setImgIdx((prev) => (prev + 1) % allImages.length);
                       }}
-                      className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#F8F8F6]/90 border border-black flex items-center justify-center text-black hover:bg-black hover:text-[#F8F8F6] transition-colors cursor-pointer shadow-md"
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 bg-[#F8F8F6]/90 border border-black/30 flex items-center justify-center text-black hover:bg-black hover:text-[#F8F8F6] transition-colors cursor-pointer shadow-md"
                       title="Immagine successiva"
                     >
                       <ChevronRight className="w-3 h-3" />
@@ -335,7 +336,7 @@ export function StationModal({
                   </div>
 
                   {/* Descrizione */}
-                  <div className="pt-1.5 border-t border-black/15">
+                  <div className="pt-1.5 border-t border-black/10">
                     <span className="block font-display font-bold text-[7.5px] uppercase tracking-wider text-black/50 mb-0.5">
                       DESCRIZIONE
                     </span>
@@ -345,7 +346,7 @@ export function StationModal({
                   </div>
 
                   {/* Essential Metadata Grid */}
-                  <div className="pt-1.5 border-t border-black/15 grid grid-cols-2 gap-x-2.5 gap-y-1.5 text-[10px]">
+                  <div className="pt-1.5 border-t border-black/10 grid grid-cols-2 gap-x-2.5 gap-y-1.5 text-[10px]">
                     <div>
                       <span className="block font-display font-bold text-[7px] uppercase tracking-wider text-black/50">
                         SEGNO
@@ -403,28 +404,22 @@ export function StationModal({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="p-3 flex-1 min-h-0 bg-[#F8F8F6] overflow-y-auto no-scrollbar flex flex-col gap-2.5 sm:gap-3"
+                className="flex-1 min-h-0 flex flex-col overflow-hidden bg-[#F8F8F6]"
               >
-                {currentCatConfig.subcategories.map((subcat) => {
-                  const list = subcategoryItems[subcat] || [];
-                  return (
-                    <OltreHorizontalRow
-                      key={subcat}
-                      title={subcat}
-                      items={list}
-                      currentItemId={item.id}
-                      onSelectCase={handleSelectCaseFromOltre}
-                    />
-                  );
-                })}
+                <OltreCardCarousel
+                  categoryConfig={currentCatConfig}
+                  subcategoryItems={subcategoryItems}
+                  currentItemId={item.id}
+                  onSelectCase={handleSelectCaseFromOltre}
+                />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
         {/* Mode Toggle: [ OPERA ] [ OLTRE ] (Positioned in reachable lower area, not top) */}
-        <div className="px-2 py-1 bg-[#ECECE8] border-t border-black flex items-center justify-center shrink-0 select-none">
-          <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black shadow-xs">
+        <div className="px-2 py-1 bg-[#ECECE8] border-t border-black/10 flex items-center justify-center shrink-0 select-none">
+          <div className="inline-flex items-center p-0.5 bg-[#F8F8F6] border border-black/15 shadow-2xs">
             <button
               type="button"
               onClick={() => setViewMode("image")}
@@ -451,7 +446,7 @@ export function StationModal({
         </div>
 
         {/* Bottom Bar: Action Buttons & Category Tabs */}
-        <div className="p-1.5 border-t border-black bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
+        <div className="p-1.5 border-t border-black/10 bg-[#F8F8F6] flex items-center justify-between gap-1.5 shrink-0 select-none">
           <AnimatePresence mode="wait" initial={false}>
             {viewMode === "image" && (
               <motion.div
@@ -465,7 +460,7 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={() => setViewMode("info")}
-                  className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black/20 shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Info className="w-3 h-3" />
                   <span>INFORMAZIONI</span>
@@ -474,7 +469,7 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black/20 shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <span>CHIUDI</span>
                   <X className="w-2.5 h-2.5" />
@@ -496,7 +491,7 @@ export function StationModal({
                   onClick={() => setViewMode("image")}
                   aria-label="Torna all'opera"
                   title="Torna all'opera"
-                  className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 py-1.5 px-2 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black/20 shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <ArrowLeft className="w-3 h-3" />
                   <span>TORNA ALL'OPERA</span>
@@ -505,7 +500,7 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 py-1.5 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black/20 shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <span>CHIUDI</span>
                   <X className="w-2.5 h-2.5" />
@@ -522,6 +517,7 @@ export function StationModal({
                 transition={{ duration: 0.15 }}
                 className="flex items-center justify-between gap-1.5 w-full"
               >
+                {/* 5 Category Selector tabs (Origine, Intenzione, Sguardo, Scala, Cromia) */}
                 <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar select-none flex-1 min-w-0">
                   {OLTRE_CATEGORIES.map((cat) => {
                     const isActive = cat.id === activeCatKey;
@@ -530,10 +526,10 @@ export function StationModal({
                         key={cat.id}
                         type="button"
                         onClick={() => setActiveCatKey(cat.id)}
-                        className={`font-display text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wider transition-colors cursor-pointer px-1.5 sm:px-2 py-1 shrink-0 ${
+                        className={`font-display text-[8px] sm:text-[8.5px] font-bold uppercase tracking-wider transition-colors cursor-pointer px-2 py-1 shrink-0 ${
                           isActive
-                            ? "bg-black text-[#F8F8F6] border border-black shadow-sm"
-                            : "text-black/60 hover:text-black hover:bg-black/5 border border-transparent"
+                            ? "bg-black text-[#F8F8F6] shadow-sm"
+                            : "text-black/60 hover:text-black hover:bg-black/5"
                         }`}
                       >
                         {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
@@ -545,7 +541,7 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="py-1 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black shadow-sm cursor-pointer flex items-center gap-1 shrink-0"
+                  className="py-1 px-2.5 bg-[#F8F8F6] text-black font-display text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider hover:bg-black hover:text-[#F8F8F6] transition-colors border border-black/20 shadow-xs cursor-pointer flex items-center gap-1 shrink-0"
                 >
                   <span>CHIUDI</span>
                   <X className="w-2.5 h-2.5" />
@@ -560,160 +556,220 @@ export function StationModal({
 }
 
 /* ========================================================================== */
-/* OltreHorizontalRow: Horizontal row with mouse/touch drag-to-scroll,        */
-/* wheel support, active case study placed first and highlighted in red.      */
+/* OltreCardCarousel: 3D perspective revolving cards matching oltree.jpg      */
+/* Inside each card: cluster/mosaic of artworks matching oltre.jpg            */
 /* ========================================================================== */
 
-interface OltreHorizontalRowProps {
-  title: string;
-  items: ArchiveItem[];
+interface OltreCardCarouselProps {
+  categoryConfig: OltreCategoryConfig;
+  subcategoryItems: Record<string, ArchiveItem[]>;
   currentItemId: string;
   onSelectCase: (item: ArchiveItem) => void;
 }
 
-function OltreHorizontalRow({
-  title,
-  items,
+function OltreCardCarousel({
+  categoryConfig,
+  subcategoryItems,
   currentItemId,
   onSelectCase,
-}: OltreHorizontalRowProps) {
-  const rowRef = useRef<HTMLDivElement>(null);
-  const isPointerDownRef = useRef(false);
-  const startXRef = useRef(0);
-  const startScrollLeftRef = useRef(0);
-  const hasDraggedRef = useRef(false);
-  const [isDragging, setIsDragging] = useState(false);
+}: OltreCardCarouselProps) {
+  const [activeCardIdx, setActiveCardIdx] = useState(0);
 
-  // Sort items: always place the active item at index 0 (first in row)
-  const sortedItems = useMemo(() => {
-    return [...items].sort((a, b) => {
-      if (a.id === currentItemId) return -1;
-      if (b.id === currentItemId) return 1;
-      return 0;
+  // Sync activeCardIdx to the subcategory that contains currentItemId on category change
+  useEffect(() => {
+    const subcats = categoryConfig.subcategories;
+    const matchIdx = subcats.findIndex((sub) => {
+      const list = subcategoryItems[sub] || [];
+      return list.some((it) => it.id === currentItemId);
     });
-  }, [items, currentItemId]);
+    setActiveCardIdx(matchIdx >= 0 ? matchIdx : 0);
+  }, [categoryConfig.id, currentItemId, subcategoryItems, categoryConfig.subcategories]);
 
-  // Support mouse wheel horizontal scrolling
-  useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      if (e.deltaY !== 0 && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-        el.scrollLeft += e.deltaY;
-      }
-    };
-
-    el.addEventListener("wheel", handleWheel, { passive: false });
-    return () => el.removeEventListener("wheel", handleWheel);
-  }, []);
-
-  // Window listeners during pointer down so dragging works smoothly anywhere on screen
-  useEffect(() => {
-    const handleGlobalPointerMove = (e: PointerEvent) => {
-      if (!isPointerDownRef.current || !rowRef.current) return;
-      const dx = e.clientX - startXRef.current;
-      if (Math.abs(dx) > 4) {
-        hasDraggedRef.current = true;
-        setIsDragging(true);
-        rowRef.current.scrollLeft = startScrollLeftRef.current - dx;
-      }
-    };
-
-    const handleGlobalPointerUp = () => {
-      if (!isPointerDownRef.current) return;
-      isPointerDownRef.current = false;
-      setIsDragging(false);
-      if (hasDraggedRef.current) {
-        setTimeout(() => {
-          hasDraggedRef.current = false;
-        }, 80);
-      }
-    };
-
-    window.addEventListener("pointermove", handleGlobalPointerMove);
-    window.addEventListener("pointerup", handleGlobalPointerUp);
-    window.addEventListener("pointercancel", handleGlobalPointerUp);
-
-    return () => {
-      window.removeEventListener("pointermove", handleGlobalPointerMove);
-      window.removeEventListener("pointerup", handleGlobalPointerUp);
-      window.removeEventListener("pointercancel", handleGlobalPointerUp);
-    };
-  }, []);
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0 && e.pointerType === "mouse") return;
-    isPointerDownRef.current = true;
-    startXRef.current = e.clientX;
-    startScrollLeftRef.current = rowRef.current?.scrollLeft || 0;
-    hasDraggedRef.current = false;
-  };
+  const numCards = categoryConfig.subcategories.length;
 
   return (
-    <div className="flex flex-col gap-1 border-b border-black/10 last:border-b-0 pb-2">
-      {/* Subcategory Label & Count */}
-      <div className="flex items-center justify-between px-1 shrink-0 select-none">
-        <span className="font-display text-[9px] sm:text-[9.5px] font-bold uppercase tracking-wider text-black">
-          {title}
-        </span>
-        <span className="font-display text-[8px] sm:text-[8.5px] font-semibold text-black/40 tracking-wider">
-          {sortedItems.length} OPERE
-        </span>
-      </div>
-
-      {/* Horizontal Drag-To-Scroll Row */}
+    <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1.5 px-2 select-none overflow-hidden">
+      {/* 3D Perspective Scene matching oltree.jpg */}
       <div
-        ref={rowRef}
-        onPointerDown={handlePointerDown}
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          WebkitOverflowScrolling: "touch",
-        }}
-        className={`flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1 px-1 touch-pan-x select-none ${
-          isDragging ? "cursor-grabbing" : "cursor-grab"
-        }`}
+        style={{ perspective: "1100px", perspectiveOrigin: "center center" }}
+        className="relative w-full flex-1 flex items-center justify-center min-h-[350px] sm:min-h-[380px] overflow-hidden"
       >
-        {sortedItems.map((c) => {
-          const isCurrent = c.id === currentItemId;
+        {categoryConfig.subcategories.map((subcat, idx) => {
+          const offset = idx - activeCardIdx;
+          const isCenter = offset === 0;
+
+          // 3D positioning and perspective rotation matching oltree.jpg:
+          let translateX = "0%";
+          let rotateY = 0;
+          let scale = 1;
+          let opacity = 1;
+          let zIndex = 30;
+
+          if (offset === -1) {
+            // Left angled card
+            translateX = "-58%";
+            rotateY = 32;
+            scale = 0.86;
+            opacity = 0.58;
+            zIndex = 20;
+          } else if (offset === 1) {
+            // Right angled card
+            translateX = "58%";
+            rotateY = -32;
+            scale = 0.86;
+            opacity = 0.58;
+            zIndex = 20;
+          } else if (offset < -1) {
+            translateX = "-85%";
+            rotateY = 45;
+            scale = 0.72;
+            opacity = 0;
+            zIndex = 10;
+          } else if (offset > 1) {
+            translateX = "85%";
+            rotateY = -45;
+            scale = 0.72;
+            opacity = 0;
+            zIndex = 10;
+          }
+
+          const rawList = subcategoryItems[subcat] || [];
+          // Sort items: place active case first if in this subcategory
+          const sortedList = [...rawList].sort((a, b) => {
+            if (a.id === currentItemId) return -1;
+            if (b.id === currentItemId) return 1;
+            return 0;
+          });
+
           return (
-            <button
-              key={c.id}
-              type="button"
-              draggable={false}
-              title={`Caso ${c.number}: ${c.title}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (hasDraggedRef.current) return;
-                onSelectCase(c);
+            <motion.div
+              key={subcat}
+              initial={false}
+              animate={{
+                transform: `translateX(${translateX}) scale(${scale}) rotateY(${rotateY}deg)`,
+                opacity,
+                zIndex,
               }}
-              className={`relative flex-shrink-0 cursor-pointer overflow-hidden transition-all duration-150 select-none ${
-                isCurrent
-                  ? "w-11 h-11 sm:w-12 sm:h-12 border-2 border-[#FF3B30] ring-2 ring-[#FF3B30]/35 shadow-md shadow-[#FF3B30]/30 scale-105 z-20 bg-white"
-                  : "w-10 h-10 sm:w-11 sm:h-11 border border-black/25 hover:border-black hover:scale-105 z-0 bg-[#ECECE8]"
+              transition={{
+                duration: 0.36,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              onClick={() => {
+                if (!isCenter) {
+                  setActiveCardIdx(idx);
+                }
+              }}
+              style={{
+                transformStyle: "preserve-3d",
+                willChange: "transform, opacity",
+              }}
+              className={`absolute top-1 bottom-1 w-[82%] sm:w-[74%] max-w-[330px] sm:max-w-[350px] bg-white rounded-none shadow-xl shadow-black/8 border border-black/8 flex flex-col overflow-hidden transition-shadow ${
+                isCenter
+                  ? "cursor-default shadow-2xl shadow-black/16"
+                  : "cursor-pointer hover:opacity-80"
               }`}
             >
-              <img
-                src={c.thumbnailUrl || c.imageUrl || ""}
-                alt={c.title}
-                draggable={false}
-                loading="lazy"
-                className="w-full h-full object-cover block filter-none pointer-events-none"
-              />
-
-              {/* Discrete Case Number Tag */}
-              <div
-                className={`absolute bottom-0 inset-x-0 font-display text-[6.5px] sm:text-[7px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter ${
-                  isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/65 text-white/95"
-                }`}
-              >
-                {c.number}
+              {/* Card Header: Subcategory Title (oltre.jpg) */}
+              <div className="h-8 px-3 border-b border-black/8 flex items-center justify-between bg-white shrink-0 select-none">
+                <span className="font-display font-bold text-[9.5px] sm:text-[10px] uppercase tracking-wider text-black">
+                  {subcat}
+                </span>
+                <span className="font-display text-[7.5px] sm:text-[8px] font-semibold text-black/45 tracking-wider">
+                  {sortedList.length} OPERE
+                </span>
               </div>
-            </button>
+
+              {/* Card Body: Cluster / Grid of Thumbnails without heavy black borders (oltre.jpg) */}
+              <div className="p-2 sm:p-2.5 flex-1 min-h-0 overflow-y-auto no-scrollbar bg-[#FAFAF8]">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 items-center justify-items-center">
+                  {sortedList.map((c) => {
+                    const isCurrent = c.id === currentItemId;
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        title={`Caso ${c.number}: ${c.title}`}
+                        onClick={(e) => {
+                          if (!isCenter) return;
+                          e.stopPropagation();
+                          onSelectCase(c);
+                        }}
+                        className={`relative w-12 h-12 sm:w-13 sm:h-13 flex-shrink-0 overflow-hidden transition-all duration-150 select-none bg-[#ECECE8] ${
+                          isCenter ? "cursor-pointer" : "cursor-default pointer-events-none"
+                        } ${
+                          isCurrent
+                            ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105 z-10"
+                            : "hover:scale-105 shadow-2xs border-0"
+                        }`}
+                      >
+                        <img
+                          src={c.thumbnailUrl || c.imageUrl || ""}
+                          alt={c.title}
+                          draggable={false}
+                          loading="lazy"
+                          className="w-full h-full object-cover block filter-none pointer-events-none"
+                        />
+
+                        {/* Case Number Tag */}
+                        <div
+                          className={`absolute bottom-0 inset-x-0 font-display text-[6.5px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter ${
+                            isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/55 text-white/95"
+                          }`}
+                        >
+                          {c.number}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </motion.div>
           );
         })}
+      </div>
+
+      {/* Carousel Navigation (Prev / Next & Dots) */}
+      <div className="h-6 px-3 flex items-center justify-between w-full max-w-[340px] shrink-0 select-none mt-1">
+        <button
+          type="button"
+          onClick={() => setActiveCardIdx((prev) => Math.max(0, prev - 1))}
+          disabled={activeCardIdx === 0}
+          className={`font-display text-[8.5px] uppercase tracking-wider font-bold transition-opacity cursor-pointer ${
+            activeCardIdx === 0 ? "opacity-20 cursor-not-allowed" : "text-black/70 hover:text-black"
+          }`}
+        >
+          ← PREV
+        </button>
+
+        {/* Subcategory Dots */}
+        <div className="flex items-center gap-1.5">
+          {categoryConfig.subcategories.map((sub, i) => (
+            <button
+              key={sub}
+              type="button"
+              onClick={() => setActiveCardIdx(i)}
+              aria-label={sub}
+              className={`transition-all cursor-pointer rounded-full ${
+                i === activeCardIdx
+                  ? "w-4 h-1.5 bg-black"
+                  : "w-1.5 h-1.5 bg-black/25 hover:bg-black/50"
+              }`}
+            />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setActiveCardIdx((prev) => Math.min(numCards - 1, prev + 1))}
+          disabled={activeCardIdx === numCards - 1}
+          className={`font-display text-[8.5px] uppercase tracking-wider font-bold transition-opacity cursor-pointer ${
+            activeCardIdx === numCards - 1
+              ? "opacity-20 cursor-not-allowed"
+              : "text-black/70 hover:text-black"
+          }`}
+        >
+          NEXT →
+        </button>
       </div>
     </div>
   );
