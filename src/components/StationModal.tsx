@@ -588,49 +588,56 @@ function OltreCardCarousel({
   const numCards = categoryConfig.subcategories.length;
 
   return (
-    <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1.5 px-2 select-none overflow-hidden">
-      {/* 3D Perspective Scene matching oltree.jpg */}
+    <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden">
+      {/* 3D Perspective Scene strictly matching oltree.jpg */}
       <div
-        style={{ perspective: "1100px", perspectiveOrigin: "center center" }}
-        className="relative w-full flex-1 flex items-center justify-center min-h-[350px] sm:min-h-[380px] overflow-hidden"
+        style={{ perspective: "1000px", perspectiveOrigin: "center center" }}
+        className="relative w-full flex-1 flex items-center justify-center min-h-[350px] sm:min-h-[385px] overflow-hidden"
       >
         {categoryConfig.subcategories.map((subcat, idx) => {
           const offset = idx - activeCardIdx;
           const isCenter = offset === 0;
 
-          // 3D positioning and perspective rotation matching oltree.jpg:
-          let translateX = "0%";
+          // 3D positioning and perspective rotation strictly matching oltree.jpg:
+          // Center card: flat, front and center (z = 0, rotateY = 0)
+          // Left card (offset = -1): turned inwards toward center, inner edge tall, outer edge short (rotateY = -60deg, z = -70px)
+          // Right card (offset = 1): turned inwards toward center, inner edge tall, outer edge short (rotateY = 60deg, z = -70px)
+          let x = 0;
+          let z = 0;
           let rotateY = 0;
-          let scale = 1;
           let opacity = 1;
           let zIndex = 30;
 
-          if (offset === -1) {
-            // Left angled card
-            translateX = "-58%";
-            rotateY = 32;
-            scale = 0.86;
-            opacity = 0.58;
-            zIndex = 20;
+          if (offset === 0) {
+            x = 0;
+            z = 0;
+            rotateY = 0;
+            opacity = 1;
+            zIndex = 30;
+          } else if (offset === -1) {
+            x = -185;
+            z = -70;
+            rotateY = -60;
+            opacity = 0.92;
+            zIndex = 15;
           } else if (offset === 1) {
-            // Right angled card
-            translateX = "58%";
-            rotateY = -32;
-            scale = 0.86;
-            opacity = 0.58;
-            zIndex = 20;
+            x = 185;
+            z = -70;
+            rotateY = 60;
+            opacity = 0.92;
+            zIndex = 15;
           } else if (offset < -1) {
-            translateX = "-85%";
-            rotateY = 45;
-            scale = 0.72;
+            x = -280;
+            z = -180;
+            rotateY = -72;
             opacity = 0;
-            zIndex = 10;
+            zIndex = 5;
           } else if (offset > 1) {
-            translateX = "85%";
-            rotateY = -45;
-            scale = 0.72;
+            x = 280;
+            z = -180;
+            rotateY = 72;
             opacity = 0;
-            zIndex = 10;
+            zIndex = 5;
           }
 
           const rawList = subcategoryItems[subcat] || [];
@@ -646,12 +653,14 @@ function OltreCardCarousel({
               key={subcat}
               initial={false}
               animate={{
-                transform: `translateX(${translateX}) scale(${scale}) rotateY(${rotateY}deg)`,
+                x,
+                z,
+                rotateY,
                 opacity,
                 zIndex,
               }}
               transition={{
-                duration: 0.36,
+                duration: 0.38,
                 ease: [0.22, 1, 0.36, 1],
               }}
               onClick={() => {
@@ -663,12 +672,19 @@ function OltreCardCarousel({
                 transformStyle: "preserve-3d",
                 willChange: "transform, opacity",
               }}
-              className={`absolute top-1 bottom-1 w-[82%] sm:w-[74%] max-w-[330px] sm:max-w-[350px] bg-white rounded-none shadow-xl shadow-black/8 border border-black/8 flex flex-col overflow-hidden transition-shadow ${
+              className={`absolute top-1/2 left-1/2 w-[240px] sm:w-[260px] h-[335px] sm:h-[365px] -mt-[168px] sm:-mt-[182px] -ml-[120px] sm:-ml-[130px] bg-white shadow-xl shadow-black/10 border border-black/8 flex flex-col overflow-hidden transition-shadow ${
                 isCenter
-                  ? "cursor-default shadow-2xl shadow-black/16"
-                  : "cursor-pointer hover:opacity-80"
+                  ? "cursor-default shadow-2xl shadow-black/20"
+                  : "cursor-pointer hover:opacity-100"
               }`}
             >
+              {/* Subtle 3D perspective shading overlay on receding side cards (oltree.jpg) */}
+              <div
+                className={`absolute inset-0 pointer-events-none transition-opacity duration-300 z-20 ${
+                  isCenter ? "opacity-0" : "opacity-12 bg-black"
+                }`}
+              />
+
               {/* Card Header: Subcategory Title (oltre.jpg) */}
               <div className="h-8 px-3 border-b border-black/8 flex items-center justify-between bg-white shrink-0 select-none">
                 <span className="font-display font-bold text-[9.5px] sm:text-[10px] uppercase tracking-wider text-black">
@@ -723,12 +739,19 @@ function OltreCardCarousel({
                   })}
                 </div>
               </div>
+
+              {/* Card Footer: Subtle page number matching oltree.jpg */}
+              <div className="h-5 px-3 flex items-center justify-end bg-white shrink-0 select-none border-t border-black/5">
+                <span className="font-mono text-[8px] text-black/35 font-medium">
+                  {idx + 1}
+                </span>
+              </div>
             </motion.div>
           );
         })}
       </div>
 
-      {/* Carousel Navigation (Prev / Next & Dots) */}
+      {/* Carousel Navigation (Prev / Next & Dots) strictly matching oltree.jpg */}
       <div className="h-6 px-3 flex items-center justify-between w-full max-w-[340px] shrink-0 select-none mt-1">
         <button
           type="button"
