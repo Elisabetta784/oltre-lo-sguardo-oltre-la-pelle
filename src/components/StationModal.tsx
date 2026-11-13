@@ -177,7 +177,7 @@ export function StationModal({
         aria-label="Tocca fuori per chiudere"
       />
 
-      {/* 2. Unified Morphing Modal Window (Styles matching foto.png & info.png) */}
+      {/* 2. Unified Morphing Modal Window (Squadrata, compact and ergonomically sized for 3m wall) */}
       <motion.div
         key="station-modal-unified"
         initial={{ opacity: 0, scale: 0.95, y: 8 }}
@@ -185,17 +185,17 @@ export function StationModal({
         exit={{ opacity: 0, scale: 0.95, y: 8 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className={`relative z-50 flex flex-col my-auto border border-white/50 shadow-2xl shadow-black/25 overflow-hidden text-black select-none rounded-[26px] sm:rounded-[28px] transition-[max-width,width,max-height,height] duration-320 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`relative z-50 flex flex-col my-auto border border-black/10 shadow-2xl shadow-black/25 overflow-hidden text-black select-none rounded-none bg-[#F6F6F4]/95 backdrop-blur-2xl transition-[max-width,width,max-height,height] duration-320 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           viewMode === "oltre"
-            ? "w-[98%] sm:w-[96%] max-w-[660px] sm:max-w-[720px] max-h-[84vh] bg-[#F6F6F4]/95 backdrop-blur-2xl"
+            ? "w-[94%] sm:w-[92%] max-w-[530px] sm:max-w-[560px] max-h-[56vh]"
             : viewMode === "info"
-            ? "w-[88%] sm:w-[84%] max-w-[340px] sm:max-w-[370px] max-h-[72vh] bg-[#F6F6F4]/95 backdrop-blur-2xl"
-            : "w-[84%] sm:w-[80%] max-w-[325px] sm:max-w-[350px] aspect-[4/5] sm:aspect-[3/4] max-h-[66vh] bg-black"
+            ? "w-[78%] sm:w-[74%] max-w-[295px] sm:max-w-[315px] max-h-[50vh] aspect-[1/1.08] sm:aspect-square"
+            : "w-[76%] sm:w-[72%] max-w-[290px] sm:max-w-[310px] aspect-square max-h-[48vh]"
         }`}
       >
         <AnimatePresence mode="wait" initial={false}>
           {/* =============================================================== */}
-          {/* VIEW: IMAGE / FOTO (Strictly matching foto.png)                 */}
+          {/* VIEW: IMAGE / FOTO (Natural aspect ratio, frosted glass borders)*/}
           {/* =============================================================== */}
           {viewMode === "image" && (
             <motion.div
@@ -204,22 +204,23 @@ export function StationModal({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="relative w-full h-full flex flex-col overflow-hidden select-none"
+              className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden select-none"
             >
               {/* Floating Pill Badge: CASO XX (top-left, matching foto.png) */}
-              <div className="absolute top-3.5 left-3.5 z-20 px-3.5 py-1.5 rounded-full bg-white/45 backdrop-blur-md text-black font-display font-semibold text-[10.5px] uppercase tracking-wider border border-white/30 shadow-xs pointer-events-none">
+              <div className="absolute top-3 left-3 z-20 px-3 py-1 rounded-full bg-white/65 backdrop-blur-md text-black font-display font-semibold text-[10px] uppercase tracking-wider border border-black/5 shadow-xs pointer-events-none">
                 CASO {item.number}
               </div>
 
-              {/* Artwork Image filling the rounded card */}
-              <div className="relative w-full h-full overflow-hidden bg-black flex items-center justify-center">
+              {/* Artwork Image maintaining its original aspect ratio, letterboxed with transparent glass style */}
+              <div className="relative w-full h-full flex items-center justify-center p-3 overflow-hidden select-none">
                 <img
                   src={currentImg}
                   alt={item.title}
                   draggable={false}
-                  className="w-full h-full object-cover block filter-none select-none"
+                  className="w-auto h-auto max-w-full max-h-full object-contain block filter-none select-none shadow-xs"
                   style={{
                     imageRendering: "-webkit-optimize-contrast",
+                    aspectRatio: dim ? `${dim.w} / ${dim.h}` : undefined,
                   }}
                 />
 
@@ -232,10 +233,10 @@ export function StationModal({
                         e.stopPropagation();
                         setImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length);
                       }}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/45 backdrop-blur-md text-black flex items-center justify-center hover:bg-white/75 active:scale-95 transition-all shadow-md cursor-pointer border border-white/25"
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/65 backdrop-blur-md text-black flex items-center justify-center hover:bg-white/85 active:scale-95 transition-all shadow-md cursor-pointer border border-black/5"
                       title="Immagine precedente"
                     >
-                      <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+                      <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
                     </button>
                     <button
                       type="button"
@@ -243,10 +244,10 @@ export function StationModal({
                         e.stopPropagation();
                         setImgIdx((prev) => (prev + 1) % allImages.length);
                       }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/45 backdrop-blur-md text-black flex items-center justify-center hover:bg-white/75 active:scale-95 transition-all shadow-md cursor-pointer border border-white/25"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/65 backdrop-blur-md text-black flex items-center justify-center hover:bg-white/85 active:scale-95 transition-all shadow-md cursor-pointer border border-black/5"
                       title="Immagine successiva"
                     >
-                      <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+                      <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
                     </button>
                   </>
                 )}
@@ -255,7 +256,7 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={() => setViewMode("info")}
-                  className="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-20 px-6 py-2 rounded-full bg-white/50 backdrop-blur-md text-black font-display font-bold text-[10.5px] tracking-widest uppercase hover:bg-white/80 active:scale-95 transition-all cursor-pointer shadow-md border border-white/30"
+                  className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 px-5 py-1.5 rounded-full bg-white/70 backdrop-blur-md text-black font-display font-bold text-[10px] tracking-widest uppercase hover:bg-white/90 active:scale-95 transition-all cursor-pointer shadow-md border border-black/5"
                 >
                   INFO
                 </button>
@@ -264,7 +265,7 @@ export function StationModal({
           )}
 
           {/* =============================================================== */}
-          {/* VIEW: INFO (Strictly matching info.png)                          */}
+          {/* VIEW: INFO (Squadrata, compact & readable on tall LED wall)     */}
           {/* =============================================================== */}
           {viewMode === "info" && (
             <motion.div
@@ -276,8 +277,8 @@ export function StationModal({
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
               {/* Header: CASO XX (top-left, NO 'X' in top-right) */}
-              <div className="px-5 pt-4 pb-0.5 shrink-0 select-none">
-                <span className="font-display font-semibold text-[11px] uppercase tracking-wide text-black">
+              <div className="px-4 pt-3 pb-0.5 shrink-0 select-none">
+                <span className="font-display font-semibold text-[10px] sm:text-[10.5px] uppercase tracking-wide text-black">
                   CASO {item.number}
                 </span>
               </div>
@@ -291,74 +292,74 @@ export function StationModal({
                   msOverflowStyle: "none",
                   WebkitOverflowScrolling: "touch",
                 }}
-                className={`px-5 py-2 flex flex-col gap-2 overflow-y-auto no-scrollbar flex-1 min-h-0 select-none touch-pan-y ${
+                className={`px-4 py-1.5 flex flex-col gap-1.5 overflow-y-auto no-scrollbar flex-1 min-h-0 select-none touch-pan-y ${
                   isInfoDragging ? "cursor-grabbing" : "cursor-grab"
                 }`}
               >
                 {/* Title (matching info.png: e.g. ARR/SCARS) */}
-                <h2 className="font-display font-black text-[18px] sm:text-[20px] leading-tight uppercase text-black tracking-tight mt-1">
+                <h2 className="font-display font-black text-[14px] sm:text-[15px] leading-tight uppercase text-black tracking-tight mt-0.5">
                   {item.title}
                 </h2>
 
-                {/* Subtitle: Author & Year (matching info.png) */}
-                <p className="font-display text-[11px] sm:text-[11.5px] text-black/75 font-medium -mt-1">
+                {/* Subtitle: Author & Year */}
+                <p className="font-display text-[9.5px] sm:text-[10px] text-black/70 font-medium -mt-1">
                   {item.authorOrSubject} - {item.year}
                 </p>
 
                 {/* Section Descrizione */}
-                <div className="mt-2.5">
-                  <span className="block font-display font-medium text-[11px] text-black/40 mb-1">
+                <div className="mt-1.5">
+                  <span className="block font-display font-medium text-[9.5px] text-black/40 mb-0.5">
                     Descrizione
                   </span>
-                  <p className="font-body text-[11px] sm:text-[11.5px] leading-relaxed text-black/85 text-justify">
+                  <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/85 text-justify">
                     {item.sintesiConcettuale || item.excerpt || item.notes}
                   </p>
                 </div>
 
                 {/* Metadata Grid (matching info.png 2-column layout) */}
-                <div className="mt-2.5 pt-3 border-t border-black/8 grid grid-cols-2 gap-x-5 gap-y-3 text-[11px]">
+                <div className="mt-1.5 pt-2 border-t border-black/8 grid grid-cols-2 gap-x-3.5 gap-y-2 text-[10px]">
                   <div>
-                    <span className="block font-display font-medium text-[10.5px] text-black/40">
+                    <span className="block font-display font-medium text-[8px] text-black/40">
                       Segno
                     </span>
-                    <span className="font-body font-semibold text-black text-[11px] sm:text-[11.5px] leading-tight block mt-0.5">
+                    <span className="font-body font-semibold text-black text-[9.5px] leading-tight block mt-0.5">
                       {item.segno}
                     </span>
                   </div>
 
                   <div>
-                    <span className="block font-display font-medium text-[10.5px] text-black/40">
+                    <span className="block font-display font-medium text-[8px] text-black/40">
                       Tono
                     </span>
-                    <span className="font-body font-semibold text-black text-[11px] sm:text-[11.5px] leading-tight block mt-0.5">
+                    <span className="font-body font-semibold text-black text-[9.5px] leading-tight block mt-0.5">
                       {item.tono}
                     </span>
                   </div>
 
                   <div>
-                    <span className="block font-display font-medium text-[10.5px] text-black/40">
+                    <span className="block font-display font-medium text-[8px] text-black/40">
                       Tipologia
                     </span>
-                    <span className="font-body font-semibold text-black text-[11px] sm:text-[11.5px] leading-tight block mt-0.5">
+                    <span className="font-body font-semibold text-black text-[9.5px] leading-tight block mt-0.5">
                       {item.tipologia}
                     </span>
                   </div>
 
                   <div>
-                    <span className="block font-display font-medium text-[10.5px] text-black/40">
+                    <span className="block font-display font-medium text-[8px] text-black/40">
                       Media
                     </span>
-                    <span className="font-body font-semibold text-black text-[11px] sm:text-[11.5px] leading-tight block mt-0.5">
+                    <span className="font-body font-semibold text-black text-[9.5px] leading-tight block mt-0.5">
                       {item.tipoDiMedia}
                     </span>
                   </div>
 
                   {item.stileVisivo && (
-                    <div className="col-span-2 pt-2 border-t border-black/8">
-                      <span className="block font-display font-medium text-[10.5px] text-black/40">
+                    <div className="col-span-2 pt-1.5 border-t border-black/8">
+                      <span className="block font-display font-medium text-[8px] text-black/40">
                         Stile visivo
                       </span>
-                      <span className="font-body text-black/85 text-[10.5px] sm:text-[11px] leading-relaxed text-justify block mt-0.5">
+                      <span className="font-body text-black/85 text-[9px] sm:text-[9.5px] leading-relaxed text-justify block mt-0.5">
                         {item.stileVisivo}
                       </span>
                     </div>
@@ -366,25 +367,25 @@ export function StationModal({
                 </div>
               </div>
 
-              {/* Bottom Navigation Bar (matching info.png: [ ← Preview ] and [ (●) OLTRE ]) */}
-              <div className="px-5 py-3 border-t border-black/8 flex items-center justify-between shrink-0 select-none">
+              {/* Bottom Navigation Bar: [ ← Preview ] and [ (●) OLTRE ] */}
+              <div className="px-4 py-2.5 border-t border-black/8 flex items-center justify-between shrink-0 select-none">
                 {/* Preview Button on bottom-left */}
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
-                  className="px-4 py-2 rounded-full bg-white/80 hover:bg-white text-black font-display font-semibold text-[11px] tracking-wide flex items-center gap-2 shadow-xs transition-all cursor-pointer border border-black/5"
+                  className="px-3.5 py-1.5 rounded-full bg-white/80 hover:bg-white text-black font-display font-semibold text-[10px] tracking-wide flex items-center gap-1.5 shadow-xs transition-all cursor-pointer border border-black/5"
                 >
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ArrowLeft className="w-3 h-3" />
                   <span>Preview</span>
                 </button>
 
-                {/* OLTRE Toggle Capsule on bottom-right (matching info.png) */}
+                {/* OLTRE Toggle Capsule on bottom-right */}
                 <button
                   type="button"
                   onClick={() => setViewMode("oltre")}
-                  className="px-4 py-2 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[11px] tracking-wider uppercase flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[10px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
                 >
-                  <span className="w-2.5 h-2.5 rounded-full bg-white/90" />
+                  <span className="w-2 h-2 rounded-full bg-white/90" />
                   <span>OLTRE</span>
                 </button>
               </div>
@@ -392,7 +393,7 @@ export function StationModal({
           )}
 
           {/* =============================================================== */}
-          {/* VIEW: OLTRE (Coherent with foto.png & info.png)                  */}
+          {/* VIEW: OLTRE (Squadrata, compact & coherent)                     */}
           {/* =============================================================== */}
           {viewMode === "oltre" && (
             <motion.div
@@ -404,8 +405,8 @@ export function StationModal({
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
               {/* Header: Category Badge (NO 'X' in top-right) */}
-              <div className="px-5 pt-3.5 pb-1 flex items-center justify-between shrink-0 select-none">
-                <div className="px-3.5 py-1.5 rounded-full bg-black/5 text-black font-display font-bold text-[10px] tracking-wider uppercase border border-black/5">
+              <div className="px-4 pt-2.5 pb-0.5 flex items-center justify-between shrink-0 select-none">
+                <div className="px-3 py-1 rounded-full bg-black/5 text-black font-display font-bold text-[9px] tracking-wider uppercase border border-black/5">
                   {currentCatConfig.num} {currentCatConfig.label}
                 </div>
               </div>
@@ -421,7 +422,7 @@ export function StationModal({
               </div>
 
               {/* 5 Category Selector tabs as rounded pill buttons */}
-              <div className="px-4 py-2 flex items-center justify-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 select-none border-t border-black/6">
+              <div className="px-3 py-1.5 flex items-center justify-center gap-1 overflow-x-auto no-scrollbar shrink-0 select-none border-t border-black/6">
                 {OLTRE_CATEGORIES.map((cat) => {
                   const isActive = cat.id === activeCatKey;
                   return (
@@ -429,7 +430,7 @@ export function StationModal({
                       key={cat.id}
                       type="button"
                       onClick={() => setActiveCatKey(cat.id)}
-                      className={`font-display text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer px-3 py-1.5 rounded-full ${
+                      className={`font-display text-[8px] font-bold uppercase tracking-wider transition-all cursor-pointer px-2.5 py-1 rounded-full ${
                         isActive
                           ? "bg-black text-white shadow-xs"
                           : "text-black/60 hover:text-black hover:bg-black/5"
@@ -442,14 +443,14 @@ export function StationModal({
               </div>
 
               {/* Bottom Navigation Bar: [ ← Preview ] and [ (●) OLTRE ] */}
-              <div className="px-5 py-3 border-t border-black/8 flex items-center justify-between shrink-0 select-none">
+              <div className="px-4 py-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none">
                 {/* Back to Preview on bottom-left */}
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
-                  className="px-4 py-2 rounded-full bg-white/80 hover:bg-white text-black font-display font-semibold text-[11px] tracking-wide flex items-center gap-2 shadow-xs transition-all cursor-pointer border border-black/5"
+                  className="px-3.5 py-1.5 rounded-full bg-white/80 hover:bg-white text-black font-display font-semibold text-[10px] tracking-wide flex items-center gap-1.5 shadow-xs transition-all cursor-pointer border border-black/5"
                 >
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ArrowLeft className="w-3 h-3" />
                   <span>Preview</span>
                 </button>
 
@@ -457,10 +458,10 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
-                  className="px-4 py-2 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[11px] tracking-wider uppercase flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[10px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
                   title="Torna all'opera"
                 >
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF3B30] animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-[#FF3B30] animate-pulse" />
                   <span>OLTRE</span>
                 </button>
               </div>
@@ -606,7 +607,7 @@ function OltreCardContent({
             isCenter ? (isDragging ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"
           }`}
         >
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 items-center justify-items-center pb-3">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 items-center justify-items-center pb-2.5">
             {sortedList.map((c) => {
               const isCurrent = c.id === currentItemId;
               return (
@@ -621,7 +622,7 @@ function OltreCardContent({
                     if (hasDraggedRef.current) return;
                     onSelectCase(c);
                   }}
-                  className={`relative w-12 h-12 sm:w-13 sm:h-13 flex-shrink-0 overflow-hidden rounded-[10px] transition-all duration-150 select-none bg-[#ECECE8] ${
+                  className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] ${
                     isCenter ? "cursor-pointer" : "cursor-default pointer-events-none"
                   } ${
                     isCurrent
@@ -634,12 +635,12 @@ function OltreCardContent({
                     alt={c.title}
                     draggable={false}
                     loading="lazy"
-                    className="w-full h-full object-cover block filter-none pointer-events-none rounded-[10px]"
+                    className="w-full h-full object-cover block filter-none pointer-events-none rounded-none"
                   />
 
                   {/* Case Number Tag */}
                   <div
-                    className={`absolute bottom-0 inset-x-0 font-display text-[6.5px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter rounded-b-[10px] ${
+                    className={`absolute bottom-0 inset-x-0 font-display text-[6px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter rounded-none ${
                       isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/55 text-white/95"
                     }`}
                   >
@@ -680,10 +681,10 @@ function OltreCardCarousel({
 
   return (
     <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden">
-      {/* 3D Perspective Scene strictly matching oltree.jpg */}
+      {/* 3D Perspective Scene strictly matching oltree.jpg (squadrata and compact for wall) */}
       <div
-        style={{ perspective: "1000px", perspectiveOrigin: "center center" }}
-        className="relative w-full flex-1 flex items-center justify-center min-h-[350px] sm:min-h-[385px] overflow-hidden"
+        style={{ perspective: "950px", perspectiveOrigin: "center center" }}
+        className="relative w-full flex-1 flex items-center justify-center min-h-[285px] sm:min-h-[305px] overflow-hidden"
       >
         {categoryConfig.subcategories.map((subcat, idx) => {
           // Circular offset: guarantees there is always a card on the left and right in the loop
@@ -695,8 +696,8 @@ function OltreCardCarousel({
 
           // 3D positioning and perspective rotation strictly matching oltree.jpg:
           // Center card: flat, front and center (z = 0, rotateY = 0)
-          // Left card (offset = -1): turned inwards toward center, inner edge tall, outer edge short (rotateY = -60deg, z = -70px)
-          // Right card (offset = 1): turned inwards toward center, inner edge tall, outer edge short (rotateY = 60deg, z = -70px)
+          // Left card (offset = -1): turned inwards toward center, inner edge tall, outer edge short (rotateY = -58deg, z = -55px)
+          // Right card (offset = 1): turned inwards toward center, inner edge tall, outer edge short (rotateY = 58deg, z = -55px)
           let x = 0;
           let z = 0;
           let rotateY = 0;
@@ -710,27 +711,27 @@ function OltreCardCarousel({
             opacity = 1;
             zIndex = 30;
           } else if (offset === -1) {
-            x = -185;
-            z = -70;
-            rotateY = -60;
+            x = -150;
+            z = -55;
+            rotateY = -58;
             opacity = 0.92;
             zIndex = 15;
           } else if (offset === 1) {
-            x = 185;
-            z = -70;
-            rotateY = 60;
+            x = 150;
+            z = -55;
+            rotateY = 58;
             opacity = 0.92;
             zIndex = 15;
           } else if (offset < -1) {
-            x = -280;
-            z = -180;
-            rotateY = -72;
+            x = -225;
+            z = -140;
+            rotateY = -70;
             opacity = 0;
             zIndex = 5;
           } else if (offset > 1) {
-            x = 280;
-            z = -180;
-            rotateY = 72;
+            x = 225;
+            z = -140;
+            rotateY = 70;
             opacity = 0;
             zIndex = 5;
           }
@@ -767,7 +768,7 @@ function OltreCardCarousel({
                 transformStyle: "preserve-3d",
                 willChange: "transform, opacity",
               }}
-              className={`absolute top-1/2 left-1/2 w-[240px] sm:w-[260px] h-[335px] sm:h-[365px] -mt-[168px] sm:-mt-[182px] -ml-[120px] sm:-ml-[130px] bg-white rounded-[22px] shadow-xl shadow-black/10 border border-black/8 flex flex-col overflow-hidden transition-shadow ${
+              className={`absolute top-1/2 left-1/2 w-[200px] sm:w-[215px] h-[265px] sm:h-[285px] -mt-[132px] sm:-mt-[142px] -ml-[100px] sm:-ml-[108px] bg-white rounded-none shadow-xl shadow-black/10 border border-black/8 flex flex-col overflow-hidden transition-shadow ${
                 isCenter
                   ? "cursor-default shadow-2xl shadow-black/20"
                   : "cursor-pointer hover:opacity-100"
