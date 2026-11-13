@@ -23,24 +23,24 @@ export type Orientation = "portrait" | "landscape" | "square";
 
 /**
  * Standardized modular height scales for the 3 sizing tiers (Large, Medium, Small).
- * Guarantees that any two artworks of the same orientation/format share a common side (height),
- * producing a calm, coherent, and homogeneous museum exhibition wall.
+ * The 'large' tier is prominently scaled up to inject dramatic visual dynamism and hierarchy,
+ * while ensuring that artworks of the same format within a tier share a common side (height).
  */
 export const TIER_HEIGHTS: Record<SizeTier, Record<Orientation, string>> = {
   large: {
-    landscape: "clamp(88px, 11.2vh, 130px)",
-    portrait: "clamp(118px, 14.6vh, 170px)",
-    square: "clamp(100px, 12.4vh, 144px)",
+    landscape: "clamp(130px, 17vh, 200px)",
+    portrait: "clamp(160px, 21vh, 250px)",
+    square: "clamp(142px, 18.5vh, 220px)",
   },
   medium: {
-    landscape: "clamp(66px, 8.4vh, 98px)",
-    portrait: "clamp(90px, 11.2vh, 132px)",
-    square: "clamp(76px, 9.5vh, 110px)",
+    landscape: "clamp(66px, 8.2vh, 96px)",
+    portrait: "clamp(88px, 11vh, 128px)",
+    square: "clamp(74px, 9.2vh, 108px)",
   },
   small: {
-    landscape: "clamp(50px, 6.2vh, 74px)",
-    portrait: "clamp(68px, 8.4vh, 98px)",
-    square: "clamp(56px, 7vh, 82px)",
+    landscape: "clamp(45px, 5.5vh, 65px)",
+    portrait: "clamp(58px, 7.2vh, 85px)",
+    square: "clamp(48px, 6vh, 70px)",
   },
 };
 
@@ -224,7 +224,18 @@ function packHomogeneousPortion(
   if (count >= 18) {
     const cols = 4;
     const rows = 7;
-    const rowTemplate = "1.15fr 1fr 1fr 1.15fr 1fr 1fr 1fr";
+    // Tailored row templates giving ample breathing room to rows hosting 2-col hero images
+    let rowTemplate = "1.25fr 1fr 1fr 1.25fr 1fr 1fr 1fr";
+    if (portionIndex === 0) {
+      // Heroes on rows 1 and 4
+      rowTemplate = "1.4fr 0.95fr 0.95fr 1.4fr 0.95fr 0.95fr 0.95fr";
+    } else if (portionIndex === 1) {
+      // Heroes on rows 2, 4, 6
+      rowTemplate = "0.9fr 1.35fr 0.9fr 1.35fr 0.9fr 1.35fr 0.9fr";
+    } else {
+      // Heroes on rows 1, 4, 6
+      rowTemplate = "1.35fr 0.9fr 0.9fr 1.35fr 0.9fr 1.35fr 0.9fr";
+    }
 
     let slots: SlotConfig[] = [];
     if (portionIndex === 0) {
@@ -471,14 +482,14 @@ const MacroTile = React.memo(function MacroTile({
           height: targetHeight,
           width: "auto",
           maxWidth: colSpan > 1 ? "97%" : "95%",
-          maxHeight: "96%",
+          maxHeight: colSpan > 1 ? "97%" : "125%",
         }}
-        className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center ${
+        className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center border-0 ${
           isHovered
-            ? "border-2 border-black shadow-2xl shadow-black/35"
+            ? "shadow-2xl shadow-black/30"
             : isActive
-            ? "border-2 border-black shadow-md shadow-black/15"
-            : "border border-black/35 hover:border-black"
+            ? "shadow-md shadow-black/20"
+            : "shadow-2xs"
         }`}
       >
         {/* 1. PHOTO - 100% natural shape, NO white borders, edge-to-edge coverage */}
