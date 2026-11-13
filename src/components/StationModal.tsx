@@ -734,13 +734,9 @@ function OltreCardContent({
           </div>
         </div>
 
-        {/* Bottom indicator when more items exist below */}
+        {/* Bottom soft fade when more items exist below */}
         {canScrollDown && (
-          <div className="pointer-events-none absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-[#FAFAF8] via-[#FAFAF8]/95 to-transparent flex items-end justify-center pb-0.5 z-10">
-            <span className="font-display text-[7px] text-black/45 uppercase tracking-widest font-bold animate-pulse">
-              ↓ SCORRI
-            </span>
-          </div>
+          <div className="pointer-events-none absolute bottom-0 inset-x-0 h-4 bg-gradient-to-t from-[#FAFAF8]/80 to-transparent z-10" />
         )}
       </div>
     </>
