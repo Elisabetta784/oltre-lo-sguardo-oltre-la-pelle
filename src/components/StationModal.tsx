@@ -734,8 +734,40 @@ function OltreCardCarousel({
     setActiveCardIdx(bestIdx);
   }, [categoryConfig.id, categoryConfig.subcategories, subcategoryItems, currentItemId]);
 
+  // Touch swipe support to rotate carousel left/right
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartXRef.current;
+    const dy = e.changedTouches[0].clientY - touchStartYRef.current;
+
+    // Trigger swipe if horizontal drag is dominant
+    if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      if (dx < 0) {
+        // Swiped left -> next card
+        setActiveCardIdx((prev) => (prev + 1) % numCards);
+      } else {
+        // Swiped right -> prev card
+        setActiveCardIdx((prev) => (prev - 1 + numCards) % numCards);
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
+
   return (
-    <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden">
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden"
+    >
       {/* 3D Perspective Scene strictly matching oltree.jpg (squadrata and compact for wall) */}
       <div
         style={{ perspective: "950px", perspectiveOrigin: "center center" }}
@@ -849,42 +881,26 @@ function OltreCardCarousel({
         })}
       </div>
 
-      {/* Carousel Navigation (Circular Prev / Next matching foto.png & Dots) */}
-      <div className="h-7 px-3 flex items-center justify-between w-full max-w-[340px] shrink-0 select-none mt-1">
-        <button
-          type="button"
-          onClick={() => setActiveCardIdx((prev) => (prev - 1 + numCards) % numCards)}
-          className="w-7 h-7 rounded-full bg-white/90 hover:bg-white text-black flex items-center justify-center shadow-xs border border-black/10 cursor-pointer transition-all active:scale-95"
-          title="Precedente"
-        >
-          <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-        </button>
-
-        {/* Subcategory Dots */}
-        <div className="flex items-center gap-1.5">
-          {categoryConfig.subcategories.map((sub, i) => (
-            <button
-              key={sub}
-              type="button"
-              onClick={() => setActiveCardIdx(i)}
-              aria-label={sub}
-              className={`transition-all cursor-pointer rounded-full ${
+      {/* Subcategory Indicator Dots (Clickable, reactive, arrows removed) */}
+      <div className="h-6 flex items-center justify-center gap-1.5 w-full shrink-0 select-none mt-1">
+        {categoryConfig.subcategories.map((sub, i) => (
+          <button
+            key={sub}
+            type="button"
+            onClick={() => setActiveCardIdx(i)}
+            aria-label={`Vai a ${sub}`}
+            title={sub}
+            className="p-1.5 flex items-center justify-center cursor-pointer group"
+          >
+            <span
+              className={`block transition-all duration-200 rounded-full ${
                 i === activeCardIdx
                   ? "w-4 h-1.5 bg-black"
-                  : "w-1.5 h-1.5 bg-black/25 hover:bg-black/50"
+                  : "w-1.5 h-1.5 bg-black/25 group-hover:bg-black/50"
               }`}
             />
-          ))}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setActiveCardIdx((prev) => (prev + 1) % numCards)}
-          className="w-7 h-7 rounded-full bg-white/90 hover:bg-white text-black flex items-center justify-center shadow-xs border border-black/10 cursor-pointer transition-all active:scale-95"
-          title="Successivo"
-        >
-          <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
-        </button>
+          </button>
+        ))}
       </div>
     </div>
   );
