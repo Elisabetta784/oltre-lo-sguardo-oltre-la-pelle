@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Info, ArrowLeft } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ITEMS, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
@@ -567,6 +567,186 @@ interface OltreCardCarouselProps {
   onSelectCase: (item: ArchiveItem) => void;
 }
 
+/* ========================================================================== */
+/* OltreCardContent: subcategory header & draggable artwork cluster          */
+/* Allows smooth mouse/touch drag-to-scroll and wheel scroll with indicators  */
+/* ========================================================================== */
+
+interface OltreCardContentProps {
+  subcat: string;
+  sortedList: ArchiveItem[];
+  isCenter: boolean;
+  currentItemId: string;
+  onSelectCase: (item: ArchiveItem) => void;
+}
+
+function OltreCardContent({
+  subcat,
+  sortedList,
+  isCenter,
+  currentItemId,
+  onSelectCase,
+}: OltreCardContentProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isPointerDownRef = useRef(false);
+  const startYRef = useRef(0);
+  const startScrollTopRef = useRef(0);
+  const hasDraggedRef = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollUp(el.scrollTop > 6);
+    setCanScrollDown(el.scrollTop + el.clientHeight < el.scrollHeight - 6);
+  }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(checkScroll, 80);
+    return () => clearTimeout(timeout);
+  }, [sortedList, isCenter, checkScroll]);
+
+  // Pointer drag-to-scroll
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isCenter) return;
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
+    isPointerDownRef.current = true;
+    hasDraggedRef.current = false;
+    startYRef.current = e.clientY;
+    startScrollTopRef.current = scrollRef.current?.scrollTop || 0;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPointerDownRef.current || !scrollRef.current) return;
+    const dy = e.clientY - startYRef.current;
+    if (Math.abs(dy) > 4) {
+      hasDraggedRef.current = true;
+      if (!isDragging) setIsDragging(true);
+      scrollRef.current.scrollTop = startScrollTopRef.current - dy;
+      checkScroll();
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+    isPointerDownRef.current = false;
+    setTimeout(() => {
+      setIsDragging(false);
+      hasDraggedRef.current = false;
+    }, 60);
+  };
+
+  // Wheel scroll with explicit scrollTop update (ensures 100% reliable scrolling in 3D perspective)
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (!isCenter) return;
+    e.stopPropagation();
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop += e.deltaY;
+      checkScroll();
+    }
+  };
+
+  return (
+    <>
+      {/* Card Header: Subcategory Title (oltre.jpg) */}
+      <div className="h-8 px-3 border-b border-black/8 flex items-center justify-between bg-white shrink-0 select-none">
+        <span className="font-display font-bold text-[9.5px] sm:text-[10px] uppercase tracking-wider text-black">
+          {subcat}
+        </span>
+        <span className="font-display text-[7.5px] sm:text-[8px] font-semibold text-black/45 tracking-wider">
+          {sortedList.length} OPERE
+        </span>
+      </div>
+
+      {/* Card Body: Cluster / Grid of Thumbnails with drag-to-scroll and wheel scroll */}
+      <div className="relative flex-1 min-h-0 flex flex-col overflow-hidden bg-[#FAFAF8]">
+        {/* Top fade when scrolled down */}
+        {canScrollUp && (
+          <div className="pointer-events-none absolute top-0 inset-x-0 h-4 bg-gradient-to-b from-black/8 to-transparent z-10" />
+        )}
+
+        <div
+          ref={scrollRef}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          onWheel={handleWheel}
+          onScroll={checkScroll}
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            WebkitOverflowScrolling: "touch",
+          }}
+          className={`p-2 sm:p-2.5 flex-1 min-h-0 overflow-y-auto no-scrollbar touch-pan-y select-none ${
+            isCenter ? (isDragging ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"
+          }`}
+        >
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 items-center justify-items-center pb-3">
+            {sortedList.map((c) => {
+              const isCurrent = c.id === currentItemId;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  title={`Caso ${c.number}: ${c.title}`}
+                  onClick={(e) => {
+                    if (!isCenter) return;
+                    e.stopPropagation();
+                    // Prevent clicking if the user was dragging to scroll
+                    if (hasDraggedRef.current) return;
+                    onSelectCase(c);
+                  }}
+                  className={`relative w-12 h-12 sm:w-13 sm:h-13 flex-shrink-0 overflow-hidden transition-all duration-150 select-none bg-[#ECECE8] ${
+                    isCenter ? "cursor-pointer" : "cursor-default pointer-events-none"
+                  } ${
+                    isCurrent
+                      ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105 z-10"
+                      : "hover:scale-105 shadow-2xs border-0"
+                  }`}
+                >
+                  <img
+                    src={c.thumbnailUrl || c.imageUrl || ""}
+                    alt={c.title}
+                    draggable={false}
+                    loading="lazy"
+                    className="w-full h-full object-cover block filter-none pointer-events-none"
+                  />
+
+                  {/* Case Number Tag */}
+                  <div
+                    className={`absolute bottom-0 inset-x-0 font-display text-[6.5px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter ${
+                      isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/55 text-white/95"
+                    }`}
+                  >
+                    {c.number}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom indicator when more items exist below */}
+        {canScrollDown && (
+          <div className="pointer-events-none absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-[#FAFAF8] via-[#FAFAF8]/95 to-transparent flex items-end justify-center pb-0.5 z-10">
+            <span className="font-display text-[7px] text-black/45 uppercase tracking-widest font-bold animate-pulse">
+              ↓ SCORRI
+            </span>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 function OltreCardCarousel({
   categoryConfig,
   subcategoryItems,
@@ -687,60 +867,14 @@ function OltreCardCarousel({
                 }`}
               />
 
-              {/* Card Header: Subcategory Title (oltre.jpg) */}
-              <div className="h-8 px-3 border-b border-black/8 flex items-center justify-between bg-white shrink-0 select-none">
-                <span className="font-display font-bold text-[9.5px] sm:text-[10px] uppercase tracking-wider text-black">
-                  {subcat}
-                </span>
-                <span className="font-display text-[7.5px] sm:text-[8px] font-semibold text-black/45 tracking-wider">
-                  {sortedList.length} OPERE
-                </span>
-              </div>
-
-              {/* Card Body: Cluster / Grid of Thumbnails without heavy black borders (oltre.jpg) */}
-              <div className="p-2 sm:p-2.5 flex-1 min-h-0 overflow-y-auto no-scrollbar bg-[#FAFAF8]">
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 items-center justify-items-center">
-                  {sortedList.map((c) => {
-                    const isCurrent = c.id === currentItemId;
-                    return (
-                      <button
-                        key={c.id}
-                        type="button"
-                        title={`Caso ${c.number}: ${c.title}`}
-                        onClick={(e) => {
-                          if (!isCenter) return;
-                          e.stopPropagation();
-                          onSelectCase(c);
-                        }}
-                        className={`relative w-12 h-12 sm:w-13 sm:h-13 flex-shrink-0 overflow-hidden transition-all duration-150 select-none bg-[#ECECE8] ${
-                          isCenter ? "cursor-pointer" : "cursor-default pointer-events-none"
-                        } ${
-                          isCurrent
-                            ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105 z-10"
-                            : "hover:scale-105 shadow-2xs border-0"
-                        }`}
-                      >
-                        <img
-                          src={c.thumbnailUrl || c.imageUrl || ""}
-                          alt={c.title}
-                          draggable={false}
-                          loading="lazy"
-                          className="w-full h-full object-cover block filter-none pointer-events-none"
-                        />
-
-                        {/* Case Number Tag */}
-                        <div
-                          className={`absolute bottom-0 inset-x-0 font-display text-[6.5px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter ${
-                            isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/55 text-white/95"
-                          }`}
-                        >
-                          {c.number}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              {/* Card Header & Scrollable Body with Drag-to-Scroll & Wheel */}
+              <OltreCardContent
+                subcat={subcat}
+                sortedList={sortedList}
+                isCenter={isCenter}
+                currentItemId={currentItemId}
+                onSelectCase={onSelectCase}
+              />
             </motion.div>
           );
         })}
