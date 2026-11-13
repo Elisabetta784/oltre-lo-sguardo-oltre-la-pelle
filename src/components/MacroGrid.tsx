@@ -28,19 +28,19 @@ export type Orientation = "portrait" | "landscape" | "square";
  */
 export const TIER_HEIGHTS: Record<SizeTier, Record<Orientation, string>> = {
   large: {
-    landscape: "clamp(130px, 17vh, 200px)",
-    portrait: "clamp(160px, 21vh, 250px)",
-    square: "clamp(142px, 18.5vh, 220px)",
+    landscape: "clamp(72px, 9.2vh, 110px)",
+    portrait: "clamp(92px, 11.8vh, 140px)",
+    square: "clamp(80px, 10.2vh, 122px)",
   },
   medium: {
-    landscape: "clamp(66px, 8.2vh, 96px)",
-    portrait: "clamp(88px, 11vh, 128px)",
-    square: "clamp(74px, 9.2vh, 108px)",
+    landscape: "clamp(38px, 4.8vh, 58px)",
+    portrait: "clamp(50px, 6.4vh, 76px)",
+    square: "clamp(44px, 5.6vh, 66px)",
   },
   small: {
-    landscape: "clamp(45px, 5.5vh, 65px)",
-    portrait: "clamp(58px, 7.2vh, 85px)",
-    square: "clamp(48px, 6vh, 70px)",
+    landscape: "clamp(24px, 3.0vh, 36px)",
+    portrait: "clamp(32px, 4.0vh, 48px)",
+    square: "clamp(28px, 3.5vh, 42px)",
   },
 };
 
@@ -80,127 +80,127 @@ interface SlotConfig {
 const P1_SLOTS: SlotConfig[] = [
   // Row 1: Hero landscape (cols 1-2, Large) + 2 Medium items
   { row: 1, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 5 },
-  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 
-  // Row 2: 4 items (Medium, Small, Large portrait, Medium)
-  { row: 2, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
-  { row: 2, col: 2, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 6 },
-  { row: 2, col: 3, colSpan: 1, sizeTier: "large", staggerX: -1, staggerY: -2 },
-  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
+  // Row 2: 4 items (Medium, Small, Medium, Medium)
+  { row: 2, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 2, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 1 },
 
   // Row 3: 4 items (Small, Medium, Medium, Small)
-  { row: 3, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 5 },
-  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
-  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 4 },
-  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -3, staggerY: -5 },
+  { row: 3, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
 
   // Row 4: 3 items (Medium, Small, Hero landscape cols 3-4 Large)
-  { row: 4, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
-  { row: 4, col: 2, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 6 },
+  { row: 4, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 4, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
   { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
 
-  // Row 5: 4 items (Medium, Large, Medium, Medium)
-  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
-  { row: 5, col: 2, colSpan: 1, sizeTier: "large", staggerX: -1, staggerY: -3 },
-  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 5 },
-  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -2 },
+  // Row 5: 4 items (Medium, Medium, Medium, Medium)
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 
   // Row 6: 4 items (Medium, Medium, Small, Medium)
-  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
-  { row: 6, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 3 },
-  { row: 6, col: 3, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 6 },
-  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -4 },
+  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 6, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 6, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
 
   // Row 7: 4 items (Small, Medium, Medium, Medium)
-  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 4 },
-  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -3 },
-  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 5 },
-  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 1 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 ];
 
 // Portion 2 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
 const P2_SLOTS: SlotConfig[] = [
   // Row 1: 4 items (Medium, Small, Medium, Medium)
-  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
-  { row: 1, col: 2, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 5 },
-  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
-  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
+  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 1, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
 
   // Row 2: 3 items (Hero landscape cols 1-2 Large, Small, Medium)
   { row: 2, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 2, col: 3, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 6 },
-  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
 
-  // Row 3: 4 items (Medium, Large, Medium, Small)
-  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 3 },
-  { row: 3, col: 2, colSpan: 1, sizeTier: "large", staggerX: -2, staggerY: -3 },
-  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
-  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: -5 },
+  // Row 3: 4 items (Medium, Medium, Medium, Small)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
 
   // Row 4: 3 items (Small, Medium, Hero landscape cols 3-4 Large)
-  { row: 4, col: 1, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 5 },
-  { row: 4, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 4, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 4, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
   { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
 
   // Row 5: 4 items (Medium, Medium, Small, Medium)
-  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
-  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 5 },
-  { row: 5, col: 3, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 6 },
-  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: -3 },
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
 
   // Row 6: 3 items (Hero landscape cols 1-2 Large, Medium, Medium)
   { row: 6, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 6, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
-  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
+  { row: 6, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
 
   // Row 7: 4 items (Medium, Small, Medium, Medium)
-  { row: 7, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 3 },
-  { row: 7, col: 2, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 5 },
-  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -2 },
-  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+  { row: 7, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 ];
 
 // Portion 3 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
 const P3_SLOTS: SlotConfig[] = [
   // Row 1: 3 items (Medium, Medium, Hero landscape cols 3-4 Large)
-  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -2 },
-  { row: 1, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
+  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 1, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
   { row: 1, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
 
   // Row 2: 4 items (Small, Medium, Medium, Small)
-  { row: 2, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 5 },
-  { row: 2, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -3 },
-  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
-  { row: 2, col: 4, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: -5 },
+  { row: 2, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 2, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
 
-  // Row 3: 4 items (Medium, Large, Small, Medium)
-  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
-  { row: 3, col: 2, colSpan: 1, sizeTier: "large", staggerX: 2, staggerY: 3 },
-  { row: 3, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 6 },
-  { row: 3, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: -2 },
+  // Row 3: 4 items (Medium, Medium, Small, Medium)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
 
   // Row 4: 3 items (Hero landscape cols 1-2 Large, Medium, Small)
   { row: 4, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 4, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
-  { row: 4, col: 4, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 5 },
+  { row: 4, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 4, col: 4, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
 
   // Row 5: 4 items (Medium, Small, Medium, Medium)
-  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 3 },
-  { row: 5, col: 2, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 5 },
-  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: -2 },
-  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 
   // Row 6: 3 items (Medium, Hero landscape cols 2-3 Large, Medium)
-  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
   { row: 6, col: 2, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
 
   // Row 7: 4 items (Small, Medium, Medium, Medium)
-  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 5 },
-  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
-  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 3 },
-  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -4 },
+  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 ];
 
 /**
@@ -481,8 +481,8 @@ const MacroTile = React.memo(function MacroTile({
           aspectRatio: `${dim.w} / ${dim.h}`,
           height: targetHeight,
           width: "auto",
-          maxWidth: colSpan > 1 ? "97%" : "95%",
-          maxHeight: colSpan > 1 ? "97%" : "125%",
+          maxWidth: colSpan > 1 ? "88%" : "76%",
+          maxHeight: "82%",
         }}
         className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center border-0 ${
           isHovered
@@ -608,7 +608,7 @@ function StationColumn({
   const applyTransform = useCallback(() => {
     if (!trackRef.current || heightRef.current <= 0) return;
     const H = heightRef.current;
-    const cycleHeight = H + 5; // 5px row gap between repeating copies
+    const cycleHeight = H + 10; // 10px row gap between repeating copies
     const normY = ((offsetYRef.current % cycleHeight) + cycleHeight) % cycleHeight;
     const trackY = -cycleHeight + normY;
 
@@ -852,7 +852,7 @@ function StationColumn({
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          gap: "5px",
+          gap: "10px",
           willChange: "transform",
           transform: height > 0 ? undefined : "translateY(-33.333333%)",
         }}
@@ -865,7 +865,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "5px",
+            gap: "10px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -881,7 +881,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "5px",
+            gap: "10px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -897,7 +897,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "5px",
+            gap: "10px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -1149,7 +1149,7 @@ export function MacroGrid({
 
 
       {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS */}
-      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-1.5 sm:p-2">
+      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center px-6 sm:px-10 lg:px-16 py-4 sm:py-6">
         {displayItems.length === 0 ? (
           <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
             <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
@@ -1166,7 +1166,7 @@ export function MacroGrid({
               transformOrigin: "center center",
               willChange: "transform",
             }}
-            className="w-full h-full max-h-full grid grid-cols-3 gap-x-2 sm:gap-x-2.5 lg:gap-x-3 items-stretch justify-items-stretch"
+            className="w-full h-full max-h-full grid grid-cols-3 gap-x-8 sm:gap-x-12 lg:gap-x-16 items-stretch justify-items-stretch"
           >
             {/* PORTION 1: LEFT STATION (CASI 001 - 026) */}
             <StationColumn
