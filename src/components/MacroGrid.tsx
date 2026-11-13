@@ -18,13 +18,46 @@ interface MacroGridProps {
   onGoToBeyond?: () => void;
 }
 
+export type SizeTier = "large" | "medium" | "small";
+export type Orientation = "portrait" | "landscape" | "square";
+
+/**
+ * Standardized modular height scales for the 3 sizing tiers (Large, Medium, Small).
+ * Guarantees that any two artworks of the same orientation/format share a common side (height),
+ * producing a calm, coherent, and homogeneous museum exhibition wall.
+ */
+export const TIER_HEIGHTS: Record<SizeTier, Record<Orientation, string>> = {
+  large: {
+    landscape: "clamp(88px, 11.2vh, 130px)",
+    portrait: "clamp(118px, 14.6vh, 170px)",
+    square: "clamp(100px, 12.4vh, 144px)",
+  },
+  medium: {
+    landscape: "clamp(66px, 8.4vh, 98px)",
+    portrait: "clamp(90px, 11.2vh, 132px)",
+    square: "clamp(76px, 9.5vh, 110px)",
+  },
+  small: {
+    landscape: "clamp(50px, 6.2vh, 74px)",
+    portrait: "clamp(68px, 8.4vh, 98px)",
+    square: "clamp(56px, 7vh, 82px)",
+  },
+};
+
+export function getOrientation(ratio: number): Orientation {
+  if (ratio < 0.95) return "portrait";
+  if (ratio > 1.08) return "landscape";
+  return "square";
+}
+
 interface PortionPlacement {
   item: ArchiveItem;
   row: number;
   col: number;
   colSpan: number;
+  staggerX: number;
   staggerY: number;
-  sizeFactor: number;
+  sizeTier: SizeTier;
 }
 
 interface PortionData {
@@ -34,14 +67,148 @@ interface PortionData {
   placements: PortionPlacement[];
 }
 
+interface SlotConfig {
+  row: number;
+  col: number;
+  colSpan: number;
+  sizeTier: SizeTier;
+  staggerX: number;
+  staggerY: number;
+}
+
+// Portion 1 (26 items): Organic 4-column x 7-row layout with 2 hero 2-col spans + 24 single slots
+const P1_SLOTS: SlotConfig[] = [
+  // Row 1: Hero landscape (cols 1-2, Large) + 2 Medium items
+  { row: 1, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 5 },
+  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+
+  // Row 2: 4 items (Medium, Small, Large portrait, Medium)
+  { row: 2, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+  { row: 2, col: 2, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 6 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "large", staggerX: -1, staggerY: -2 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
+
+  // Row 3: 4 items (Small, Medium, Medium, Small)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 5 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 4 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -3, staggerY: -5 },
+
+  // Row 4: 3 items (Medium, Small, Hero landscape cols 3-4 Large)
+  { row: 4, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 4, col: 2, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 6 },
+  { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+
+  // Row 5: 4 items (Medium, Large, Medium, Medium)
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "large", staggerX: -1, staggerY: -3 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 5 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -2 },
+
+  // Row 6: 4 items (Medium, Medium, Small, Medium)
+  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+  { row: 6, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 3 },
+  { row: 6, col: 3, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 6 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -4 },
+
+  // Row 7: 4 items (Small, Medium, Medium, Medium)
+  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 4 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -3 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 5 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+];
+
+// Portion 2 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
+const P2_SLOTS: SlotConfig[] = [
+  // Row 1: 4 items (Medium, Small, Medium, Medium)
+  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 1, col: 2, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 5 },
+  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
+
+  // Row 2: 3 items (Hero landscape cols 1-2 Large, Small, Medium)
+  { row: 2, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 6 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+
+  // Row 3: 4 items (Medium, Large, Medium, Small)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 3 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "large", staggerX: -2, staggerY: -3 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: -5 },
+
+  // Row 4: 3 items (Small, Medium, Hero landscape cols 3-4 Large)
+  { row: 4, col: 1, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 5 },
+  { row: 4, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+
+  // Row 5: 4 items (Medium, Medium, Small, Medium)
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 5 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 6 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: -3 },
+
+  // Row 6: 3 items (Hero landscape cols 1-2 Large, Medium, Medium)
+  { row: 6, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 6, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 4 },
+
+  // Row 7: 4 items (Medium, Small, Medium, Medium)
+  { row: 7, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 3 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 5 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -2 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+];
+
+// Portion 3 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
+const P3_SLOTS: SlotConfig[] = [
+  // Row 1: 3 items (Medium, Medium, Hero landscape cols 3-4 Large)
+  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -2 },
+  { row: 1, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
+  { row: 1, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+
+  // Row 2: 4 items (Small, Medium, Medium, Small)
+  { row: 2, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 5 },
+  { row: 2, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -3 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: -5 },
+
+  // Row 3: 4 items (Medium, Large, Small, Medium)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "large", staggerX: 2, staggerY: 3 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 6 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: -2 },
+
+  // Row 4: 3 items (Hero landscape cols 1-2 Large, Medium, Small)
+  { row: 4, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 4, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 4, col: 4, colSpan: 1, sizeTier: "small", staggerX: 3, staggerY: 5 },
+
+  // Row 5: 4 items (Medium, Small, Medium, Medium)
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 3 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "small", staggerX: -2, staggerY: 5 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: -2 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -3, staggerY: -4 },
+
+  // Row 6: 3 items (Medium, Hero landscape cols 2-3 Large, Medium)
+  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -3 },
+  { row: 6, col: 2, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 3, staggerY: 4 },
+
+  // Row 7: 4 items (Small, Medium, Medium, Medium)
+  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 2, staggerY: 5 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 3 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -2, staggerY: -4 },
+];
+
 /**
- * Builds an organic, homogeneous, and balanced distribution for a portion:
- * - Row 1 across all 3 portions features 2-column wide landscape items flush with the top, completely eliminating empty white bands at the top.
- * - Rows 2 to 7 evenly intersperse tall portraits and wide landscapes in an alternating checkerboard pattern (1 to 2 tall items per row), preventing any rigid horizontal striping.
- * - In Row 4, hero landscape items span 2 columns with dynamic diagonal balance (left in P2, right in P3).
- * - Calibrated row templates ensure each row snugly wraps its content without vertical gaps.
- * - Guaranteed: ALL 76 case studies are 100% visible on screen simultaneously.
- * - Strictly keeps all items inside this portion; zero items positioned across adjacent portions.
+ * Builds an organic, semi-random, and harmoniously scaled distribution for a portion:
+ * - Exactly 3 sizes across the entire wall (Large, Medium, Small).
+ * - Artworks of the same shape/orientation share a common dimension (height).
+ * - Original aspect ratios are strictly preserved without cropping or stretching.
+ * - Dynamic placement with subtle organic staggers creates a modern museum gallery aesthetic.
  */
 function packHomogeneousPortion(
   portionItems: ArchiveItem[],
@@ -57,226 +224,72 @@ function packHomogeneousPortion(
   if (count >= 18) {
     const cols = 4;
     const rows = 7;
-    const rowTemplate = "1.22fr 1.02fr 0.96fr 1.10fr 0.96fr 0.96fr 0.96fr";
+    const rowTemplate = "1.15fr 1fr 1fr 1.15fr 1fr 1fr 1fr";
 
-    // 1. Select 2 wide landscape items for Row 1
-    const wideCandidates = portionItems.filter(
-      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
-    );
-    const row1 = wideCandidates.slice(0, 2);
-    let rem = portionItems.filter((it) => !row1.includes(it));
-
-    // 2. Select 1 wide item for Row 4 hero span in portions with 25 items (P2, P3)
-    let midHero: ArchiveItem | null = null;
-    if (count === 25) {
-      const remWide = rem.filter(
-        (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
-      );
-      midHero = remWide[0] || rem[0];
-      rem = rem.filter((it) => it !== midHero);
+    let slots: SlotConfig[] = [];
+    if (portionIndex === 0) {
+      slots = P1_SLOTS;
+    } else if (portionIndex === 1) {
+      slots = P2_SLOTS;
+    } else {
+      slots = P3_SLOTS;
     }
 
-    // 3. Separate remaining items into tall (< 1.1) and wide (>= 1.1)
-    const tall = rem.filter(
-      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) < 1.1
+    // Separate items by format
+    const wideHeroes = portionItems.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
     );
-    const wide = rem.filter(
-      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.1
+    const portraits = portionItems.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) < 0.95
     );
+    const others = portionItems.filter(
+      (it) => !wideHeroes.includes(it) && !portraits.includes(it)
+    );
+
+    // Slots needing 2-column span heroes
+    const heroSlots = slots.filter((s) => s.colSpan === 2);
+    const singleSlots = slots.filter((s) => s.colSpan === 1);
+
+    // Assign hero slots to wide landscapes
+    let wideHeroIdx = 0;
+    const heroAssignments: { slot: SlotConfig; item: ArchiveItem }[] = [];
+    for (const s of heroSlots) {
+      const it = wideHeroes[wideHeroIdx++] || others.pop() || portionItems[0];
+      heroAssignments.push({ slot: s, item: it });
+    }
+
+    // Remaining items to distribute across single slots
+    const remainingWide = wideHeroes.slice(wideHeroIdx);
+    const remainingItems = [...portraits, ...others, ...remainingWide];
 
     const placements: PortionPlacement[] = [];
 
-    // ROW 1: Flush top hero landscapes spanning 2 columns each (no white gaps above)
-    placements.push({
-      item: row1[0],
-      row: 1,
-      col: 1,
-      colSpan: 2,
-      staggerY: 0,
-      sizeFactor: 1.02,
-    });
-    placements.push({
-      item: row1[1],
-      row: 1,
-      col: 3,
-      colSpan: 2,
-      staggerY: 0,
-      sizeFactor: 1.02,
-    });
-
-    if (count === 26) {
-      // Portion 1 (26 items): 8 tall, 16 wide
-      // Interwoven checkerboard pattern across rows 2-7:
-      // Row 2: [W, T, W, T] (2 tall, 2 wide)
-      // Row 3: [W, W, T, W] (1 tall, 3 wide)
-      // Row 4: [T, W, T, W] (2 tall, 2 wide)
-      // Row 5: [W, T, W, W] (1 tall, 3 wide)
-      // Row 6: [W, W, W, T] (1 tall, 3 wide)
-      // Row 7: [T, W, W, W] (1 tall, 3 wide)
-      let tallPtr = 0;
-      let widePtr = 0;
-      const rowPatterns = [
-        [false, true, false, true],
-        [false, false, true, false],
-        [true, false, true, false],
-        [false, true, false, false],
-        [false, false, false, true],
-        [true, false, false, false],
-      ];
-
-      rowPatterns.forEach((pat, rIdx) => {
-        const rowNum = rIdx + 2;
-        pat.forEach((isTall, colIdx) => {
-          let it: ArchiveItem;
-          if (isTall && tallPtr < tall.length) {
-            it = tall[tallPtr++];
-          } else {
-            it = wide[widePtr++];
-          }
-          const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
-          const staggerY = (rowNum + colIdx) % 2 === 1 ? 1 : -1;
-          placements.push({
-            item: it,
-            row: rowNum,
-            col: colIdx + 1,
-            colSpan: 1,
-            staggerY,
-            sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
-          });
-        });
+    // Add hero placements
+    for (const ha of heroAssignments) {
+      placements.push({
+        item: ha.item,
+        row: ha.slot.row,
+        col: ha.slot.col,
+        colSpan: ha.slot.colSpan,
+        staggerX: ha.slot.staggerX,
+        staggerY: ha.slot.staggerY,
+        sizeTier: ha.slot.sizeTier,
       });
-    } else if (portionIndex === 1) {
-      // Portion 2 (25 items): 8 tall, 14 wide + 1 midHero
-      // Row 4: midHero (cols 1-2) + [Tall, Wide] (cols 3-4)
-      // Rows 2, 3, 5, 6, 7 evenly intersperse remaining 7 tall and 13 wide
-      let tallPtr = 0;
-      let widePtr = 0;
-      const p2RowPatterns = [
-        [true, false, true, false], // Row 2 (2 tall, 2 wide)
-        [false, true, false, false], // Row 3 (1 tall, 3 wide)
-        [false, true, false, true], // Row 5 (2 tall, 2 wide)
-        [true, false, false, false], // Row 6 (1 tall, 3 wide)
-        [false, false, true, false], // Row 7 (1 tall, 3 wide)
-      ];
+    }
 
-      p2RowPatterns.forEach((pat, rIdx) => {
-        const rowNum = rIdx < 2 ? rIdx + 2 : rIdx + 3;
-        pat.forEach((isTall, colIdx) => {
-          let it: ArchiveItem;
-          if (isTall && tallPtr < tall.length) {
-            it = tall[tallPtr++];
-          } else {
-            it = wide[widePtr++];
-          }
-          const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
-          const staggerY = (rowNum + colIdx) % 2 === 1 ? 1 : -1;
-          placements.push({
-            item: it,
-            row: rowNum,
-            col: colIdx + 1,
-            colSpan: 1,
-            staggerY,
-            sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
-          });
-        });
-      });
-
-      // Row 4 for Portion 2
-      if (midHero) {
+    // Add single slots placements
+    let remIdx = 0;
+    for (const s of singleSlots) {
+      if (remIdx < remainingItems.length) {
+        const it = remainingItems[remIdx++];
         placements.push({
-          item: midHero,
-          row: 4,
-          col: 1,
-          colSpan: 2,
-          staggerY: 0,
-          sizeFactor: 1.02,
-        });
-      }
-      if (tallPtr < tall.length) {
-        placements.push({
-          item: tall[tallPtr++],
-          row: 4,
-          col: 3,
-          colSpan: 1,
-          staggerY: 1,
-          sizeFactor: 1.0,
-        });
-      }
-      if (widePtr < wide.length) {
-        placements.push({
-          item: wide[widePtr++],
-          row: 4,
-          col: 4,
-          colSpan: 1,
-          staggerY: -1,
-          sizeFactor: 0.99,
-        });
-      }
-    } else {
-      // Portion 3 (25 items): 5 tall, 17 wide + 1 midHero
-      // Row 4: [Tall, Wide] (cols 1-2) + midHero (cols 3-4) -> diagonal balance!
-      // Rows 2, 3, 5, 6, 7 evenly intersperse remaining 4 tall and 16 wide
-      let tallPtr = 0;
-      let widePtr = 0;
-      const p3RowPatterns = [
-        [false, true, false, false], // Row 2 (1 tall, 3 wide)
-        [true, false, false, false], // Row 3 (1 tall, 3 wide)
-        [false, false, true, false], // Row 5 (1 tall, 3 wide)
-        [false, false, false, true], // Row 6 (1 tall, 3 wide)
-        [false, false, false, false], // Row 7 (0 tall, 4 wide)
-      ];
-
-      p3RowPatterns.forEach((pat, rIdx) => {
-        const rowNum = rIdx < 2 ? rIdx + 2 : rIdx + 3;
-        pat.forEach((isTall, colIdx) => {
-          let it: ArchiveItem;
-          if (isTall && tallPtr < tall.length) {
-            it = tall[tallPtr++];
-          } else {
-            it = wide[widePtr++];
-          }
-          const ratio = ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33;
-          const staggerY = (rowNum + colIdx) % 2 === 1 ? 1 : -1;
-          placements.push({
-            item: it,
-            row: rowNum,
-            col: colIdx + 1,
-            colSpan: 1,
-            staggerY,
-            sizeFactor: ratio < 1.1 ? 1.0 : 0.99,
-          });
-        });
-      });
-
-      // Row 4 for Portion 3
-      if (tallPtr < tall.length) {
-        placements.push({
-          item: tall[tallPtr++],
-          row: 4,
-          col: 1,
-          colSpan: 1,
-          staggerY: 1,
-          sizeFactor: 1.0,
-        });
-      }
-      if (widePtr < wide.length) {
-        placements.push({
-          item: wide[widePtr++],
-          row: 4,
-          col: 2,
-          colSpan: 1,
-          staggerY: -1,
-          sizeFactor: 0.99,
-        });
-      }
-      if (midHero) {
-        placements.push({
-          item: midHero,
-          row: 4,
-          col: 3,
-          colSpan: 2,
-          staggerY: 0,
-          sizeFactor: 1.02,
+          item: it,
+          row: s.row,
+          col: s.col,
+          colSpan: s.colSpan,
+          staggerX: s.staggerX,
+          staggerY: s.staggerY,
+          sizeTier: s.sizeTier,
         });
       }
     }
@@ -292,14 +305,19 @@ function packHomogeneousPortion(
   for (let i = 0; i < count; i++) {
     const col = (i % cols) + 1;
     const row = Math.floor(i / cols) + 1;
-    const staggerY = col % 2 === 0 ? 2 : -2;
+    const staggerY = (col + row) % 2 === 0 ? 3 : -3;
+    const staggerX = col % 2 === 0 ? -2 : 2;
+    // Exactly 3 size tiers in a balanced rhythm
+    const sizeTier: SizeTier = i % 5 === 0 ? "large" : i % 3 === 0 ? "small" : "medium";
+
     placements.push({
       item: portionItems[i],
       row,
       col,
       colSpan: 1,
+      staggerX,
       staggerY,
-      sizeFactor: 1.0,
+      sizeTier,
     });
   }
 
@@ -368,8 +386,9 @@ interface MacroTileProps {
   row: number;
   col: number;
   colSpan?: number;
+  staggerX: number;
   staggerY: number;
-  sizeFactor: number;
+  sizeTier: SizeTier;
   isClone?: boolean;
   onSelect: (item: ArchiveItem) => void;
   onHover: (item: ArchiveItem | null) => void;
@@ -383,8 +402,9 @@ const MacroTile = React.memo(function MacroTile({
   row,
   col,
   colSpan = 1,
+  staggerX,
   staggerY,
-  sizeFactor,
+  sizeTier,
   isClone = false,
   onSelect,
   onHover,
@@ -395,6 +415,8 @@ const MacroTile = React.memo(function MacroTile({
     h: 100,
     ratio: item.aspectRatio || 1.33,
   };
+  const orientation = getOrientation(dim.ratio);
+  const targetHeight = TIER_HEIGHTS[sizeTier][orientation];
 
   // Track pointer down coordinate to distinguish drag from tap
   const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
@@ -431,7 +453,7 @@ const MacroTile = React.memo(function MacroTile({
       style={{
         gridRow: `${row} / span 1`,
         gridColumn: `${col} / span ${colSpan}`,
-        transform: `translateY(${staggerY}px)`,
+        transform: `translate3d(${staggerX}px, ${staggerY}px, 0px)`,
         opacity: 1,
       }}
       className={`pointer-events-auto w-full h-full min-h-0 min-w-0 flex items-center justify-center cursor-pointer relative group ${
@@ -446,8 +468,10 @@ const MacroTile = React.memo(function MacroTile({
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
         style={{
           aspectRatio: `${dim.w} / ${dim.h}`,
-          maxWidth: `${Math.min(100, Math.round(99 * sizeFactor))}%`,
-          maxHeight: `${Math.min(100, Math.round(98 * sizeFactor))}%`,
+          height: targetHeight,
+          width: "auto",
+          maxWidth: colSpan > 1 ? "97%" : "95%",
+          maxHeight: "96%",
         }}
         className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center ${
           isHovered
@@ -780,8 +804,9 @@ function StationColumn({
           row={p.row}
           col={p.col}
           colSpan={p.colSpan}
+          staggerX={p.staggerX}
           staggerY={p.staggerY}
-          sizeFactor={p.sizeFactor}
+          sizeTier={p.sizeTier}
           isClone={isClone}
           onSelect={handleSelectTile}
           onHover={(item) => {
