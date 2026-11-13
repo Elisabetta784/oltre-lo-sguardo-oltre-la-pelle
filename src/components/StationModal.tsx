@@ -573,19 +573,17 @@ function OltreCardCarousel({
   currentItemId,
   onSelectCase,
 }: OltreCardCarouselProps) {
-  const [activeCardIdx, setActiveCardIdx] = useState(0);
+  const numCards = categoryConfig.subcategories.length;
+  // Start on the central card so other cards are immediately visible flanking on both sides
+  const defaultCenterIdx = Math.floor(numCards / 2);
+  const [activeCardIdx, setActiveCardIdx] = useState(defaultCenterIdx);
 
-  // Sync activeCardIdx to the subcategory that contains currentItemId on category change
+  // When category changes, reset to the central card so cards are immediately visible on both sides
   useEffect(() => {
     const subcats = categoryConfig.subcategories;
-    const matchIdx = subcats.findIndex((sub) => {
-      const list = subcategoryItems[sub] || [];
-      return list.some((it) => it.id === currentItemId);
-    });
-    setActiveCardIdx(matchIdx >= 0 ? matchIdx : 0);
-  }, [categoryConfig.id, currentItemId, subcategoryItems, categoryConfig.subcategories]);
-
-  const numCards = categoryConfig.subcategories.length;
+    const centerIdx = Math.floor(subcats.length / 2);
+    setActiveCardIdx(centerIdx);
+  }, [categoryConfig.id, categoryConfig.subcategories]);
 
   return (
     <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden">
@@ -595,7 +593,11 @@ function OltreCardCarousel({
         className="relative w-full flex-1 flex items-center justify-center min-h-[350px] sm:min-h-[385px] overflow-hidden"
       >
         {categoryConfig.subcategories.map((subcat, idx) => {
-          const offset = idx - activeCardIdx;
+          // Circular offset: guarantees there is always a card on the left and right in the loop
+          let offset = (idx - activeCardIdx) % numCards;
+          if (offset > Math.floor(numCards / 2)) offset -= numCards;
+          if (offset < -Math.floor((numCards - 1) / 2)) offset += numCards;
+
           const isCenter = offset === 0;
 
           // 3D positioning and perspective rotation strictly matching oltree.jpg:
@@ -739,13 +741,6 @@ function OltreCardCarousel({
                   })}
                 </div>
               </div>
-
-              {/* Card Footer: Subtle page number matching oltree.jpg */}
-              <div className="h-5 px-3 flex items-center justify-end bg-white shrink-0 select-none border-t border-black/5">
-                <span className="font-mono text-[8px] text-black/35 font-medium">
-                  {idx + 1}
-                </span>
-              </div>
             </motion.div>
           );
         })}
@@ -755,11 +750,8 @@ function OltreCardCarousel({
       <div className="h-6 px-3 flex items-center justify-between w-full max-w-[340px] shrink-0 select-none mt-1">
         <button
           type="button"
-          onClick={() => setActiveCardIdx((prev) => Math.max(0, prev - 1))}
-          disabled={activeCardIdx === 0}
-          className={`font-display text-[8.5px] uppercase tracking-wider font-bold transition-opacity cursor-pointer ${
-            activeCardIdx === 0 ? "opacity-20 cursor-not-allowed" : "text-black/70 hover:text-black"
-          }`}
+          onClick={() => setActiveCardIdx((prev) => (prev - 1 + numCards) % numCards)}
+          className="font-display text-[8.5px] uppercase tracking-wider font-bold text-black/70 hover:text-black transition-opacity cursor-pointer"
         >
           ← PREV
         </button>
@@ -783,13 +775,8 @@ function OltreCardCarousel({
 
         <button
           type="button"
-          onClick={() => setActiveCardIdx((prev) => Math.min(numCards - 1, prev + 1))}
-          disabled={activeCardIdx === numCards - 1}
-          className={`font-display text-[8.5px] uppercase tracking-wider font-bold transition-opacity cursor-pointer ${
-            activeCardIdx === numCards - 1
-              ? "opacity-20 cursor-not-allowed"
-              : "text-black/70 hover:text-black"
-          }`}
+          onClick={() => setActiveCardIdx((prev) => (prev + 1) % numCards)}
+          className="font-display text-[8.5px] uppercase tracking-wider font-bold text-black/70 hover:text-black transition-opacity cursor-pointer"
         >
           NEXT →
         </button>
