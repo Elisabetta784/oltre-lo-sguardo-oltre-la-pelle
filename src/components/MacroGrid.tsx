@@ -28,19 +28,19 @@ export type Orientation = "portrait" | "landscape" | "square";
  */
 export const TIER_HEIGHTS: Record<SizeTier, Record<Orientation, string>> = {
   large: {
-    landscape: "clamp(72px, 9.2vh, 110px)",
-    portrait: "clamp(92px, 11.8vh, 140px)",
-    square: "clamp(80px, 10.2vh, 122px)",
+    landscape: "clamp(100px, 13vh, 155px)",
+    portrait: "clamp(128px, 16.5vh, 195px)",
+    square: "clamp(112px, 14.5vh, 170px)",
   },
   medium: {
-    landscape: "clamp(38px, 4.8vh, 58px)",
-    portrait: "clamp(50px, 6.4vh, 76px)",
-    square: "clamp(44px, 5.6vh, 66px)",
+    landscape: "clamp(62px, 8.0vh, 92px)",
+    portrait: "clamp(82px, 10.5vh, 122px)",
+    square: "clamp(70px, 9.0vh, 104px)",
   },
   small: {
-    landscape: "clamp(24px, 3.0vh, 36px)",
-    portrait: "clamp(32px, 4.0vh, 48px)",
-    square: "clamp(28px, 3.5vh, 42px)",
+    landscape: "clamp(46px, 5.8vh, 68px)",
+    portrait: "clamp(58px, 7.5vh, 88px)",
+    square: "clamp(50px, 6.5vh, 76px)",
   },
 };
 
@@ -481,8 +481,8 @@ const MacroTile = React.memo(function MacroTile({
           aspectRatio: `${dim.w} / ${dim.h}`,
           height: targetHeight,
           width: "auto",
-          maxWidth: colSpan > 1 ? "88%" : "76%",
-          maxHeight: "82%",
+          maxWidth: colSpan > 1 ? "96%" : "92%",
+          maxHeight: "94%",
         }}
         className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center border-0 ${
           isHovered
@@ -608,7 +608,7 @@ function StationColumn({
   const applyTransform = useCallback(() => {
     if (!trackRef.current || heightRef.current <= 0) return;
     const H = heightRef.current;
-    const cycleHeight = H + 10; // 10px row gap between repeating copies
+    const cycleHeight = H + 6; // 6px row gap between repeating copies
     const normY = ((offsetYRef.current % cycleHeight) + cycleHeight) % cycleHeight;
     const trackY = -cycleHeight + normY;
 
@@ -852,7 +852,7 @@ function StationColumn({
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          gap: "10px",
+          gap: "6px",
           willChange: "transform",
           transform: height > 0 ? undefined : "translateY(-33.333333%)",
         }}
@@ -865,7 +865,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "10px",
+            gap: "6px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -881,7 +881,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "10px",
+            gap: "6px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -897,7 +897,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "10px",
+            gap: "6px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -1166,7 +1166,7 @@ export function MacroGrid({
               transformOrigin: "center center",
               willChange: "transform",
             }}
-            className="w-full h-full max-h-full grid grid-cols-3 gap-x-2.5 items-stretch justify-items-stretch"
+            className="w-full h-full max-h-full grid grid-cols-3 gap-x-1.5 sm:gap-x-2 items-stretch justify-items-stretch"
           >
             {/* PORTION 1: LEFT STATION (CASI 001 - 026) */}
             <StationColumn
