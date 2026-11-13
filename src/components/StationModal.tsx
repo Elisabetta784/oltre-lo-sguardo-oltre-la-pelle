@@ -601,49 +601,57 @@ function OltreCardContent({
             isCenter ? (isDragging ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"
           }`}
         >
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 items-center justify-items-center pb-2.5">
-            {sortedList.map((c) => {
-              const isCurrent = c.id === currentItemId;
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  title={`Caso ${c.number}: ${c.title}`}
-                  onClick={(e) => {
-                    if (!isCenter) return;
-                    e.stopPropagation();
-                    // Prevent clicking if the user was dragging to scroll
-                    if (hasDraggedRef.current) return;
-                    onSelectCase(c);
-                  }}
-                  className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] ${
-                    isCenter ? "cursor-pointer" : "cursor-default pointer-events-none"
-                  } ${
-                    isCurrent
-                      ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105 z-10"
-                      : "hover:scale-105 shadow-2xs border-0"
-                  }`}
-                >
-                  <img
-                    src={c.thumbnailUrl || c.imageUrl || ""}
-                    alt={c.title}
-                    draggable={false}
-                    loading="lazy"
-                    className="w-full h-full object-cover block filter-none pointer-events-none rounded-none"
-                  />
-
-                  {/* Case Number Tag */}
-                  <div
-                    className={`absolute bottom-0 inset-x-0 font-display text-[6px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter rounded-none ${
-                      isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/55 text-white/95"
+          {sortedList.length === 0 ? (
+            <div className="h-full min-h-[160px] flex flex-col items-center justify-center p-4 text-center select-none">
+              <span className="font-display text-[9px] uppercase tracking-wider text-black/35 font-medium">
+                Nessuna opera presente
+              </span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 items-center justify-items-center pb-2.5">
+              {sortedList.map((c) => {
+                const isCurrent = c.id === currentItemId;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    title={`Caso ${c.number}: ${c.title}`}
+                    onClick={(e) => {
+                      if (!isCenter) return;
+                      e.stopPropagation();
+                      // Prevent clicking if the user was dragging to scroll
+                      if (hasDraggedRef.current) return;
+                      onSelectCase(c);
+                    }}
+                    className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] ${
+                      isCenter ? "cursor-pointer" : "cursor-default pointer-events-none"
+                    } ${
+                      isCurrent
+                        ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105 z-10"
+                        : "hover:scale-105 shadow-2xs border-0"
                     }`}
                   >
-                    {c.number}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+                    <img
+                      src={c.thumbnailUrl || c.imageUrl || ""}
+                      alt={c.title}
+                      draggable={false}
+                      loading="lazy"
+                      className="w-full h-full object-cover block filter-none pointer-events-none rounded-none"
+                    />
+
+                    {/* Case Number Tag */}
+                    <div
+                      className={`absolute bottom-0 inset-x-0 font-display text-[6px] font-bold text-center py-0.2 leading-tight pointer-events-none z-10 uppercase tracking-tighter rounded-none ${
+                        isCurrent ? "bg-[#FF3B30] text-white" : "bg-black/55 text-white/95"
+                      }`}
+                    >
+                      {c.number}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Bottom soft fade when more items exist below */}
@@ -655,6 +663,54 @@ function OltreCardContent({
   );
 }
 
+/**
+ * Determines the best card to present initially in the 3D carousel.
+ * Guarantees that an empty card (0 items) is NEVER presented as the initial/central card.
+ * Prioritizes the active case study's subcategory if it has items;
+ * otherwise selects the non-empty subcategory closest to the nominal center.
+ */
+function getInitialActiveCardIdx(
+  subcategories: string[],
+  subcategoryItems: Record<string, ArchiveItem[]>,
+  currentItemId: string
+): number {
+  if (subcategories.length === 0) return 0;
+
+  // 1. If the currently viewed case study belongs to one of the subcategories and it has items, center it!
+  const currentSubIdx = subcategories.findIndex((sub) => {
+    const list = subcategoryItems[sub] || [];
+    return list.some((item) => item.id === currentItemId);
+  });
+  if (currentSubIdx !== -1 && (subcategoryItems[subcategories[currentSubIdx]] || []).length > 0) {
+    return currentSubIdx;
+  }
+
+  // 2. Identify all non-empty subcategories (items.length > 0)
+  const nonEmptyIndices = subcategories
+    .map((sub, i) => ((subcategoryItems[sub] || []).length > 0 ? i : -1))
+    .filter((i) => i !== -1);
+
+  // Fallback if all subcategories are empty
+  if (nonEmptyIndices.length === 0) {
+    return Math.floor(subcategories.length / 2);
+  }
+
+  // 3. Pick the non-empty card closest to the nominal center so populated cards are immediately visible
+  const nominalCenter = Math.floor(subcategories.length / 2);
+  let bestIdx = nonEmptyIndices[0];
+  let minDistance = Math.abs(bestIdx - nominalCenter);
+
+  for (const idx of nonEmptyIndices) {
+    const dist = Math.abs(idx - nominalCenter);
+    if (dist < minDistance) {
+      minDistance = dist;
+      bestIdx = idx;
+    }
+  }
+
+  return bestIdx;
+}
+
 function OltreCardCarousel({
   categoryConfig,
   subcategoryItems,
@@ -662,16 +718,21 @@ function OltreCardCarousel({
   onSelectCase,
 }: OltreCardCarouselProps) {
   const numCards = categoryConfig.subcategories.length;
-  // Start on the central card so other cards are immediately visible flanking on both sides
-  const defaultCenterIdx = Math.floor(numCards / 2);
-  const [activeCardIdx, setActiveCardIdx] = useState(defaultCenterIdx);
 
-  // When category changes, reset to the central card so cards are immediately visible on both sides
+  // Never pick an empty card (0 items) as the central/initial card
+  const [activeCardIdx, setActiveCardIdx] = useState(() =>
+    getInitialActiveCardIdx(categoryConfig.subcategories, subcategoryItems, currentItemId)
+  );
+
+  // When category changes, reset to the best non-empty card so it never opens on an empty card
   useEffect(() => {
-    const subcats = categoryConfig.subcategories;
-    const centerIdx = Math.floor(subcats.length / 2);
-    setActiveCardIdx(centerIdx);
-  }, [categoryConfig.id, categoryConfig.subcategories]);
+    const bestIdx = getInitialActiveCardIdx(
+      categoryConfig.subcategories,
+      subcategoryItems,
+      currentItemId
+    );
+    setActiveCardIdx(bestIdx);
+  }, [categoryConfig.id, categoryConfig.subcategories, subcategoryItems, currentItemId]);
 
   return (
     <div className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden">
