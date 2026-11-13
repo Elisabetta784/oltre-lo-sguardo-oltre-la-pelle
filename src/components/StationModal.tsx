@@ -246,24 +246,13 @@ export function StationModal({
                   </>
                 )}
 
-                {/* Floating INFO pill button (bottom-center, matching foto.png) */}
+                {/* Floating INFO pill button (bottom-center, strictly matching foto.png) */}
                 <button
                   type="button"
                   onClick={() => setViewMode("info")}
                   className="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-20 px-6 py-1.5 rounded-full bg-white/80 backdrop-blur-md text-black font-display font-bold text-[10.5px] sm:text-[11px] tracking-widest uppercase hover:bg-white active:scale-95 transition-all cursor-pointer shadow-md border border-black/5"
                 >
                   INFO
-                </button>
-
-                {/* Floating OLTRE capsule (bottom-right for direct access) */}
-                <button
-                  type="button"
-                  onClick={() => setViewMode("oltre")}
-                  className="absolute bottom-3.5 right-4 z-20 px-3.5 py-1.5 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[10px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                  title="Apri Oltre"
-                >
-                  <span className="w-2 h-2 rounded-full bg-white/90" />
-                  <span>OLTRE</span>
                 </button>
               </div>
             </motion.div>
@@ -447,24 +436,24 @@ export function StationModal({
                 })}
               </div>
 
-              {/* Bottom Navigation Bar: [ ← Preview ] and [ (●) OLTRE ] */}
+              {/* Bottom Navigation Bar: [ ← Info ] and [ (●) OLTRE ] */}
               <div className="px-5 py-2.5 border-t border-black/8 flex items-center justify-between shrink-0 select-none">
-                {/* Back to Preview on bottom-left */}
+                {/* Back to Info on bottom-left */}
                 <button
                   type="button"
-                  onClick={() => setViewMode("image")}
+                  onClick={() => setViewMode("info")}
                   className="px-4 py-1.5 rounded-full bg-white/80 hover:bg-white text-black font-display font-semibold text-[10.5px] tracking-wide flex items-center gap-1.5 shadow-xs transition-all cursor-pointer border border-black/5"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Preview</span>
+                  <span>Info</span>
                 </button>
 
-                {/* Active OLTRE toggle on bottom-right (clicking toggles back to image) */}
+                {/* Active OLTRE toggle on bottom-right (clicking toggles back to info) */}
                 <button
                   type="button"
-                  onClick={() => setViewMode("image")}
+                  onClick={() => setViewMode("info")}
                   className="px-4 py-1.5 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[10.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                  title="Torna all'opera"
+                  title="Torna alle informazioni"
                 >
                   <span className="w-2 h-2 rounded-full bg-[#FF3B30] animate-pulse" />
                   <span>OLTRE</span>
