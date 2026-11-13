@@ -28,19 +28,19 @@ export type Orientation = "portrait" | "landscape" | "square";
  */
 export const TIER_HEIGHTS: Record<SizeTier, Record<Orientation, string>> = {
   large: {
-    landscape: "clamp(100px, 13vh, 155px)",
-    portrait: "clamp(128px, 16.5vh, 195px)",
-    square: "clamp(112px, 14.5vh, 170px)",
+    landscape: "clamp(90px, 9.8vh, 125px)",
+    portrait: "clamp(120px, 14.2vh, 170px)",
+    square: "clamp(100px, 11.5vh, 140px)",
   },
   medium: {
-    landscape: "clamp(62px, 8.0vh, 92px)",
-    portrait: "clamp(82px, 10.5vh, 122px)",
-    square: "clamp(70px, 9.0vh, 104px)",
+    landscape: "clamp(65px, 7.8vh, 95px)",
+    portrait: "clamp(95px, 11.5vh, 138px)",
+    square: "clamp(78px, 9.2vh, 110px)",
   },
   small: {
-    landscape: "clamp(46px, 5.8vh, 68px)",
-    portrait: "clamp(58px, 7.5vh, 88px)",
-    square: "clamp(50px, 6.5vh, 76px)",
+    landscape: "clamp(52px, 6.2vh, 75px)",
+    portrait: "clamp(75px, 9.0vh, 108px)",
+    square: "clamp(62px, 7.4vh, 90px)",
   },
 };
 
@@ -224,18 +224,9 @@ function packHomogeneousPortion(
   if (count >= 18) {
     const cols = 4;
     const rows = 7;
-    // Tailored row templates giving ample breathing room to rows hosting 2-col hero images
-    let rowTemplate = "1.25fr 1fr 1fr 1.25fr 1fr 1fr 1fr";
-    if (portionIndex === 0) {
-      // Heroes on rows 1 and 4
-      rowTemplate = "1.4fr 0.95fr 0.95fr 1.4fr 0.95fr 0.95fr 0.95fr";
-    } else if (portionIndex === 1) {
-      // Heroes on rows 2, 4, 6
-      rowTemplate = "0.9fr 1.35fr 0.9fr 1.35fr 0.9fr 1.35fr 0.9fr";
-    } else {
-      // Heroes on rows 1, 4, 6
-      rowTemplate = "1.35fr 0.9fr 0.9fr 1.35fr 0.9fr 1.35fr 0.9fr";
-    }
+    // Balanced row template matching homee.png visual cadence:
+    // Row 1 (1.22fr) & Row 4 (1.12fr) for hero landscape anchors, remaining rows (~0.98fr) for calm rhythm
+    const rowTemplate = "1.22fr 1.02fr 0.96fr 1.12fr 0.96fr 0.98fr 0.96fr";
 
     let slots: SlotConfig[] = [];
     if (portionIndex === 0) {
@@ -481,8 +472,8 @@ const MacroTile = React.memo(function MacroTile({
           aspectRatio: `${dim.w} / ${dim.h}`,
           height: targetHeight,
           width: "auto",
-          maxWidth: colSpan > 1 ? "96%" : "92%",
-          maxHeight: "94%",
+          maxWidth: colSpan > 1 ? "97%" : "95%",
+          maxHeight: "95%",
         }}
         className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center border-0 ${
           isHovered
@@ -608,7 +599,7 @@ function StationColumn({
   const applyTransform = useCallback(() => {
     if (!trackRef.current || heightRef.current <= 0) return;
     const H = heightRef.current;
-    const cycleHeight = H + 6; // 6px row gap between repeating copies
+    const cycleHeight = H + 8; // 8px row gap between repeating copies
     const normY = ((offsetYRef.current % cycleHeight) + cycleHeight) % cycleHeight;
     const trackY = -cycleHeight + normY;
 
@@ -852,7 +843,7 @@ function StationColumn({
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          gap: "6px",
+          gap: "8px",
           willChange: "transform",
           transform: height > 0 ? undefined : "translateY(-33.333333%)",
         }}
@@ -865,7 +856,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "6px",
+            gap: "8px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -881,7 +872,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "6px",
+            gap: "8px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
@@ -897,7 +888,7 @@ function StationColumn({
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "6px",
+            gap: "8px",
             flexShrink: 0,
           }}
           className="items-center justify-items-center relative min-h-0 min-w-0"
