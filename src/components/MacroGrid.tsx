@@ -1148,8 +1148,8 @@ export function MacroGrid({
 
 
 
-      {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS */}
-      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center px-6 sm:px-10 lg:px-16 py-4 sm:py-6">
+      {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS AS ONE UNIFIED BLOCK */}
+      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center px-2 sm:px-3 py-2 sm:py-3">
         {displayItems.length === 0 ? (
           <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
             <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
@@ -1166,7 +1166,7 @@ export function MacroGrid({
               transformOrigin: "center center",
               willChange: "transform",
             }}
-            className="w-full h-full max-h-full grid grid-cols-3 gap-x-8 sm:gap-x-12 lg:gap-x-16 items-stretch justify-items-stretch"
+            className="w-full h-full max-h-full grid grid-cols-3 gap-x-2.5 items-stretch justify-items-stretch"
           >
             {/* PORTION 1: LEFT STATION (CASI 001 - 026) */}
             <StationColumn
