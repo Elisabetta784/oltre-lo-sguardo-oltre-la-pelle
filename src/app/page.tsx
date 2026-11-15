@@ -25,6 +25,7 @@ export default function Home() {
     label: string;
   } | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [modalTargetItem, setModalTargetItem] = useState<ArchiveItem | null>(null);
 
   // DYNAMIC FILTERING & HOVER REACTION:
   // When hovering a category on the left, the photos on the right react in real-time
@@ -220,7 +221,12 @@ export default function Home() {
               <BeyondView
                 items={filteredItems.length > 0 ? filteredItems : ARCHIVE_ITEMS}
                 activeItemId={activeItemId}
-                onSelectItem={handleSelectItem}
+                onSelectItem={(item) => {
+                  setActiveItemId(item.id);
+                  setModalTargetItem(item);
+                  setView("macro");
+                  setZoomLevel(0.24);
+                }}
                 onBackToMacro={() => {
                   setView("macro");
                   setZoomLevel(0.24);
@@ -242,6 +248,8 @@ export default function Home() {
                 items={filteredItems}
                 activeItemId={activeItemId}
                 zoomLevel={zoomLevel}
+                modalTargetItem={modalTargetItem}
+                onClearModalTarget={() => setModalTargetItem(null)}
                 onZoomChange={(newZoom) => {
                   setZoomLevel(newZoom);
                   if (newZoom < 0.06) {

@@ -118,8 +118,9 @@ export function StationModal({
 
   const handleSelectCaseFromOltre = (selectedCase: ArchiveItem) => {
     setItem(selectedCase);
-    onSelectItem?.(selectedCase);
     setViewMode("image");
+    setImgIdx(0);
+    onSelectItem?.(selectedCase);
   };
 
   // Drag-to-scroll logic for INFO text view (no scrollbar, cursor drag)
@@ -501,12 +502,14 @@ function OltreCardContent({
 }: OltreCardContentProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const isPointerDownRef = useRef(false);
+  const startXRef = useRef(0);
   const startYRef = useRef(0);
   const startScrollTopRef = useRef(0);
   const hasDraggedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
   const [canScrollUp, setCanScrollUp] = useState(false);
+  const capturedPointerIdRef = useRef<number | null>(null);
 
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -520,15 +523,12 @@ function OltreCardContent({
     return () => clearTimeout(timeout);
   }, [sortedList, isCenter, checkScroll]);
 
-  // Pointer drag-to-scroll
+  // Pointer drag-to-scroll: never capture pointer on pointerdown so child clicks are always delivered!
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isCenter) return;
     if (e.button !== 0 && e.pointerType === "mouse") return;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {}
     isPointerDownRef.current = true;
     hasDraggedRef.current = false;
+    startXRef.current = e.clientX;
     startYRef.current = e.clientY;
     startScrollTopRef.current = scrollRef.current?.scrollTop || 0;
   };
@@ -536,18 +536,30 @@ function OltreCardContent({
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isPointerDownRef.current || !scrollRef.current) return;
     const dy = e.clientY - startYRef.current;
-    if (Math.abs(dy) > 4) {
+    if (Math.abs(dy) > 10) {
       hasDraggedRef.current = true;
       if (!isDragging) setIsDragging(true);
-      scrollRef.current.scrollTop = startScrollTopRef.current - dy;
-      checkScroll();
+
+      if (isCenter) {
+        if (capturedPointerIdRef.current === null) {
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+            capturedPointerIdRef.current = e.pointerId;
+          } catch {}
+        }
+        scrollRef.current.scrollTop = startScrollTopRef.current - dy;
+        checkScroll();
+      }
     }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    try {
-      e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {}
+    if (capturedPointerIdRef.current !== null) {
+      try {
+        e.currentTarget.releasePointerCapture(capturedPointerIdRef.current);
+      } catch {}
+      capturedPointerIdRef.current = null;
+    }
     isPointerDownRef.current = false;
     setTimeout(() => {
       setIsDragging(false);
@@ -598,7 +610,7 @@ function OltreCardContent({
             WebkitOverflowScrolling: "touch",
           }}
           className={`p-2 sm:p-2.5 flex-1 min-h-0 overflow-y-auto no-scrollbar touch-pan-y select-none ${
-            isCenter ? (isDragging ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"
+            isCenter ? (isDragging ? "cursor-grabbing" : "cursor-grab") : "cursor-default"
           }`}
         >
           {sortedList.length === 0 ? (
@@ -617,17 +629,14 @@ function OltreCardContent({
                     type="button"
                     title={`Caso ${c.number}: ${c.title}`}
                     onClick={(e) => {
-                      if (!isCenter) return;
                       e.stopPropagation();
                       // Prevent clicking if the user was dragging to scroll
-                      if (hasDraggedRef.current) return;
+                      if (isDragging) return;
                       onSelectCase(c);
                     }}
-                    className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] ${
-                      isCenter ? "cursor-pointer" : "cursor-default pointer-events-none"
-                    } ${
+                    className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] cursor-pointer z-10 ${
                       isCurrent
-                        ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105 z-10"
+                        ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105"
                         : "hover:scale-105 shadow-2xs border-0"
                     }`}
                   >

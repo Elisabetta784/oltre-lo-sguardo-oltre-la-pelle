@@ -16,6 +16,8 @@ interface MacroGridProps {
   onCloseFilter?: () => void;
   onToggleFilter?: () => void;
   onGoToBeyond?: () => void;
+  modalTargetItem?: ArchiveItem | null;
+  onClearModalTarget?: () => void;
 }
 
 export type SizeTier = "large" | "medium" | "small";
@@ -901,7 +903,7 @@ function StationColumn({
       <AnimatePresence>
         {stationModal && (
           <StationModal
-            key={stationModal.id}
+            key={`station-modal-portion-${portionIndex}`}
             item={stationModal}
             portionIndex={portionIndex}
             onClose={onCloseModal}
@@ -921,6 +923,8 @@ export function MacroGrid({
   onSelectItem,
   isFilterOpen = false,
   onGoToBeyond,
+  modalTargetItem,
+  onClearModalTarget,
 }: MacroGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -953,6 +957,25 @@ export function MacroGrid({
     () => getThreePortionsLayout(displayItems, ARCHIVE_ASPECT_RATIOS),
     [displayItems]
   );
+
+  // Automatically open target case in its respective portion when triggered externally (e.g. from BeyondView)
+  useEffect(() => {
+    if (!modalTargetItem) return;
+    const idxInP1 = portion1.placements.findIndex((p) => p.item.id === modalTargetItem.id);
+    const idxInP2 = portion2.placements.findIndex((p) => p.item.id === modalTargetItem.id);
+    const idxInP3 = portion3.placements.findIndex((p) => p.item.id === modalTargetItem.id);
+
+    let targetPortion: 1 | 2 | 3 = 2;
+    if (idxInP1 !== -1) targetPortion = 1;
+    else if (idxInP2 !== -1) targetPortion = 2;
+    else if (idxInP3 !== -1) targetPortion = 3;
+
+    setStationModals((prev) => ({
+      ...prev,
+      [targetPortion]: modalTargetItem,
+    }));
+    onClearModalTarget?.();
+  }, [modalTargetItem, portion1, portion2, portion3, onClearModalTarget]);
 
   // Max scale at 100% zoom
   const maxScale = 2.8;
