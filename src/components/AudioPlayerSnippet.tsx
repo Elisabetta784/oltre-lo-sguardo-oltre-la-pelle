@@ -112,7 +112,7 @@ export function AudioPlayerSnippet({
       <button
         type="button"
         onClick={togglePlay}
-        className="w-7 h-7 sm:w-8 sm:h-8 rounded-none bg-black hover:bg-black/85 text-[#F8F8F6] flex items-center justify-center transition-colors flex-shrink-0 cursor-pointer shadow-sm"
+        className="w-7 h-7 sm:w-8 sm:h-8 rounded-none bg-black hover:bg-black/85 text-[#ECEEF0] flex items-center justify-center transition-colors flex-shrink-0 cursor-pointer shadow-sm"
         title={isPlaying ? "Pausa registrazione" : "Ascolta traccia vocale"}
       >
         {isPlaying ? (

@@ -6,7 +6,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#F8F8F6",
+  themeColor: "#ECEEF0",
 };
 
 export const metadata: Metadata = {
@@ -37,8 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="it" className="overflow-hidden bg-[#F8F8F6]">
-      <body className="w-screen h-screen overflow-hidden bg-[#F8F8F6] text-[#000000] antialiased select-none font-body">
+    <html lang="it" className="overflow-hidden bg-[#ECEEF0]">
+      <body className="w-screen h-screen overflow-hidden bg-[#ECEEF0] text-[#000000] antialiased select-none font-body">
         {children}
       </body>
     </html>

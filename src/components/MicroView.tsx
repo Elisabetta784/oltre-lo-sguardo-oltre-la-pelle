@@ -46,10 +46,10 @@ export function MicroView({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="relative w-full h-full bg-[#F8F8F6] overflow-hidden flex flex-col select-none text-black font-body"
+      className="relative w-full h-full bg-[#ECEEF0] overflow-hidden flex flex-col select-none text-black font-body"
     >
       {/* Sub-header inside MicroView: Back breadcrumb & navigation */}
-      <div className="h-10 px-5 sm:px-8 border-b border-black/15 flex items-center justify-between font-body text-[11px] text-black/60 bg-[#F8F8F6]">
+      <div className="h-10 px-5 sm:px-8 border-b border-black/15 flex items-center justify-between font-body text-[11px] text-black/60 bg-[#ECEEF0]">
         <button
           type="button"
           onClick={onBackToMacro}
@@ -236,7 +236,7 @@ export function MicroView({
             delay: 0.15,
             ease: [0.16, 1, 0.3, 1],
           }}
-          className="relative h-full overflow-y-auto bg-[#F8F8F6] custom-scrollbar"
+          className="relative h-full overflow-y-auto bg-[#ECEEF0] custom-scrollbar"
         >
           <div className="min-h-full flex flex-col justify-between p-6 sm:p-10 lg:p-12 pb-14 sm:pb-20">
             <div>
@@ -375,7 +375,7 @@ export function MicroView({
                     href={item.externalLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-black text-[#F8F8F6] uppercase hover:bg-black/85 transition-colors font-display font-bold tracking-wider"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-black text-[#ECEEF0] uppercase hover:bg-black/85 transition-colors font-display font-bold tracking-wider"
                   >
                     <span>[ APRI PROGETTO / FONTE ESTERNA ↗ ]</span>
                   </a>
@@ -399,14 +399,14 @@ export function MicroView({
                 <button
                   type="button"
                   onClick={onPrev}
-                  className="px-3 py-1.5 border border-black hover:bg-black hover:text-[#F8F8F6] text-xs text-black font-display font-bold cursor-pointer transition-colors"
+                  className="px-3 py-1.5 border border-black hover:bg-black hover:text-[#ECEEF0] text-xs text-black font-display font-bold cursor-pointer transition-colors"
                 >
                   [ ← PREV ]
                 </button>
                 <button
                   type="button"
                   onClick={onNext}
-                  className="px-3 py-1.5 border border-black hover:bg-black hover:text-[#F8F8F6] text-xs text-black font-display font-bold cursor-pointer transition-colors"
+                  className="px-3 py-1.5 border border-black hover:bg-black hover:text-[#ECEEF0] text-xs text-black font-display font-bold cursor-pointer transition-colors"
                 >
                   [ NEXT → ]
                 </button>

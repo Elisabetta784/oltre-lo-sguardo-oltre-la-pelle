@@ -222,7 +222,7 @@ export function VerticalTimeline({
               }
             >
               <div className="relative flex items-center justify-center">
-                <div className="w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full bg-black border-2 border-[#F8F8F6] shadow-md shadow-black/30" />
+                <div className="w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full bg-black border-2 border-[#ECEEF0] shadow-md shadow-black/30" />
               </div>
             </motion.div>
           </div>

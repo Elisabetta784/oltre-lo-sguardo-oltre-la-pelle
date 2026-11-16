@@ -1152,7 +1152,7 @@ export function MacroGrid({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden select-none bg-[#F8F8F6]"
+      className="relative w-full h-full overflow-hidden select-none bg-[#ECEEF0]"
     >
       {/* 1. SUBTLE EDGE DISSOLVES */}
       <div className="fixed top-0 left-0 right-0 h-4 edge-fade-top z-20 pointer-events-none" />
@@ -1165,7 +1165,7 @@ export function MacroGrid({
       {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS AS ONE UNIFIED BLOCK */}
       <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center px-2 sm:px-3 py-2 sm:py-3">
         {displayItems.length === 0 ? (
-          <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#F8F8F6] w-full max-w-md my-auto shadow-md">
+          <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#ECEEF0] w-full max-w-md my-auto shadow-md">
             <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
               NESSUN SEGNO CORRISPONDENTE
             </p>

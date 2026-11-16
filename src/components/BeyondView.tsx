@@ -258,10 +258,10 @@ export function BeyondView({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden flex flex-col justify-between bg-[#F8F8F6] text-black font-body select-none"
+      className="relative w-full h-full overflow-hidden flex flex-col justify-between bg-[#ECEEF0] text-black font-body select-none"
     >
       {/* 1. TOP CONTROL BAR */}
-      <div className="w-full z-20 px-4 sm:px-8 pt-3.5 pb-2.5 border-b border-black/15 bg-[#F8F8F6]/95 backdrop-blur-sm">
+      <div className="w-full z-20 px-4 sm:px-8 pt-3.5 pb-2.5 border-b border-black/15 bg-[#ECEEF0]/95 backdrop-blur-sm">
         <div className="w-full flex flex-col md:flex-row md:items-center justify-start gap-4 sm:gap-8">
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
@@ -290,7 +290,7 @@ export function BeyondView({
                     onClick={() => setActiveCategoryId(cat.id)}
                     className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
                       isActive
-                        ? "border-black bg-black text-[#F8F8F6] font-bold shadow-sm"
+                        ? "border-black bg-black text-[#ECEEF0] font-bold shadow-sm"
                         : "border-black/20 text-black/80 hover:border-black hover:text-black bg-transparent"
                     }`}
                   >
@@ -310,7 +310,7 @@ export function BeyondView({
                     onClick={() => setActiveCategoryId(cat.id)}
                     className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
                       isActive
-                        ? "border-black bg-black text-[#F8F8F6] font-bold shadow-sm"
+                        ? "border-black bg-black text-[#ECEEF0] font-bold shadow-sm"
                         : "border-black/20 text-black/80 hover:border-black hover:text-black bg-transparent"
                     }`}
                   >
@@ -363,7 +363,7 @@ export function BeyondView({
                   )}
 
                   {/* SQUADRATO CENTER BADGE */}
-                  <div className="z-10 flex flex-col items-center justify-center text-center p-3.5 bg-white border-2 border-black shadow-lg max-w-[155px] select-none rounded-none">
+                  <div className="z-10 flex flex-col items-center justify-center text-center p-3.5 bg-white/85 backdrop-blur-md border-2 border-black shadow-lg max-w-[155px] select-none rounded-none">
                     <span className="font-display text-[11px] sm:text-xs font-black tracking-wider text-black uppercase leading-tight">
                       {group.label}
                     </span>
@@ -454,7 +454,7 @@ export function BeyondView({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45 }}
-                  className="w-full max-w-[340px] sm:max-w-[380px] max-h-[82vh] overflow-y-auto custom-scrollbar bg-white border-2 border-black p-5 shadow-xl select-none rounded-none flex-shrink-0 z-30"
+                  className="w-full max-w-[340px] sm:max-w-[380px] max-h-[82vh] overflow-y-auto custom-scrollbar bg-white/80 backdrop-blur-xl border-2 border-black p-5 shadow-xl select-none rounded-none flex-shrink-0 z-30"
                 >
                   <div className="flex items-center justify-between border-b border-black/15 pb-2 mb-3">
                     <div className="flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-black">
@@ -520,7 +520,7 @@ export function BeyondView({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 6 }}
               transition={{ duration: 0.15 }}
-              className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white border-2 border-black shadow-2xl p-3 flex items-center gap-3.5 max-w-lg pointer-events-none select-none rounded-none"
+              className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white/85 backdrop-blur-xl border-2 border-black shadow-2xl p-3 flex items-center gap-3.5 max-w-lg pointer-events-none select-none rounded-none"
             >
               {hoveredItem.imageUrl && (
                 <div className="w-11 h-11 border border-black/20 overflow-hidden flex-shrink-0 bg-white">
@@ -558,7 +558,7 @@ export function BeyondView({
       </div>
 
       {/* 3. BOTTOM FOOTER HINT */}
-      <div className="w-full z-20 px-6 py-2 border-t border-black/15 bg-[#F8F8F6]/95 flex items-center justify-between font-body text-[10px] text-black/60">
+      <div className="w-full z-20 px-6 py-2 border-t border-black/15 bg-[#ECEEF0]/95 flex items-center justify-between font-body text-[10px] text-black/60">
         <span>
           SCORRI IN GIÙ PER TORNARE A{" "}
           <button

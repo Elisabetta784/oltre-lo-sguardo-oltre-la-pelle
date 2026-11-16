@@ -12,7 +12,7 @@ export function HeaderNav({
   onSelectView,
 }: HeaderNavProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-[#F8F8F6]/95 backdrop-blur-md border-b border-black/10 px-4 sm:px-6 h-[52px] select-none">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-[#ECEEF0]/95 backdrop-blur-md border-b border-black/10 px-4 sm:px-6 h-[52px] select-none">
       <div className="w-full h-full flex items-center justify-between text-xs sm:text-[13px] tracking-wider uppercase font-body">
         {/* Left: OLTRE, MACRO, MICRO */}
         <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0">

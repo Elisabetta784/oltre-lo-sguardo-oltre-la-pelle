@@ -186,10 +186,10 @@ export function FilterSidebar({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.97 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-[56px] right-2 sm:right-6 z-40 w-[94vw] sm:w-[380px] max-h-[50vh] sm:max-h-[410px] h-[390px] bg-[#F8F8F6] border-2 border-black shadow-2xl shadow-black/35 flex flex-col justify-between select-none"
+            className="fixed bottom-[56px] right-2 sm:right-6 z-40 w-[94vw] sm:w-[380px] max-h-[50vh] sm:max-h-[410px] h-[390px] bg-[#ECEEF0]/90 backdrop-blur-2xl border-2 border-black shadow-2xl shadow-black/35 flex flex-col justify-between select-none"
           >
             {/* A. HEADER */}
-            <div className="p-2.5 sm:p-3 border-b-2 border-black bg-[#F8F8F6] flex flex-col gap-2 shrink-0">
+            <div className="p-2.5 sm:p-3 border-b-2 border-black bg-[#ECEEF0]/95 flex flex-col gap-2 shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="w-3.5 h-3.5 text-black" />
@@ -268,7 +268,7 @@ export function FilterSidebar({
                     onClick={() => setActiveCategoryTab(catKey)}
                     className={`font-display text-[10px] font-bold px-2 py-1 uppercase tracking-wider transition-colors cursor-pointer shrink-0 border rounded-none ${
                       isActive
-                        ? "bg-black text-[#F8F8F6] border-black font-bold shadow-xs"
+                        ? "bg-black text-[#ECEEF0] border-black font-bold shadow-xs"
                         : "border-black/20 text-black/70 hover:border-black hover:text-black bg-white"
                     }`}
                   >
@@ -282,7 +282,7 @@ export function FilterSidebar({
                 onClick={() => setActiveCategoryTab("all")}
                 className={`font-display text-[10px] font-bold px-2 py-1 uppercase tracking-wider transition-colors cursor-pointer shrink-0 border rounded-none ${
                   activeCategoryTab === "all"
-                    ? "bg-black text-[#F8F8F6] border-black font-bold shadow-xs"
+                    ? "bg-black text-[#ECEEF0] border-black font-bold shadow-xs"
                     : "border-black/20 text-black/70 hover:border-black hover:text-black bg-white"
                 }`}
               >
@@ -323,14 +323,14 @@ export function FilterSidebar({
                               onMouseLeave={() => onHoverFilter(null)}
                               className={`flex items-center justify-between py-1.5 px-2 cursor-pointer font-display text-xs font-medium tracking-wider transition-all duration-150 border ${
                                 isSelected
-                                  ? "bg-black text-[#F8F8F6] font-bold border-black shadow-xs"
+                                  ? "bg-black text-[#ECEEF0] font-bold border-black shadow-xs"
                                   : "border-transparent hover:border-black/30 hover:bg-black/5 text-black/85 hover:text-black"
                               }`}
                             >
                               <span className="truncate mr-2 font-display">
                                 {isSelected ? `■ ${opt.toUpperCase()}` : `[ ${opt.toUpperCase()} ]`}
                               </span>
-                              <span className={`font-display text-[10.5px] shrink-0 ${isSelected ? "text-[#F8F8F6]/80 font-bold" : "text-black/50 font-medium"}`}>
+                              <span className={`font-display text-[10.5px] shrink-0 ${isSelected ? "text-[#ECEEF0]/80 font-bold" : "text-black/50 font-medium"}`}>
                                 [ {count} ]
                               </span>
                             </div>
@@ -369,18 +369,18 @@ export function FilterSidebar({
                         onMouseLeave={() => onHoverFilter(null)}
                         className={`flex items-center justify-between py-1.5 px-2 cursor-pointer font-display text-xs font-medium tracking-wider transition-all duration-150 border rounded-none ${
                           isSelected
-                            ? "bg-black text-[#F8F8F6] font-bold border-black shadow-xs"
+                            ? "bg-black text-[#ECEEF0] font-bold border-black shadow-xs"
                             : "border-transparent hover:border-black/30 hover:bg-black/5 text-black/85 hover:text-black"
                         }`}
                       >
                         <span className="flex items-center gap-1.5 truncate mr-2 font-display">
-                          <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/40"}>[</span>
-                          <span className={`truncate ${isSelected ? "font-bold text-[#F8F8F6]" : ""}`}>
+                          <span className={isSelected ? "text-[#ECEEF0]/80" : "text-black/40"}>[</span>
+                          <span className={`truncate ${isSelected ? "font-bold text-[#ECEEF0]" : ""}`}>
                             {isSelected ? `■ ${opt.toUpperCase()}` : opt.toUpperCase()}
                           </span>
-                          <span className={isSelected ? "text-[#F8F8F6]/80" : "text-black/40"}>]</span>
+                          <span className={isSelected ? "text-[#ECEEF0]/80" : "text-black/40"}>]</span>
                         </span>
-                        <span className={`font-display text-[10.5px] shrink-0 ${isSelected ? "text-[#F8F8F6]/80 font-bold" : "text-black/50 font-medium"}`}>
+                        <span className={`font-display text-[10.5px] shrink-0 ${isSelected ? "text-[#ECEEF0]/80 font-bold" : "text-black/50 font-medium"}`}>
                           [ {count} ]
                         </span>
                       </div>

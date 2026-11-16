@@ -188,7 +188,7 @@ export default function Home() {
   };
 
   return (
-    <main className="w-screen h-screen overflow-hidden bg-[#F8F8F6] text-black font-body relative select-none">
+    <main className="w-screen h-screen overflow-hidden bg-[#ECEEF0] text-black font-body relative select-none">
       {/* 1. Horizontal Bottom Filter Drawer - strictly in MACRO view, opens from the bottom */}
       {view === "macro" && (
         <FilterSidebar
