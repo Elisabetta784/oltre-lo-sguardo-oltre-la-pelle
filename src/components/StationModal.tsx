@@ -805,11 +805,8 @@ function OltreCardCarousel({
       onTouchEnd={handleTouchEnd}
       className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden"
     >
-      {/* 3D Perspective Scene strictly matching oltree.jpg (squadrata and compact for wall) */}
-      <div
-        style={{ perspective: "950px", perspectiveOrigin: "center center" }}
-        className="relative w-full flex-1 flex items-center justify-center min-h-[285px] sm:min-h-[305px] overflow-hidden"
-      >
+      {/* Flat Opaline Carousel: center card in focus, side cards flat 2D & blurred opalino */}
+      <div className="relative w-full flex-1 flex items-center justify-center min-h-[285px] sm:min-h-[305px] overflow-hidden">
         {categoryConfig.subcategories.map((subcat, idx) => {
           // Circular offset: guarantees there is always a card on the left and right in the loop
           let offset = (idx - activeCardIdx) % numCards;
@@ -818,45 +815,44 @@ function OltreCardCarousel({
 
           const isCenter = offset === 0;
 
-          // 3D positioning and perspective rotation strictly matching oltree.jpg:
-          // Center card: flat, front and center (z = 0, rotateY = 0)
-          // Left card (offset = -1): turned inwards toward center, inner edge tall, outer edge short (rotateY = -58deg, z = -55px)
-          // Right card (offset = 1): turned inwards toward center, inner edge tall, outer edge short (rotateY = 58deg, z = -55px)
+          // 2D Flat positioning & opaline focus states (No 3D rotation):
+          // Center card: flat, front and center, in sharp focus (blur: 0, scale: 1)
+          // Side cards: flat 2D on left and right, blurred opalino (blur: 4px, scale: 0.94)
           let x = 0;
-          let z = 0;
-          let rotateY = 0;
+          let scale = 1;
           let opacity = 1;
+          let blur = "blur(0px)";
           let zIndex = 30;
 
           if (offset === 0) {
             x = 0;
-            z = 0;
-            rotateY = 0;
+            scale = 1;
             opacity = 1;
+            blur = "blur(0px)";
             zIndex = 30;
           } else if (offset === -1) {
-            x = -150;
-            z = -55;
-            rotateY = -58;
-            opacity = 0.92;
+            x = -168;
+            scale = 0.94;
+            opacity = 0.85;
+            blur = "blur(4px)";
             zIndex = 15;
           } else if (offset === 1) {
-            x = 150;
-            z = -55;
-            rotateY = 58;
-            opacity = 0.92;
+            x = 168;
+            scale = 0.94;
+            opacity = 0.85;
+            blur = "blur(4px)";
             zIndex = 15;
           } else if (offset < -1) {
-            x = -225;
-            z = -140;
-            rotateY = -70;
+            x = -260;
+            scale = 0.88;
             opacity = 0;
+            blur = "blur(8px)";
             zIndex = 5;
           } else if (offset > 1) {
-            x = 225;
-            z = -140;
-            rotateY = 70;
+            x = 260;
+            scale = 0.88;
             opacity = 0;
+            blur = "blur(8px)";
             zIndex = 5;
           }
 
@@ -874,13 +870,13 @@ function OltreCardCarousel({
               initial={false}
               animate={{
                 x,
-                z,
-                rotateY,
+                scale,
                 opacity,
+                filter: blur,
                 zIndex,
               }}
               transition={{
-                duration: 0.38,
+                duration: 0.35,
                 ease: [0.22, 1, 0.36, 1],
               }}
               onClick={() => {
@@ -889,19 +885,18 @@ function OltreCardCarousel({
                 }
               }}
               style={{
-                transformStyle: "preserve-3d",
-                willChange: "transform, opacity",
+                willChange: "transform, opacity, filter",
               }}
-              className={`absolute top-1/2 left-1/2 w-[200px] sm:w-[215px] h-[265px] sm:h-[285px] -mt-[132px] sm:-mt-[142px] -ml-[100px] sm:-ml-[108px] bg-white/45 backdrop-blur-[8px] rounded-none shadow-md shadow-black/[0.04] border border-black/10 flex flex-col overflow-hidden transition-shadow ${
+              className={`absolute top-1/2 left-1/2 w-[200px] sm:w-[215px] h-[265px] sm:h-[285px] -mt-[132px] sm:-mt-[142px] -ml-[100px] sm:-ml-[108px] rounded-none border border-black/10 flex flex-col overflow-hidden transition-all duration-300 ${
                 isCenter
-                  ? "cursor-default shadow-xl shadow-black/10"
-                  : "cursor-pointer hover:opacity-100"
+                  ? "bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/15 ring-1 ring-white/80 cursor-default"
+                  : "bg-white/50 backdrop-blur-md shadow-md shadow-black/[0.04] cursor-pointer hover:opacity-100"
               }`}
             >
-              {/* Subtle 3D perspective shading overlay on receding side cards (oltree.jpg) */}
+              {/* Opaline frosted veil over side cards to reinforce the out-of-focus milky glass feel */}
               <div
                 className={`absolute inset-0 pointer-events-none transition-opacity duration-300 z-20 ${
-                  isCenter ? "opacity-0" : "opacity-12 bg-black"
+                  isCenter ? "opacity-0" : "opacity-100 bg-white/35 backdrop-blur-[2px]"
                 }`}
               />
 
