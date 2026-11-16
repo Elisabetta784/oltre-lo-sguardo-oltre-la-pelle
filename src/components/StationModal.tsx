@@ -658,14 +658,20 @@ function OltreCardContent({
                     title={`Caso ${c.number}: ${c.title}`}
                     onClick={(e) => {
                       e.stopPropagation();
+                      // Only allow selecting a case study if this card is in focus at the center
+                      if (!isCenter) return;
                       // Prevent clicking if the user was dragging to scroll
                       if (isDragging) return;
                       onSelectCase(c);
                     }}
-                    className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] cursor-pointer z-10 ${
+                    className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] z-10 ${
+                      isCenter ? "cursor-pointer" : "pointer-events-none"
+                    } ${
                       isCurrent
                         ? "ring-2 ring-[#FF3B30] shadow-md shadow-[#FF3B30]/35 scale-105"
-                        : "hover:scale-105 shadow-2xs border-0"
+                        : isCenter
+                        ? "hover:scale-105 shadow-2xs border-0"
+                        : "shadow-2xs border-0"
                     }`}
                   >
                     <img
@@ -893,11 +899,20 @@ function OltreCardCarousel({
                   : "bg-white/50 backdrop-blur-md shadow-md shadow-black/[0.04] cursor-pointer hover:opacity-100"
               }`}
             >
-              {/* Opaline frosted veil over side cards to reinforce the out-of-focus milky glass feel */}
+              {/* Opaline frosted veil over side cards: catches clicks to bring the card to center without opening any case study */}
               <div
-                className={`absolute inset-0 pointer-events-none transition-opacity duration-300 z-20 ${
-                  isCenter ? "opacity-0" : "opacity-100 bg-white/35 backdrop-blur-[2px]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isCenter) {
+                    setActiveCardIdx(idx);
+                  }
+                }}
+                className={`absolute inset-0 transition-opacity duration-300 z-20 ${
+                  isCenter
+                    ? "opacity-0 pointer-events-none"
+                    : "opacity-100 pointer-events-auto cursor-pointer bg-white/35 backdrop-blur-[2px]"
                 }`}
+                title="Tocca per mettere a fuoco questa scheda"
               />
 
               {/* Card Header & Scrollable Body with Drag-to-Scroll & Wheel */}
