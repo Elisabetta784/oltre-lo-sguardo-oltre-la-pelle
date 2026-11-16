@@ -281,14 +281,15 @@ export function StationModal({
                   </>
                 )}
 
-                {/* Floating scroll prompt pill: Info ↓ (smooth scrolls down to info) */}
+                {/* Floating scroll down cue: Arrow only (signals to scroll down, no text) */}
                 <button
                   type="button"
                   onClick={scrollToInfo}
-                  className="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-20 px-3.5 py-1 rounded-full bg-white/75 hover:bg-white backdrop-blur-md text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-md border border-black/10"
+                  className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/80 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-sm border border-black/10 group"
+                  aria-label="Scorri verso il basso"
+                  title="Scorri verso il basso"
                 >
-                  <span>Info</span>
-                  <ChevronDown className="w-3 h-3 stroke-[2.5]" />
+                  <ChevronDown className="w-4 h-4 stroke-[2.5] text-black/75 group-hover:text-black animate-bounce" />
                 </button>
               </div>
 
