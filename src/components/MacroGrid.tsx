@@ -758,7 +758,10 @@ function StationColumn({
     if (!el) return;
 
     const handleWheel = (e: WheelEvent) => {
-      if (isThisModalOpen) return;
+      if (isThisModalOpen) {
+        e.stopPropagation();
+        return;
+      }
       if (e.ctrlKey) return; // allow pinch-zoom to pass to global handler
 
       e.preventDefault();

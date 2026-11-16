@@ -128,17 +128,12 @@ export function StationModal({
     onSelectItem?.(selectedCase);
   };
 
-  // Smooth scroll helpers
+  // Smooth scroll helpers (strictly confined within the modal window)
   const scrollToInfo = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    const infoEl = document.getElementById("station-modal-info-section");
-    if (infoEl) {
-      infoEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      const container = scrollContainerRef.current;
-      if (container) {
-        container.scrollTo({ top: container.clientHeight, behavior: "smooth" });
-      }
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: container.clientHeight, behavior: "smooth" });
     }
   };
 
@@ -154,6 +149,7 @@ export function StationModal({
   const [isDragging, setIsDragging] = useState(false);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     if (e.button !== 0 && e.pointerType === "mouse") return;
     if ((e.target as HTMLElement).closest("button")) return;
     isPointerDownRef.current = true;
@@ -189,7 +185,17 @@ export function StationModal({
   }, []);
 
   return (
-    <div className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto overflow-hidden">
+    <div
+      onScroll={(e) => {
+        // Prevent outer container from ever being scrolled out of center
+        (e.currentTarget as HTMLDivElement).scrollTop = 0;
+      }}
+      onWheel={(e) => {
+        // Stop wheel events from escaping to MacroGrid or document
+        e.stopPropagation();
+      }}
+      className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto overflow-hidden"
+    >
       {/* 1. Backdrop: ultra-light, luminous veil allowing the underlying macro grid to stay bright and clear */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -210,7 +216,8 @@ export function StationModal({
         exit={{ opacity: 0, scale: 0.96, y: 8 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="relative z-50 flex flex-col my-auto border border-white/70 shadow-xl shadow-black/[0.05] overflow-hidden text-black select-none rounded-none bg-white/[0.22] backdrop-blur-[11px] ring-1 ring-white/60 w-[94%] sm:w-[92%] max-w-[540px] sm:max-w-[580px] h-[450px] sm:h-[480px] max-h-[64vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        onWheel={(e) => e.stopPropagation()}
+        className="relative z-50 flex flex-col shrink-0 border border-white/70 shadow-xl shadow-black/[0.05] overflow-hidden text-black select-none rounded-none bg-white/[0.22] backdrop-blur-[11px] ring-1 ring-white/60 w-[94%] sm:w-[92%] max-w-[540px] sm:max-w-[580px] h-[450px] sm:h-[480px] max-h-[64vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]"
       >
         <AnimatePresence mode="wait" initial={false}>
           {/* =============================================================== */}
@@ -225,6 +232,7 @@ export function StationModal({
               transition={{ duration: 0.18 }}
               ref={scrollContainerRef}
               onPointerDown={handlePointerDown}
+              onWheel={(e) => e.stopPropagation()}
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
