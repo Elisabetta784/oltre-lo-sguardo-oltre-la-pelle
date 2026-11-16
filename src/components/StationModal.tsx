@@ -434,14 +434,26 @@ export function StationModal({
                 </div>
               </div>
 
-              {/* 3D Perspective Card Carousel */}
-              <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-                <OltreCardCarousel
-                  categoryConfig={currentCatConfig}
-                  subcategoryItems={subcategoryItems}
-                  currentItemId={item.id}
-                  onSelectCase={handleSelectCaseFromOltre}
-                />
+              {/* Opaline Card Carousel with smooth cross-fade between categories */}
+              <div className="flex-1 min-h-0 flex flex-col overflow-hidden relative">
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={activeCatKey}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full h-full flex-1 min-h-0 flex flex-col overflow-hidden"
+                  >
+                    <OltreCardCarousel
+                      key={activeCatKey}
+                      categoryConfig={currentCatConfig}
+                      subcategoryItems={subcategoryItems}
+                      currentItemId={item.id}
+                      onSelectCase={handleSelectCaseFromOltre}
+                    />
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
               {/* 5 Category Selector tabs as rounded pill buttons */}
@@ -453,7 +465,7 @@ export function StationModal({
                       key={cat.id}
                       type="button"
                       onClick={() => setActiveCatKey(cat.id)}
-                      className={`font-display text-[7.5px] sm:text-[8px] font-bold uppercase tracking-wider transition-all cursor-pointer px-2.5 py-0.5 rounded-full ${
+                      className={`font-display text-[7.5px] sm:text-[8px] font-bold uppercase tracking-wider transition-colors duration-200 cursor-pointer px-2.5 py-0.5 rounded-full ${
                         isActive
                           ? "bg-black text-white shadow-xs"
                           : "text-black/60 hover:text-black hover:bg-black/5"
@@ -767,17 +779,20 @@ function OltreCardCarousel({
     getInitialActiveCardIdx(categoryConfig.subcategories, subcategoryItems, currentItemId)
   );
 
-  // When category changes, reset to the best non-empty card so it never opens on an empty card
+  // Keyboard navigation: Left/Right arrows to cycle smoothly
   useEffect(() => {
-    const bestIdx = getInitialActiveCardIdx(
-      categoryConfig.subcategories,
-      subcategoryItems,
-      currentItemId
-    );
-    setActiveCardIdx(bestIdx);
-  }, [categoryConfig.id, categoryConfig.subcategories, subcategoryItems, currentItemId]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        setActiveCardIdx((prev) => Math.max(0, prev - 1));
+      } else if (e.key === "ArrowRight") {
+        setActiveCardIdx((prev) => Math.min(numCards - 1, prev + 1));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [numCards]);
 
-  // Touch swipe support to rotate carousel left/right
+  // Touch swipe support to smoothly slide carousel left/right without wrapping jumps
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
 
@@ -792,13 +807,13 @@ function OltreCardCarousel({
     const dy = e.changedTouches[0].clientY - touchStartYRef.current;
 
     // Trigger swipe if horizontal drag is dominant
-    if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+    if (Math.abs(dx) > 32 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       if (dx < 0) {
         // Swiped left -> next card
-        setActiveCardIdx((prev) => (prev + 1) % numCards);
+        setActiveCardIdx((prev) => Math.min(numCards - 1, prev + 1));
       } else {
         // Swiped right -> prev card
-        setActiveCardIdx((prev) => (prev - 1 + numCards) % numCards);
+        setActiveCardIdx((prev) => Math.max(0, prev - 1));
       }
     }
     touchStartXRef.current = null;
@@ -814,52 +829,48 @@ function OltreCardCarousel({
       {/* Flat Opaline Carousel: center card in focus, side cards flat 2D & blurred opalino */}
       <div className="relative w-full flex-1 flex items-center justify-center min-h-[285px] sm:min-h-[305px] overflow-hidden">
         {categoryConfig.subcategories.map((subcat, idx) => {
-          // Circular offset: guarantees there is always a card on the left and right in the loop
-          let offset = (idx - activeCardIdx) % numCards;
-          if (offset > Math.floor(numCards / 2)) offset -= numCards;
-          if (offset < -Math.floor((numCards - 1) / 2)) offset += numCards;
+          // Linear distance relative to active card
+          const distance = idx - activeCardIdx;
+          const isCenter = distance === 0;
 
-          const isCenter = offset === 0;
-
-          // 2D Flat positioning & opaline focus states (No 3D rotation):
-          // Center card: flat, front and center, in sharp focus (blur: 0, scale: 1)
-          // Side cards: flat 2D on left and right, blurred opalino (blur: 4px, scale: 0.94)
+          // Smooth 2D positioning on horizontal track:
+          // Cards move in complete unison in the same direction, eliminating sudden wrap-around jumps
           let x = 0;
           let scale = 1;
           let opacity = 1;
-          let blur = "blur(0px)";
           let zIndex = 30;
+          let pointerEvents: "auto" | "none" = "auto";
 
-          if (offset === 0) {
+          if (distance === 0) {
             x = 0;
             scale = 1;
             opacity = 1;
-            blur = "blur(0px)";
             zIndex = 30;
-          } else if (offset === -1) {
-            x = -168;
+            pointerEvents = "auto";
+          } else if (distance === -1) {
+            x = -172;
             scale = 0.94;
             opacity = 0.85;
-            blur = "blur(4px)";
             zIndex = 15;
-          } else if (offset === 1) {
-            x = 168;
+            pointerEvents = "auto";
+          } else if (distance === 1) {
+            x = 172;
             scale = 0.94;
             opacity = 0.85;
-            blur = "blur(4px)";
             zIndex = 15;
-          } else if (offset < -1) {
+            pointerEvents = "auto";
+          } else if (distance < -1) {
             x = -260;
             scale = 0.88;
             opacity = 0;
-            blur = "blur(8px)";
             zIndex = 5;
-          } else if (offset > 1) {
+            pointerEvents = "none";
+          } else if (distance > 1) {
             x = 260;
             scale = 0.88;
             opacity = 0;
-            blur = "blur(8px)";
             zIndex = 5;
+            pointerEvents = "none";
           }
 
           const rawList = subcategoryItems[subcat] || [];
@@ -878,12 +889,11 @@ function OltreCardCarousel({
                 x,
                 scale,
                 opacity,
-                filter: blur,
                 zIndex,
               }}
               transition={{
-                duration: 0.35,
-                ease: [0.22, 1, 0.36, 1],
+                duration: 0.38,
+                ease: [0.16, 1, 0.3, 1],
               }}
               onClick={() => {
                 if (!isCenter) {
@@ -891,27 +901,31 @@ function OltreCardCarousel({
                 }
               }}
               style={{
-                willChange: "transform, opacity, filter",
+                willChange: "transform, opacity",
+                pointerEvents,
               }}
-              className={`absolute top-1/2 left-1/2 w-[200px] sm:w-[215px] h-[265px] sm:h-[285px] -mt-[132px] sm:-mt-[142px] -ml-[100px] sm:-ml-[108px] rounded-none border border-black/10 flex flex-col overflow-hidden transition-all duration-300 ${
+              className={`absolute top-1/2 left-1/2 w-[200px] sm:w-[215px] h-[265px] sm:h-[285px] -mt-[132px] sm:-mt-[142px] -ml-[100px] sm:-ml-[108px] rounded-none border border-black/10 flex flex-col overflow-hidden transition-[box-shadow,background-color] duration-300 ${
                 isCenter
                   ? "bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/15 ring-1 ring-white/80 cursor-default"
                   : "bg-white/50 backdrop-blur-md shadow-md shadow-black/[0.04] cursor-pointer hover:opacity-100"
               }`}
             >
               {/* Opaline frosted veil over side cards: catches clicks to bring the card to center without opening any case study */}
-              <div
+              <motion.div
+                initial={false}
+                animate={{ opacity: isCenter ? 0 : 1 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!isCenter) {
                     setActiveCardIdx(idx);
                   }
                 }}
-                className={`absolute inset-0 transition-opacity duration-300 z-20 ${
+                className={`absolute inset-0 z-20 ${
                   isCenter
-                    ? "opacity-0 pointer-events-none"
-                    : "opacity-100 pointer-events-auto cursor-pointer bg-white/35 backdrop-blur-[2px]"
-                }`}
+                    ? "pointer-events-none"
+                    : "pointer-events-auto cursor-pointer"
+                } bg-white/40 backdrop-blur-[3px]`}
                 title="Tocca per mettere a fuoco questa scheda"
               />
 
@@ -928,7 +942,7 @@ function OltreCardCarousel({
         })}
       </div>
 
-      {/* Subcategory Indicator Dots (Clickable, reactive, arrows removed) */}
+      {/* Subcategory Indicator Dots (Clickable, reactive, smooth) */}
       <div className="h-6 flex items-center justify-center gap-1.5 w-full shrink-0 select-none mt-1">
         {categoryConfig.subcategories.map((sub, i) => (
           <button
