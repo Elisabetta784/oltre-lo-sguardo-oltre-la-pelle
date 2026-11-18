@@ -46,133 +46,117 @@ interface SlotConfig {
   variant: BentoVariant;
 }
 
-// Station 1 (26 items): Interlocking 4-col x 12-row Mondrian Bento layout
+// Station 1 (26 items): Interlocking 6-col x 8-row Mondrian Bento layout
 // Variants: "2x2" (grand square), "2x1" (horizontal rect), "1x2" (vertical rect), "1x1" (base square)
 // Mathematical occupancy: 2*(4) + 10*(2) + 6*(2) + 8*(1) = 8 + 20 + 12 + 8 = 48 cells (0 empty, 0 collisions)
 const S1_SLOTS: SlotConfig[] = [
-  // Rows 1-2 (8 cells) - 4 items
+  // Tier 1: Rows 1-2 (12 cells, 7 items)
   { row: 1, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
   { row: 1, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
   { row: 2, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
   { row: 2, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 1, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 1, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 2, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
 
-  // Row 3 (4 cells) - 2 items
-  { row: 3, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 3, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-
-  // Rows 4-5 (8 cells) - 4 items
-  { row: 4, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 4, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 5, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 4, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
-
-  // Row 6 (4 cells) - 2 items
-  { row: 6, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 6, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-
-  // Rows 7-8 (8 cells) - 5 items
-  { row: 7, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 7, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 8, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 7, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 7, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
-
-  // Rows 9-10 (8 cells) - 4 items
-  { row: 9, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 9, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 10, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 9, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
-
-  // Rows 11-12 (8 cells) - 5 items
-  { row: 11, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 11, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 11, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 12, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 12, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-];
-
-// Station 2 (25 items): Interlocking 4-col x 12-row Mondrian Bento layout
-// Mathematical occupancy: 2*(4) + 11*(2) + 6*(2) + 6*(1) = 8 + 22 + 12 + 6 = 48 cells (0 empty, 0 collisions)
-const S2_SLOTS: SlotConfig[] = [
-  // Rows 1-2 (8 cells) - 3 items
-  { row: 1, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 1, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
-  { row: 2, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-
-  // Rows 3-4 (8 cells) - 4 items
+  // Tier 2: Rows 3-4 (12 cells, 6 items)
   { row: 3, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
   { row: 3, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
   { row: 4, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 3, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 3, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 4, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 3, col: 6, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Rows 5-6 (8 cells) - 4 items
-  { row: 5, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
-  { row: 5, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 5, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 6, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  // Tier 3: Rows 5-6 (12 cells, 6 items)
+  { row: 5, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 6, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 5, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
+  { row: 5, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 5, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 6, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
 
-  // Row 7 (4 cells) - 3 items
-  { row: 7, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  // Tier 4: Rows 7-8 (12 cells, 7 items)
+  { row: 7, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
   { row: 7, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 8, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
   { row: 7, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-
-  // Rows 8-9 (8 cells) - 4 items
-  { row: 8, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 8, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 9, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 8, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
-
-  // Rows 10-11 (8 cells) - 4 items
-  { row: 10, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 10, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 10, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 11, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-
-  // Row 12 (4 cells) - 3 items
-  { row: 12, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 12, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 12, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 8, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 7, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 8, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
 ];
 
-// Station 3 (25 items): Interlocking 4-col x 12-row Mondrian Bento layout
+// Station 2 (25 items): Interlocking 6-col x 8-row Mondrian Bento layout
+// Mathematical occupancy: 2*(4) + 11*(2) + 6*(2) + 6*(1) = 8 + 22 + 12 + 6 = 48 cells (0 empty, 0 collisions)
+const S2_SLOTS: SlotConfig[] = [
+  // Tier 1: Rows 1-2 (12 cells, 6 items)
+  { row: 1, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 2, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 1, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
+  { row: 1, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 1, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 2, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
+
+  // Tier 2: Rows 3-4 (12 cells, 6 items)
+  { row: 3, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 3, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 4, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 3, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 4, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 3, col: 5, colSpan: 2, rowSpan: 2, variant: "2x2" },
+
+  // Tier 3: Rows 5-6 (12 cells, 6 items)
+  { row: 5, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 5, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 6, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 5, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 6, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 5, col: 6, colSpan: 1, rowSpan: 2, variant: "1x2" },
+
+  // Tier 4: Rows 7-8 (12 cells, 7 items)
+  { row: 7, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 8, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 7, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 7, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 8, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 7, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 8, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
+];
+
+// Station 3 (25 items): Interlocking 6-col x 8-row Mondrian Bento layout
 // Mathematical occupancy: 2*(4) + 11*(2) + 6*(2) + 6*(1) = 8 + 22 + 12 + 6 = 48 cells (0 empty, 0 collisions)
 const S3_SLOTS: SlotConfig[] = [
-  // Rows 1-2 (8 cells) - 4 items
+  // Tier 1: Rows 1-2 (12 cells, 6 items)
   { row: 1, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
   { row: 1, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
   { row: 2, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 1, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 1, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 2, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 1, col: 5, colSpan: 2, rowSpan: 2, variant: "2x2" },
 
-  // Rows 3-4 (8 cells) - 3 items
+  // Tier 2: Rows 3-4 (12 cells, 6 items)
   { row: 3, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
   { row: 3, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
   { row: 4, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 3, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 3, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 4, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
 
-  // Rows 5-6 (8 cells) - 5 items
-  { row: 5, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  // Tier 3: Rows 5-6 (12 cells, 7 items)
+  { row: 5, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
   { row: 5, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 6, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 5, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 5, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 6, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 5, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 6, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 5, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 6, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Rows 7-8 (8 cells) - 3 items
+  // Tier 4: Rows 7-8 (12 cells, 6 items)
   { row: 7, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 7, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
   { row: 8, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-
-  // Rows 9-10 (8 cells) - 4 items
-  { row: 9, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 9, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 10, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 9, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
-
-  // Rows 11-12 (8 cells) - 6 items
-  { row: 11, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 11, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 11, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 12, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 12, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 12, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 7, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 7, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 8, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 7, col: 6, colSpan: 1, rowSpan: 2, variant: "1x2" },
 ];
 
 /**
@@ -183,7 +167,7 @@ function packDynamicBento(
   items: ArchiveItem[],
   ratiosMap: Record<string, { w: number; h: number; ratio: number }>
 ): PortionData {
-  const cols = 4;
+  const cols = 6;
   const occupied: boolean[][] = [];
 
   function isOccupied(r: number, c: number): boolean {
@@ -296,7 +280,7 @@ function packDynamicBento(
   return {
     cols,
     rows: maxRow,
-    rowTemplate: `repeat(${maxRow}, clamp(130px, 15vh, 175px))`,
+    rowTemplate: `repeat(${maxRow}, clamp(85px, 10vh, 120px))`,
     placements,
   };
 }
@@ -317,11 +301,11 @@ function packMondrianPortion(
     return { cols: 1, rows: 1, rowTemplate: "1fr", placements: [] };
   }
 
-  // Full-archive mode: 4 columns x 12 rows
+  // Full-archive mode: 6 columns x 8 rows
   if (count >= 18) {
-    const cols = 4;
-    const rows = 12;
-    const rowTemplate = "repeat(12, clamp(130px, 15vh, 175px))";
+    const cols = 6;
+    const rows = 8;
+    const rowTemplate = "repeat(8, clamp(85px, 10vh, 120px))";
 
     let slots: SlotConfig[] = [];
     if (portionIndex === 0) {
@@ -550,22 +534,22 @@ const MacroTile = React.memo(function MacroTile({
 
         {/* 2. AUDIO */}
         {item.type === "audio" && (
-          <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-[#EBECE6]">
-            <div className="flex items-center gap-1.5 h-8 w-full justify-center overflow-hidden">
+          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#EBECE6]">
+            <div className="flex items-center gap-1 h-6 w-full justify-center overflow-hidden">
               {(item.audioWaveform || [40, 70, 90, 50, 80, 100, 60, 40])
-                .slice(0, 10)
+                .slice(0, 8)
                 .map((h, bIdx) => (
                   <div
                     key={bIdx}
-                    style={{ height: `${h * 0.75}%` }}
+                    style={{ height: `${h * 0.7}%` }}
                     className="w-1 bg-black/80 rounded-none"
                   />
                 ))}
             </div>
-            <div className="flex items-center gap-1.5 mt-2">
-              <Volume2 className="w-3.5 h-3.5 text-black/70" />
-              <span className="font-mono text-[10px] text-black/70 uppercase tracking-wider">
-                Audio • {item.audioDuration || "1:30"}
+            <div className="flex items-center gap-1 mt-1">
+              <Volume2 className="w-3 h-3 text-black/70" />
+              <span className="font-mono text-[9px] text-black/70 uppercase tracking-wider">
+                {item.audioDuration || "1:30"}
               </span>
             </div>
           </div>
@@ -573,22 +557,22 @@ const MacroTile = React.memo(function MacroTile({
 
         {/* 3. TEXT / ESSAY */}
         {item.type === "text" && (
-          <div className="w-full h-full p-4 flex flex-col justify-center items-center bg-[#F7F6F2] overflow-hidden text-center select-none border border-black/5">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-black/50 mb-1">
+          <div className="w-full h-full p-2.5 flex flex-col justify-center items-center bg-[#F7F6F2] overflow-hidden text-center select-none border border-black/5">
+            <span className="font-mono text-[8px] uppercase tracking-widest text-black/50 mb-0.5">
               TESTO • {item.number}
             </span>
-            <span className="font-display text-xs font-bold text-black tracking-wide uppercase leading-snug line-clamp-3">
+            <span className="font-display text-[10px] sm:text-xs font-bold text-black tracking-wide uppercase leading-tight line-clamp-2 sm:line-clamp-3">
               {item.microKeyword || item.title}
             </span>
           </div>
         )}
 
         {/* Subtle hover overlay with case number and title */}
-        <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none flex flex-col justify-end text-white">
-          <span className="font-mono text-[9px] tracking-wider uppercase opacity-85">
+        <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none flex flex-col justify-end text-white">
+          <span className="font-mono text-[8px] tracking-wider uppercase opacity-85">
             CASO {item.number}
           </span>
-          <span className="font-display text-[11px] font-medium leading-tight truncate">
+          <span className="font-display text-[10px] font-medium leading-tight truncate">
             {item.title}
           </span>
         </div>
