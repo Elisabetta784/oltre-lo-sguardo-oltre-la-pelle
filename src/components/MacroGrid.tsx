@@ -20,46 +20,15 @@ interface MacroGridProps {
   onClearModalTarget?: () => void;
 }
 
-export type SizeTier = "large" | "medium" | "small";
-export type Orientation = "portrait" | "landscape" | "square";
-
-/**
- * Standardized modular height scales for the 3 sizing tiers (Large, Medium, Small).
- * The 'large' tier is prominently scaled up to inject dramatic visual dynamism and hierarchy,
- * while ensuring that artworks of the same format within a tier share a common side (height).
- */
-export const TIER_HEIGHTS: Record<SizeTier, Record<Orientation, string>> = {
-  large: {
-    landscape: "clamp(90px, 9.8vh, 125px)",
-    portrait: "clamp(120px, 14.2vh, 170px)",
-    square: "clamp(100px, 11.5vh, 140px)",
-  },
-  medium: {
-    landscape: "clamp(65px, 7.8vh, 95px)",
-    portrait: "clamp(95px, 11.5vh, 138px)",
-    square: "clamp(78px, 9.2vh, 110px)",
-  },
-  small: {
-    landscape: "clamp(52px, 6.2vh, 75px)",
-    portrait: "clamp(75px, 9.0vh, 108px)",
-    square: "clamp(62px, 7.4vh, 90px)",
-  },
-};
-
-export function getOrientation(ratio: number): Orientation {
-  if (ratio < 0.95) return "portrait";
-  if (ratio > 1.08) return "landscape";
-  return "square";
-}
+export type BentoVariant = "1x1" | "2x1" | "1x2" | "2x2";
 
 interface PortionPlacement {
   item: ArchiveItem;
   row: number;
   col: number;
   colSpan: number;
-  staggerX: number;
-  staggerY: number;
-  sizeTier: SizeTier;
+  rowSpan: number;
+  variant: BentoVariant;
 }
 
 interface PortionData {
@@ -73,146 +42,272 @@ interface SlotConfig {
   row: number;
   col: number;
   colSpan: number;
-  sizeTier: SizeTier;
-  staggerX: number;
-  staggerY: number;
+  rowSpan: number;
+  variant: BentoVariant;
 }
 
-// Portion 1 (26 items): Organic 4-column x 7-row layout with 2 hero 2-col spans + 24 single slots
-const P1_SLOTS: SlotConfig[] = [
-  // Row 1: Hero landscape (cols 1-2, Large) + 2 Medium items
-  { row: 1, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
-  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+// Station 1 (26 items): Interlocking 4-col x 12-row Mondrian Bento layout
+// Variants: "2x2" (grand square), "2x1" (horizontal rect), "1x2" (vertical rect), "1x1" (base square)
+// Mathematical occupancy: 2*(4) + 10*(2) + 6*(2) + 8*(1) = 8 + 20 + 12 + 8 = 48 cells (0 empty, 0 collisions)
+const S1_SLOTS: SlotConfig[] = [
+  // Rows 1-2 (8 cells) - 4 items
+  { row: 1, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
+  { row: 1, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 2, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 2, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
 
-  // Row 2: 4 items (Medium, Small, Medium, Medium)
-  { row: 2, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
-  { row: 2, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 1 },
+  // Row 3 (4 cells) - 2 items
+  { row: 3, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 3, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 3: 4 items (Small, Medium, Medium, Small)
-  { row: 3, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
+  // Rows 4-5 (8 cells) - 4 items
+  { row: 4, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 4, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 5, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 4, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
 
-  // Row 4: 3 items (Medium, Small, Hero landscape cols 3-4 Large)
-  { row: 4, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 4, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  // Row 6 (4 cells) - 2 items
+  { row: 6, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 6, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 5: 4 items (Medium, Medium, Medium, Medium)
-  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
-  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  // Rows 7-8 (8 cells) - 5 items
+  { row: 7, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 7, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 8, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 7, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 7, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Row 6: 4 items (Medium, Medium, Small, Medium)
-  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
-  { row: 6, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 6, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
-  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
+  // Rows 9-10 (8 cells) - 4 items
+  { row: 9, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 9, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 10, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 9, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Row 7: 4 items (Small, Medium, Medium, Medium)
-  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 1 },
-  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
-  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  // Rows 11-12 (8 cells) - 5 items
+  { row: 11, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 11, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 11, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 12, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 12, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
 ];
 
-// Portion 2 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
-const P2_SLOTS: SlotConfig[] = [
-  // Row 1: 4 items (Medium, Small, Medium, Medium)
-  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 1, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+// Station 2 (25 items): Interlocking 4-col x 12-row Mondrian Bento layout
+// Mathematical occupancy: 2*(4) + 11*(2) + 6*(2) + 6*(1) = 8 + 22 + 12 + 6 = 48 cells (0 empty, 0 collisions)
+const S2_SLOTS: SlotConfig[] = [
+  // Rows 1-2 (8 cells) - 3 items
+  { row: 1, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 1, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
+  { row: 2, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 2: 3 items (Hero landscape cols 1-2 Large, Small, Medium)
-  { row: 2, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 2, col: 3, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  // Rows 3-4 (8 cells) - 4 items
+  { row: 3, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 3, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 4, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 3, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Row 3: 4 items (Medium, Medium, Medium, Small)
-  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
-  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
+  // Rows 5-6 (8 cells) - 4 items
+  { row: 5, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
+  { row: 5, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 5, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 6, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 4: 3 items (Small, Medium, Hero landscape cols 3-4 Large)
-  { row: 4, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 4, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  // Row 7 (4 cells) - 3 items
+  { row: 7, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 7, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 7, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 5: 4 items (Medium, Medium, Small, Medium)
-  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
-  { row: 5, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
-  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
+  // Rows 8-9 (8 cells) - 4 items
+  { row: 8, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 8, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 9, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 8, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Row 6: 3 items (Hero landscape cols 1-2 Large, Medium, Medium)
-  { row: 6, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 6, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
-  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  // Rows 10-11 (8 cells) - 4 items
+  { row: 10, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 10, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 10, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 11, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 7: 4 items (Medium, Small, Medium, Medium)
-  { row: 7, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 7, col: 2, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
-  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
-  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  // Row 12 (4 cells) - 3 items
+  { row: 12, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 12, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 12, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
 ];
 
-// Portion 3 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
-const P3_SLOTS: SlotConfig[] = [
-  // Row 1: 3 items (Medium, Medium, Hero landscape cols 3-4 Large)
-  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 1, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
-  { row: 1, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+// Station 3 (25 items): Interlocking 4-col x 12-row Mondrian Bento layout
+// Mathematical occupancy: 2*(4) + 11*(2) + 6*(2) + 6*(1) = 8 + 22 + 12 + 6 = 48 cells (0 empty, 0 collisions)
+const S3_SLOTS: SlotConfig[] = [
+  // Rows 1-2 (8 cells) - 4 items
+  { row: 1, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 1, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 2, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 1, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Row 2: 4 items (Small, Medium, Medium, Small)
-  { row: 2, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 2, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 2, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
+  // Rows 3-4 (8 cells) - 3 items
+  { row: 3, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
+  { row: 3, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 4, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 3: 4 items (Medium, Medium, Small, Medium)
-  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
-  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 3, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
-  { row: 3, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
+  // Rows 5-6 (8 cells) - 5 items
+  { row: 5, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 5, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 6, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 5, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 5, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Row 4: 3 items (Hero landscape cols 1-2 Large, Medium, Small)
-  { row: 4, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 4, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 4, col: 4, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  // Rows 7-8 (8 cells) - 3 items
+  { row: 7, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 7, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
+  { row: 8, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
 
-  // Row 5: 4 items (Medium, Small, Medium, Medium)
-  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 5, col: 2, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
-  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
-  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  // Rows 9-10 (8 cells) - 4 items
+  { row: 9, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
+  { row: 9, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 10, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 9, col: 4, colSpan: 1, rowSpan: 2, variant: "1x2" },
 
-  // Row 6: 3 items (Medium, Hero landscape cols 2-3 Large, Medium)
-  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 6, col: 2, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
-  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-
-  // Row 7: 4 items (Small, Medium, Medium, Medium)
-  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
-  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
-  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
-  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  // Rows 11-12 (8 cells) - 6 items
+  { row: 11, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
+  { row: 11, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 11, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 12, col: 1, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 12, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
+  { row: 12, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
 ];
 
 /**
- * Builds an organic, semi-random, and harmoniously scaled distribution for a portion:
- * - Exactly 3 sizes across the entire wall (Large, Medium, Small).
- * - Artworks of the same shape/orientation share a common dimension (height).
- * - Original aspect ratios are strictly preserved without cropping or stretching.
- * - Dynamic placement with subtle organic staggers creates a modern museum gallery aesthetic.
+ * Dynamic Bento packing algorithm for filtered views with fewer items (< 18).
+ * Ensures zero overflow, tight packing across 4 columns, and strict adherence to the 4 variants.
  */
-function packHomogeneousPortion(
+function packDynamicBento(
+  items: ArchiveItem[],
+  ratiosMap: Record<string, { w: number; h: number; ratio: number }>
+): PortionData {
+  const cols = 4;
+  const occupied: boolean[][] = [];
+
+  function isOccupied(r: number, c: number): boolean {
+    if (!occupied[r]) return false;
+    return Boolean(occupied[r][c]);
+  }
+
+  function setOccupied(r: number, c: number, val: boolean) {
+    if (!occupied[r]) occupied[r] = [];
+    occupied[r][c] = val;
+  }
+
+  function canFit(r: number, c: number, colSpan: number, rowSpan: number): boolean {
+    if (c + colSpan > cols) return false;
+    for (let dr = 0; dr < rowSpan; dr++) {
+      for (let dc = 0; dc < colSpan; dc++) {
+        if (isOccupied(r + dr, c + dc)) return false;
+      }
+    }
+    return true;
+  }
+
+  function occupy(r: number, c: number, colSpan: number, rowSpan: number) {
+    for (let dr = 0; dr < rowSpan; dr++) {
+      for (let dc = 0; dc < colSpan; dc++) {
+        setOccupied(r + dr, c + dc, true);
+      }
+    }
+  }
+
+  const placements: PortionPlacement[] = [];
+
+  for (let idx = 0; idx < items.length; idx++) {
+    const item = items[idx];
+    const ratio = ratiosMap[item.id]?.ratio || item.aspectRatio || 1.33;
+
+    let candidates: BentoVariant[] = [];
+    if (idx === 0 && items.length >= 6) {
+      candidates = ["2x2", "2x1", "1x1"];
+    } else if (ratio >= 1.35) {
+      candidates = ["2x1", "1x1"];
+    } else if (ratio < 0.95) {
+      candidates = ["1x2", "1x1"];
+    } else {
+      candidates = ["1x1", "2x1"];
+    }
+
+    let placed = false;
+    for (let r = 0; r < 50 && !placed; r++) {
+      for (let c = 0; c < cols && !placed; c++) {
+        if (isOccupied(r, c)) continue;
+
+        for (const variant of candidates) {
+          let colSpan = 1;
+          let rowSpan = 1;
+          if (variant === "2x2") {
+            colSpan = 2;
+            rowSpan = 2;
+          } else if (variant === "2x1") {
+            colSpan = 2;
+            rowSpan = 1;
+          } else if (variant === "1x2") {
+            colSpan = 1;
+            rowSpan = 2;
+          }
+
+          if (canFit(r, c, colSpan, rowSpan)) {
+            occupy(r, c, colSpan, rowSpan);
+            placements.push({
+              item,
+              row: r + 1,
+              col: c + 1,
+              colSpan,
+              rowSpan,
+              variant,
+            });
+            placed = true;
+            break;
+          }
+        }
+      }
+    }
+
+    if (!placed) {
+      for (let r = 0; r < 50 && !placed; r++) {
+        for (let c = 0; c < cols && !placed; c++) {
+          if (!isOccupied(r, c)) {
+            occupy(r, c, 1, 1);
+            placements.push({
+              item,
+              row: r + 1,
+              col: c + 1,
+              colSpan: 1,
+              rowSpan: 1,
+              variant: "1x1",
+            });
+            placed = true;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  let maxRow = 1;
+  for (const p of placements) {
+    maxRow = Math.max(maxRow, p.row + p.rowSpan - 1);
+  }
+
+  return {
+    cols,
+    rows: maxRow,
+    rowTemplate: `repeat(${maxRow}, clamp(130px, 15vh, 175px))`,
+    placements,
+  };
+}
+
+/**
+ * Builds a strict Mondrian Bento interlocking grid for a portion:
+ * - Exactly 4 standardized variants: 1x1, 2x1, 1x2, 2x2.
+ * - Perfectly interlocking with 0 empty gaps and shared aligned edges.
+ * - Assigns items by orientation to best-fitting variants.
+ */
+function packMondrianPortion(
   portionItems: ArchiveItem[],
   ratiosMap: Record<string, { w: number; h: number; ratio: number }>,
   portionIndex: number
@@ -222,124 +317,98 @@ function packHomogeneousPortion(
     return { cols: 1, rows: 1, rowTemplate: "1fr", placements: [] };
   }
 
-  // Full-archive mode: 4 columns x 7 rows
+  // Full-archive mode: 4 columns x 12 rows
   if (count >= 18) {
     const cols = 4;
-    const rows = 7;
-    // Balanced row template matching homee.png visual cadence:
-    // Row 1 (1.22fr) & Row 4 (1.12fr) for hero landscape anchors, remaining rows (~0.98fr) for calm rhythm
-    const rowTemplate = "1.22fr 1.02fr 0.96fr 1.12fr 0.96fr 0.98fr 0.96fr";
+    const rows = 12;
+    const rowTemplate = "repeat(12, clamp(130px, 15vh, 175px))";
 
     let slots: SlotConfig[] = [];
     if (portionIndex === 0) {
-      slots = P1_SLOTS;
+      slots = S1_SLOTS;
     } else if (portionIndex === 1) {
-      slots = P2_SLOTS;
+      slots = S2_SLOTS;
     } else {
-      slots = P3_SLOTS;
+      slots = S3_SLOTS;
     }
 
-    // Separate items by format
-    const wideHeroes = portionItems.filter(
-      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
+    // Classify items by aspect ratio
+    const landscapes = portionItems.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.25
     );
     const portraits = portionItems.filter(
       (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) < 0.95
     );
-    const others = portionItems.filter(
-      (it) => !wideHeroes.includes(it) && !portraits.includes(it)
+    const squares = portionItems.filter(
+      (it) => !landscapes.includes(it) && !portraits.includes(it)
     );
 
-    // Slots needing 2-column span heroes
-    const heroSlots = slots.filter((s) => s.colSpan === 2);
-    const singleSlots = slots.filter((s) => s.colSpan === 1);
+    // Group slots by variant
+    const slots2x2 = slots.filter((s) => s.variant === "2x2");
+    const slots1x2 = slots.filter((s) => s.variant === "1x2");
+    const slots2x1 = slots.filter((s) => s.variant === "2x1");
+    const slots1x1 = slots.filter((s) => s.variant === "1x1");
 
-    // Assign hero slots to wide landscapes
-    let wideHeroIdx = 0;
-    const heroAssignments: { slot: SlotConfig; item: ArchiveItem }[] = [];
-    for (const s of heroSlots) {
-      const it = wideHeroes[wideHeroIdx++] || others.pop() || portionItems[0];
-      heroAssignments.push({ slot: s, item: it });
+    // Pools of available items prioritizing natural aspect ratio fit
+    const pool2x2 = [...squares, ...landscapes, ...portraits];
+    const pool1x2 = [...portraits, ...squares, ...landscapes];
+    const pool2x1 = [...landscapes, ...squares, ...portraits];
+    const pool1x1 = [...squares, ...portraits, ...landscapes];
+
+    const usedIds = new Set<string>();
+    const assignments = new Map<SlotConfig, ArchiveItem>();
+
+    function pickFromPool(pool: ArchiveItem[]): ArchiveItem {
+      for (const item of pool) {
+        if (!usedIds.has(item.id)) {
+          usedIds.add(item.id);
+          return item;
+        }
+      }
+      for (const item of portionItems) {
+        if (!usedIds.has(item.id)) {
+          usedIds.add(item.id);
+          return item;
+        }
+      }
+      return portionItems[0];
     }
 
-    // Remaining items to distribute across single slots
-    const remainingWide = wideHeroes.slice(wideHeroIdx);
-    const remainingItems = [...portraits, ...others, ...remainingWide];
+    // 1. Assign 2x2 hero slots
+    for (const s of slots2x2) assignments.set(s, pickFromPool(pool2x2));
+    // 2. Assign 1x2 vertical slots
+    for (const s of slots1x2) assignments.set(s, pickFromPool(pool1x2));
+    // 3. Assign 2x1 horizontal slots
+    for (const s of slots2x1) assignments.set(s, pickFromPool(pool2x1));
+    // 4. Assign 1x1 square slots
+    for (const s of slots1x1) assignments.set(s, pickFromPool(pool1x1));
 
     const placements: PortionPlacement[] = [];
-
-    // Add hero placements
-    for (const ha of heroAssignments) {
+    for (const s of slots) {
+      const it = assignments.get(s) || portionItems[0];
       placements.push({
-        item: ha.item,
-        row: ha.slot.row,
-        col: ha.slot.col,
-        colSpan: ha.slot.colSpan,
-        staggerX: ha.slot.staggerX,
-        staggerY: ha.slot.staggerY,
-        sizeTier: ha.slot.sizeTier,
+        item: it,
+        row: s.row,
+        col: s.col,
+        colSpan: s.colSpan,
+        rowSpan: s.rowSpan,
+        variant: s.variant,
       });
-    }
-
-    // Add single slots placements
-    let remIdx = 0;
-    for (const s of singleSlots) {
-      if (remIdx < remainingItems.length) {
-        const it = remainingItems[remIdx++];
-        placements.push({
-          item: it,
-          row: s.row,
-          col: s.col,
-          colSpan: s.colSpan,
-          staggerX: s.staggerX,
-          staggerY: s.staggerY,
-          sizeTier: s.sizeTier,
-        });
-      }
     }
 
     return { cols, rows, rowTemplate, placements };
   }
 
-  // Filtered mode with fewer items per portion (1 to 17 items)
-  const cols = Math.max(1, Math.min(3, Math.ceil(Math.sqrt(count * 1.2))));
-  const rows = Math.ceil(count / cols);
-  const placements: PortionPlacement[] = [];
-
-  for (let i = 0; i < count; i++) {
-    const col = (i % cols) + 1;
-    const row = Math.floor(i / cols) + 1;
-    const staggerY = (col + row) % 2 === 0 ? 3 : -3;
-    const staggerX = col % 2 === 0 ? -2 : 2;
-    // Exactly 3 size tiers in a balanced rhythm
-    const sizeTier: SizeTier = i % 5 === 0 ? "large" : i % 3 === 0 ? "small" : "medium";
-
-    placements.push({
-      item: portionItems[i],
-      row,
-      col,
-      colSpan: 1,
-      staggerX,
-      staggerY,
-      sizeTier,
-    });
-  }
-
-  return {
-    cols,
-    rows,
-    rowTemplate: `repeat(${rows}, minmax(0, 1fr))`,
-    placements,
-  };
+  // Filtered mode (< 18 items)
+  return packDynamicBento(portionItems, ratiosMap);
 }
 
 /**
- * Computes deterministic 3-portion layout for the 5m x 3m wall:
- * - Portion 1 (Left 1/3): 26 items
- * - Portion 2 (Center 1/3): 25 items
- * - Portion 3 (Right 1/3): 25 items
- * Strictly zero items placed across portion boundaries.
- * Spaced with subtle organic gutters so the wall appears unified and continuous ("non palese").
+ * Computes deterministic 3-portion layout for the exhibition media wall:
+ * - Station 1 (Left): 26 items
+ * - Station 2 (Center): 25 items
+ * - Station 3 (Right): 25 items
+ * Total: 76 cases across 3 stations, interlocking with constant 16px gap.
  */
 function getThreePortionsLayout(
   displayItems: ArchiveItem[],
@@ -352,19 +421,18 @@ function getThreePortionsLayout(
   const total = displayItems.length;
 
   if (total >= 60) {
-    // Exact 76 cases split into 26 + 25 + 25
     const p1Items = displayItems.slice(0, 26);
     const p2Items = displayItems.slice(26, 51);
     const p3Items = displayItems.slice(51, 76);
 
     return {
-      portion1: packHomogeneousPortion(p1Items, ratiosMap, 0),
-      portion2: packHomogeneousPortion(p2Items, ratiosMap, 1),
-      portion3: packHomogeneousPortion(p3Items, ratiosMap, 2),
+      portion1: packMondrianPortion(p1Items, ratiosMap, 0),
+      portion2: packMondrianPortion(p2Items, ratiosMap, 1),
+      portion3: packMondrianPortion(p3Items, ratiosMap, 2),
     };
   }
 
-  // Filtered state: distribute round-robin to keep 3 stations visually balanced
+  // Filtered state: distribute round-robin across 3 stations
   const p1Items: ArchiveItem[] = [];
   const p2Items: ArchiveItem[] = [];
   const p3Items: ArchiveItem[] = [];
@@ -376,9 +444,9 @@ function getThreePortionsLayout(
   });
 
   return {
-    portion1: packHomogeneousPortion(p1Items, ratiosMap, 0),
-    portion2: packHomogeneousPortion(p2Items, ratiosMap, 1),
-    portion3: packHomogeneousPortion(p3Items, ratiosMap, 2),
+    portion1: packMondrianPortion(p1Items, ratiosMap, 0),
+    portion2: packMondrianPortion(p2Items, ratiosMap, 1),
+    portion3: packMondrianPortion(p3Items, ratiosMap, 2),
   };
 }
 
@@ -389,10 +457,9 @@ interface MacroTileProps {
   isFilterOpen: boolean;
   row: number;
   col: number;
-  colSpan?: number;
-  staggerX: number;
-  staggerY: number;
-  sizeTier: SizeTier;
+  colSpan: number;
+  rowSpan: number;
+  variant: BentoVariant;
   isClone?: boolean;
   onSelect: (item: ArchiveItem) => void;
   onHover: (item: ArchiveItem | null) => void;
@@ -405,23 +472,13 @@ const MacroTile = React.memo(function MacroTile({
   isFilterOpen,
   row,
   col,
-  colSpan = 1,
-  staggerX,
-  staggerY,
-  sizeTier,
+  colSpan,
+  rowSpan,
+  variant,
   isClone = false,
   onSelect,
   onHover,
 }: MacroTileProps) {
-  // Retrieve natural pixel dimensions & aspect ratio:
-  const dim = ARCHIVE_ASPECT_RATIOS[item.id] || {
-    w: 100,
-    h: 100,
-    ratio: item.aspectRatio || 1.33,
-  };
-  const orientation = getOrientation(dim.ratio);
-  const targetHeight = TIER_HEIGHTS[sizeTier][orientation];
-
   // Track pointer down coordinate to distinguish drag from tap
   const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -455,37 +512,28 @@ const MacroTile = React.memo(function MacroTile({
       onMouseEnter={() => onHover(item)}
       onMouseLeave={() => onHover(null)}
       style={{
-        gridRow: `${row} / span 1`,
+        gridRow: `${row} / span ${rowSpan}`,
         gridColumn: `${col} / span ${colSpan}`,
-        transform: `translate3d(${staggerX}px, ${staggerY}px, 0px)`,
-        opacity: 1,
       }}
-      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 flex items-center justify-center cursor-pointer relative group ${
+      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 relative group select-none ${
         isHovered ? "z-30" : "z-10"
       }`}
     >
       <motion.div
         layoutId={isClone ? undefined : `item-media-${item.id}`}
         animate={{
-          scale: isHovered ? 1.08 : 1,
+          scale: isHovered ? 1.025 : 1,
         }}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          aspectRatio: `${dim.w} / ${dim.h}`,
-          height: targetHeight,
-          width: "auto",
-          maxWidth: colSpan > 1 ? "97%" : "95%",
-          maxHeight: "95%",
-        }}
-        className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center border-0 ${
+        className={`w-full h-full relative overflow-hidden bg-[#ECECE8] border border-black/10 transition-shadow duration-200 cursor-pointer flex items-center justify-center ${
           isHovered
-            ? "shadow-2xl shadow-black/30"
+            ? "shadow-[0_12px_28px_rgba(0,0,0,0.18)]"
             : isActive
-            ? "shadow-md shadow-black/20"
-            : "shadow-2xs"
+            ? "shadow-[0_6px_16px_rgba(0,0,0,0.14)] ring-1 ring-black"
+            : "shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
         }`}
       >
-        {/* 1. PHOTO - 100% natural shape, NO white borders, edge-to-edge coverage */}
+        {/* 1. PHOTO - edge-to-edge cover */}
         {item.type === "photo" && (
           <img
             src={item.thumbnailUrl || item.imageUrl || ""}
@@ -502,30 +550,48 @@ const MacroTile = React.memo(function MacroTile({
 
         {/* 2. AUDIO */}
         {item.type === "audio" && (
-          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#EAEAE5]">
-            <div className="flex items-center gap-1 h-6 w-full justify-center overflow-hidden">
+          <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-[#EBECE6]">
+            <div className="flex items-center gap-1.5 h-8 w-full justify-center overflow-hidden">
               {(item.audioWaveform || [40, 70, 90, 50, 80, 100, 60, 40])
-                .slice(0, 8)
+                .slice(0, 10)
                 .map((h, bIdx) => (
                   <div
                     key={bIdx}
                     style={{ height: `${h * 0.75}%` }}
-                    className="w-1 bg-black rounded-none"
+                    className="w-1 bg-black/80 rounded-none"
                   />
                 ))}
             </div>
-            <Volume2 className="w-3.5 h-3.5 text-black mt-1 opacity-80" />
+            <div className="flex items-center gap-1.5 mt-2">
+              <Volume2 className="w-3.5 h-3.5 text-black/70" />
+              <span className="font-mono text-[10px] text-black/70 uppercase tracking-wider">
+                Audio • {item.audioDuration || "1:30"}
+              </span>
+            </div>
           </div>
         )}
 
         {/* 3. TEXT / ESSAY */}
         {item.type === "text" && (
-          <div className="w-full h-full p-2 flex flex-col justify-center items-center bg-[#E5E5DE] overflow-hidden text-center select-none">
-            <span className="font-display text-[9px] font-bold text-black tracking-wider uppercase leading-tight line-clamp-2">
+          <div className="w-full h-full p-4 flex flex-col justify-center items-center bg-[#F7F6F2] overflow-hidden text-center select-none border border-black/5">
+            <span className="font-mono text-[9px] uppercase tracking-widest text-black/50 mb-1">
+              TESTO • {item.number}
+            </span>
+            <span className="font-display text-xs font-bold text-black tracking-wide uppercase leading-snug line-clamp-3">
               {item.microKeyword || item.title}
             </span>
           </div>
         )}
+
+        {/* Subtle hover overlay with case number and title */}
+        <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none flex flex-col justify-end text-white">
+          <span className="font-mono text-[9px] tracking-wider uppercase opacity-85">
+            CASO {item.number}
+          </span>
+          <span className="font-display text-[11px] font-medium leading-tight truncate">
+            {item.title}
+          </span>
+        </div>
       </motion.div>
     </div>
   );
@@ -556,8 +622,9 @@ function StationColumn({
 }: StationColumnProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const heightRef = useRef(0);
-  const [height, setHeight] = useState(0);
+  const copyRef = useRef<HTMLDivElement>(null);
+  const copyHeightRef = useRef<number>(0);
+  const [copyHeight, setCopyHeight] = useState<number>(0);
 
   const isThisModalOpen = Boolean(stationModal);
 
@@ -581,39 +648,38 @@ function StationColumn({
   const currentDriftSpeedRef = useRef(0);
   const lastInteractionTimeRef = useRef<number>(performance.now());
 
-  // Measure container height with ResizeObserver
+  // Measure copy height with ResizeObserver
   useEffect(() => {
-    const el = containerRef.current;
+    const el = copyRef.current;
     if (!el) return;
     const update = () => {
       const h = el.clientHeight;
       if (h > 0) {
-        heightRef.current = h;
-        setHeight(h);
+        copyHeightRef.current = h;
+        setCopyHeight(h);
       }
     };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [portion]);
 
   const applyTransform = useCallback(() => {
-    if (!trackRef.current || heightRef.current <= 0) return;
-    const H = heightRef.current;
-    const cycleHeight = H + 8; // 8px row gap between repeating copies
+    if (!trackRef.current) return;
+    const cycleHeight = (copyHeightRef.current > 0 ? copyHeightRef.current : 1800) + 16;
     const normY = ((offsetYRef.current % cycleHeight) + cycleHeight) % cycleHeight;
     const trackY = -cycleHeight + normY;
 
     trackRef.current.style.transform = `translate3d(0px, ${trackY.toFixed(2)}px, 0px)`;
   }, []);
 
-  // Update transform whenever height changes
+  // Update transform whenever copyHeight changes
   useEffect(() => {
-    if (height > 0) {
+    if (copyHeight > 0) {
       applyTransform();
     }
-  }, [height, applyTransform]);
+  }, [copyHeight, applyTransform]);
 
   // Loop di animazione per il micro-scorrimento autonomo quando nessuno tocca lo schermo
   useEffect(() => {
@@ -656,7 +722,7 @@ function StationColumn({
             currentDriftSpeedRef.current + rampRate * dt
           );
 
-          if (currentDriftSpeedRef.current > 0.01 && heightRef.current > 0) {
+          if (currentDriftSpeedRef.current > 0.01 && (copyHeightRef.current > 0 || copyHeight > 0)) {
             offsetYRef.current += currentDriftSpeedRef.current * dt;
             applyTransform();
           }
@@ -811,9 +877,8 @@ function StationColumn({
           row={p.row}
           col={p.col}
           colSpan={p.colSpan}
-          staggerX={p.staggerX}
-          staggerY={p.staggerY}
-          sizeTier={p.sizeTier}
+          rowSpan={p.rowSpan}
+          variant={p.variant}
           isClone={isClone}
           onSelect={handleSelectTile}
           onHover={(item) => {
@@ -848,39 +913,37 @@ function StationColumn({
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          gap: "8px",
+          gap: "16px",
           willChange: "transform",
-          transform: height > 0 ? undefined : "translateY(-33.333333%)",
         }}
       >
         {/* Copy 0: clone above */}
         <div
           style={{
             width: "100%",
-            height: height > 0 ? `${height}px` : "100%",
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "8px",
+            gap: "16px",
             flexShrink: 0,
           }}
-          className="items-center justify-items-center relative min-h-0 min-w-0"
+          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
         >
           {renderTilesCopy(0)}
         </div>
 
         {/* Copy 1: original center */}
         <div
+          ref={copyRef}
           style={{
             width: "100%",
-            height: height > 0 ? `${height}px` : "100%",
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "8px",
+            gap: "16px",
             flexShrink: 0,
           }}
-          className="items-center justify-items-center relative min-h-0 min-w-0"
+          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
         >
           {renderTilesCopy(1)}
         </div>
@@ -889,14 +952,13 @@ function StationColumn({
         <div
           style={{
             width: "100%",
-            height: height > 0 ? `${height}px` : "100%",
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "8px",
+            gap: "16px",
             flexShrink: 0,
           }}
-          className="items-center justify-items-center relative min-h-0 min-w-0"
+          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
         >
           {renderTilesCopy(2)}
         </div>
@@ -1166,7 +1228,7 @@ export function MacroGrid({
 
 
       {/* 3. MAIN EXHIBITION MEDIA WALL: ALL 76 CASES VISIBLE ACROSS 3 SEAMLESS PORTIONS AS ONE UNIFIED BLOCK */}
-      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center px-2 sm:px-3 py-2 sm:py-3">
+      <div className="relative w-full h-full max-h-screen overflow-hidden flex items-center justify-center p-4">
         {displayItems.length === 0 ? (
           <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#ECEEF0] w-full max-w-md my-auto shadow-md">
             <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
@@ -1183,7 +1245,7 @@ export function MacroGrid({
               transformOrigin: "center center",
               willChange: "transform",
             }}
-            className="w-full h-full max-h-full grid grid-cols-3 gap-x-1.5 sm:gap-x-2 items-stretch justify-items-stretch"
+            className="w-full h-full max-h-full grid grid-cols-3 gap-x-4 items-stretch justify-items-stretch"
           >
             {/* PORTION 1: LEFT STATION (CASI 001 - 026) */}
             <StationColumn
