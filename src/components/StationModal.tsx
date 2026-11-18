@@ -86,10 +86,12 @@ export function StationModal({
 
   // Ref for the unified scrollable container (large image + info arriving on scroll)
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isScrolledDown, setIsScrolledDown] = useState(false);
 
   // Reset to first slide and scroll to top on item change
   useEffect(() => {
     setImgIdx(0);
+    setIsScrolledDown(false);
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
   }, [item.id]);
 
@@ -124,6 +126,7 @@ export function StationModal({
     setItem(selectedCase);
     setViewMode("image");
     setImgIdx(0);
+    setIsScrolledDown(false);
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "instant" });
     onSelectItem?.(selectedCase);
   };
@@ -134,11 +137,13 @@ export function StationModal({
     const container = scrollContainerRef.current;
     if (container) {
       container.scrollTo({ top: container.clientHeight, behavior: "smooth" });
+      setIsScrolledDown(true);
     }
   };
 
   const scrollToTop = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    setIsScrolledDown(false);
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -194,7 +199,7 @@ export function StationModal({
         // Stop wheel events from escaping to MacroGrid or document
         e.stopPropagation();
       }}
-      className="absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 pointer-events-auto overflow-hidden"
+      className="absolute inset-0 z-40 flex items-center justify-center pt-8 sm:pt-11 pb-2 px-2 sm:px-3 pointer-events-auto overflow-hidden"
     >
       {/* 1. Backdrop: ultra-light, luminous veil allowing the underlying macro grid to stay bright and clear */}
       <motion.div
@@ -217,7 +222,7 @@ export function StationModal({
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
-        className="relative z-50 flex flex-col shrink-0 border border-white/70 shadow-xl shadow-black/[0.05] overflow-hidden text-black select-none rounded-none bg-white/[0.22] backdrop-blur-[11px] ring-1 ring-white/60 w-[94%] sm:w-[92%] max-w-[540px] sm:max-w-[580px] h-[450px] sm:h-[480px] max-h-[64vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        className="relative z-50 flex flex-col shrink-0 border border-white/70 shadow-xl shadow-black/[0.05] overflow-hidden text-black select-none rounded-none bg-white/[0.22] backdrop-blur-[11px] ring-1 ring-white/60 w-[88%] sm:w-[84%] max-w-[430px] sm:max-w-[465px] h-[370px] sm:h-[395px] max-h-[54vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]"
       >
         <AnimatePresence mode="wait" initial={false}>
           {/* =============================================================== */}
@@ -230,188 +235,200 @@ export function StationModal({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              ref={scrollContainerRef}
-              onPointerDown={handlePointerDown}
-              onWheel={(e) => e.stopPropagation()}
-              style={{
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-                WebkitOverflowScrolling: "touch",
-              }}
-              className={`relative w-full h-full overflow-y-auto no-scrollbar scroll-smooth flex flex-col select-none touch-pan-y ${
-                isDragging ? "cursor-grabbing" : "cursor-default"
-              }`}
+              className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
-              {/* SCREEN 1: Large Artwork Image View (fills first screen of modal) */}
-              <div className="relative w-full min-h-full h-[450px] sm:h-[480px] max-h-[64vh] shrink-0 flex items-center justify-center p-4 sm:p-5 overflow-hidden select-none">
-                {/* Floating Pill Badge: CASO XX (top-left) */}
-                <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-full bg-white/70 backdrop-blur-md text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border border-black/10 shadow-xs pointer-events-none">
-                  CASO {item.number}
-                </div>
-
-                {/* Artwork Image maintaining its original aspect ratio */}
-                <img
-                  src={currentImg}
-                  alt={item.title}
-                  draggable={false}
-                  className="w-auto h-auto max-w-full max-h-full object-contain block filter-none select-none shadow-xs rounded-none"
-                  style={{
-                    imageRendering: "-webkit-optimize-contrast",
-                    aspectRatio: dim ? `${dim.w} / ${dim.h}` : undefined,
-                  }}
-                />
-
-                {/* Circular Gallery Navigation Arrows (matching foto.png) */}
-                {allImages.length > 1 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length);
-                      }}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 rounded-full bg-white/70 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-md cursor-pointer border border-black/10"
-                      title="Immagine precedente"
-                    >
-                      <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setImgIdx((prev) => (prev + 1) % allImages.length);
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 rounded-full bg-white/70 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-md cursor-pointer border border-black/10"
-                      title="Immagine successiva"
-                    >
-                      <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
-                    </button>
-                  </>
-                )}
-
-                {/* Floating scroll down cue: Arrow only (signals to scroll down, no text) */}
-                <button
-                  type="button"
-                  onClick={scrollToInfo}
-                  className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 w-8 h-8 rounded-full bg-white/80 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-sm border border-black/10 group"
-                  aria-label="Scorri verso il basso"
-                  title="Scorri verso il basso"
-                >
-                  <ChevronDown className="w-4 h-4 stroke-[2.5] text-black/75 group-hover:text-black animate-bounce" />
-                </button>
-              </div>
-
-              {/* SCREEN 2: Info Content Arriving by Scrolling */}
               <div
-                id="station-modal-info-section"
-                className="w-full shrink-0 flex flex-col px-5 pt-3.5 pb-4 gap-2 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none"
+                ref={scrollContainerRef}
+                onScroll={(e) => {
+                  const top = e.currentTarget.scrollTop;
+                  setIsScrolledDown(top > 50);
+                }}
+                onPointerDown={handlePointerDown}
+                onWheel={(e) => e.stopPropagation()}
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  WebkitOverflowScrolling: "touch",
+                }}
+                className={`relative w-full h-full overflow-y-auto no-scrollbar scroll-smooth flex flex-col select-none touch-pan-y ${
+                  isDragging ? "cursor-grabbing" : "cursor-default"
+                }`}
               >
-                {/* Header row: CASO and back-to-photo button */}
-                <div className="flex items-center justify-between pb-1 shrink-0 select-none border-b border-black/6">
-                  <span className="font-display font-bold text-[8.5px] sm:text-[9px] uppercase tracking-wide text-black/60">
+                {/* SCREEN 1: Large Artwork Image View (fills first screen of modal) */}
+                <div className="relative w-full min-h-full h-[370px] sm:h-[395px] max-h-[54vh] shrink-0 flex items-center justify-center p-3.5 sm:p-4 overflow-hidden select-none">
+                  {/* Floating Pill Badge: CASO XX (top-left) */}
+                  <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-full bg-white/70 backdrop-blur-md text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border border-black/10 shadow-xs pointer-events-none">
                     CASO {item.number}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={scrollToTop}
-                    className="text-black/50 hover:text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors"
-                  >
-                    <span>Foto</span>
-                    <ChevronUp className="w-3 h-3 stroke-[2.5]" />
-                  </button>
-                </div>
-
-                {/* Title */}
-                <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight">
-                  {item.title}
-                </h2>
-
-                {/* Subtitle: Author & Year */}
-                <p className="font-display text-[9px] sm:text-[9.5px] text-black/75 font-medium -mt-1">
-                  {item.authorOrSubject} {item.year ? `— ${item.year}` : ""}
-                </p>
-
-                {/* Section Descrizione */}
-                <div className="mt-0.5">
-                  <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1">
-                    Descrizione
-                  </span>
-                  <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-justify">
-                    {item.sintesiConcettuale || item.excerpt || item.notes}
-                  </p>
-                </div>
-
-                {/* Metadata Grid */}
-                <div className="mt-1 pt-2 border-t border-black/8 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[9px]">
-                  <div>
-                    <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                      Segno
-                    </span>
-                    <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                      {item.segno || "—"}
-                    </span>
                   </div>
 
-                  <div>
-                    <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                      Tono
-                    </span>
-                    <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                      {item.tono || "—"}
-                    </span>
-                  </div>
+                  {/* Artwork Image maintaining its original aspect ratio */}
+                  <img
+                    src={currentImg}
+                    alt={item.title}
+                    draggable={false}
+                    className="w-auto h-auto max-w-full max-h-full object-contain block filter-none select-none shadow-xs rounded-none"
+                    style={{
+                      imageRendering: "-webkit-optimize-contrast",
+                      aspectRatio: dim ? `${dim.w} / ${dim.h}` : undefined,
+                    }}
+                  />
 
-                  <div>
-                    <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                      Tipologia
-                    </span>
-                    <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                      {item.tipologia || "—"}
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                      Media
-                    </span>
-                    <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                      {item.tipoDiMedia || "—"}
-                    </span>
-                  </div>
-
-                  {item.stileVisivo && (
-                    <div className="col-span-2 sm:col-span-4 pt-1.5 border-t border-black/8">
-                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                        Stile visivo
-                      </span>
-                      <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed text-justify block mt-0.5">
-                        {item.stileVisivo}
-                      </span>
-                    </div>
+                  {/* Circular Gallery Navigation Arrows (matching foto.png) */}
+                  {allImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length);
+                        }}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 rounded-full bg-white/70 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-md cursor-pointer border border-black/10"
+                        title="Immagine precedente"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImgIdx((prev) => (prev + 1) % allImages.length);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 rounded-full bg-white/70 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-md cursor-pointer border border-black/10"
+                        title="Immagine successiva"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </button>
+                    </>
                   )}
                 </div>
 
-                {/* Bottom Actions inside Info section: [ ↑ Foto ] and [ (●) OLTRE ] */}
-                <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none">
-                  <button
-                    type="button"
-                    onClick={scrollToTop}
-                    className="px-3 py-1 rounded-full bg-white/70 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wide flex items-center gap-1 shadow-xs transition-all cursor-pointer border border-black/10 backdrop-blur-xs"
-                  >
-                    <ArrowLeft className="w-3 h-3 -rotate-90" />
-                    <span>Foto</span>
-                  </button>
+                {/* SCREEN 2: Info Content Arriving by Scrolling */}
+                <div
+                  id="station-modal-info-section"
+                  className="w-full shrink-0 flex flex-col px-5 pt-3.5 pb-4 gap-2 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none"
+                >
+                  {/* Header row: CASO and back-to-photo button */}
+                  <div className="flex items-center justify-between pb-1 shrink-0 select-none border-b border-black/6">
+                    <span className="font-display font-bold text-[8.5px] sm:text-[9px] uppercase tracking-wide text-black/60">
+                      CASO {item.number}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={scrollToTop}
+                      className="text-black/50 hover:text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <span>Foto</span>
+                      <ChevronUp className="w-3 h-3 stroke-[2.5]" />
+                    </button>
+                  </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("oltre")}
-                    className="px-3.5 py-1 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/90" />
-                    <span>OLTRE</span>
-                  </button>
+                  {/* Title */}
+                  <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight">
+                    {item.title}
+                  </h2>
+
+                  {/* Subtitle: Author & Year */}
+                  <p className="font-display text-[9px] sm:text-[9.5px] text-black/75 font-medium -mt-1">
+                    {item.authorOrSubject} {item.year ? `— ${item.year}` : ""}
+                  </p>
+
+                  {/* Section Descrizione */}
+                  <div className="mt-0.5">
+                    <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1">
+                      Descrizione
+                    </span>
+                    <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-justify">
+                      {item.sintesiConcettuale || item.excerpt || item.notes}
+                    </p>
+                  </div>
+
+                  {/* Metadata Grid */}
+                  <div className="mt-1 pt-2 border-t border-black/8 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[9px]">
+                    <div>
+                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                        Segno
+                      </span>
+                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                        {item.segno || "—"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                        Tono
+                      </span>
+                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                        {item.tono || "—"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                        Tipologia
+                      </span>
+                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                        {item.tipologia || "—"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                        Media
+                      </span>
+                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                        {item.tipoDiMedia || "—"}
+                      </span>
+                    </div>
+
+                    {item.stileVisivo && (
+                      <div className="col-span-2 sm:col-span-4 pt-1.5 border-t border-black/8">
+                        <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                          Stile visivo
+                        </span>
+                        <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed text-justify block mt-0.5">
+                          {item.stileVisivo}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bottom Actions inside Info section: [ ↑ Foto ] and [ (●) OLTRE ] */}
+                  <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none pb-7 sm:pb-8">
+                    <button
+                      type="button"
+                      onClick={scrollToTop}
+                      className="px-3 py-1 rounded-full bg-white/70 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wide flex items-center gap-1 shadow-xs transition-all cursor-pointer border border-black/10 backdrop-blur-xs"
+                    >
+                      <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Foto</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("oltre")}
+                      className="px-3.5 py-1 rounded-full bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/90" />
+                      <span>OLTRE</span>
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              {/* Floating Quick Action Button (Tastino): Arrow Down to scroll to info, Arrow UP to return to photo */}
+              <button
+                type="button"
+                onClick={isScrolledDown ? scrollToTop : scrollToInfo}
+                className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 w-7.5 h-7.5 rounded-full bg-white/85 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-md border border-black/10 group"
+                aria-label={isScrolledDown ? "Torna alla foto" : "Scorri verso il basso"}
+                title={isScrolledDown ? "Torna alla foto" : "Scorri verso la spiegazione"}
+              >
+                {isScrolledDown ? (
+                  <ChevronUp className="w-4 h-4 stroke-[2.5] text-black/80 group-hover:text-black" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 stroke-[2.5] text-black/80 group-hover:text-black animate-bounce" />
+                )}
+              </button>
             </motion.div>
           )}
 
@@ -676,7 +693,7 @@ function OltreCardContent({
                       if (isDragging) return;
                       onSelectCase(c);
                     }}
-                    className={`relative w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] z-10 ${
+                    className={`relative w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 overflow-hidden rounded-none transition-all duration-150 select-none bg-[#ECECE8] z-10 ${
                       isCenter ? "cursor-pointer" : "pointer-events-none"
                     } ${
                       isCurrent
@@ -827,7 +844,7 @@ function OltreCardCarousel({
       className="relative w-full flex-1 min-h-0 flex flex-col items-center justify-between py-1 px-2 select-none overflow-hidden"
     >
       {/* Flat Opaline Carousel: center card in focus, side cards flat 2D & blurred opalino */}
-      <div className="relative w-full flex-1 flex items-center justify-center min-h-[285px] sm:min-h-[305px] overflow-hidden">
+      <div className="relative w-full flex-1 flex items-center justify-center min-h-[235px] sm:min-h-[250px] overflow-hidden">
         {categoryConfig.subcategories.map((subcat, idx) => {
           // Linear distance relative to active card
           const distance = idx - activeCardIdx;
@@ -848,25 +865,25 @@ function OltreCardCarousel({
             zIndex = 30;
             pointerEvents = "auto";
           } else if (distance === -1) {
-            x = -172;
+            x = -150;
             scale = 0.94;
             opacity = 0.85;
             zIndex = 15;
             pointerEvents = "auto";
           } else if (distance === 1) {
-            x = 172;
+            x = 150;
             scale = 0.94;
             opacity = 0.85;
             zIndex = 15;
             pointerEvents = "auto";
           } else if (distance < -1) {
-            x = -260;
+            x = -230;
             scale = 0.88;
             opacity = 0;
             zIndex = 5;
             pointerEvents = "none";
           } else if (distance > 1) {
-            x = 260;
+            x = 230;
             scale = 0.88;
             opacity = 0;
             zIndex = 5;
@@ -904,7 +921,7 @@ function OltreCardCarousel({
                 willChange: "transform, opacity",
                 pointerEvents,
               }}
-              className={`absolute top-1/2 left-1/2 w-[200px] sm:w-[215px] h-[265px] sm:h-[285px] -mt-[132px] sm:-mt-[142px] -ml-[100px] sm:-ml-[108px] rounded-none border border-black/10 flex flex-col overflow-hidden transition-[box-shadow,background-color] duration-300 ${
+              className={`absolute top-1/2 left-1/2 w-[175px] sm:w-[190px] h-[225px] sm:h-[245px] -mt-[112px] sm:-mt-[122px] -ml-[87px] sm:-ml-[95px] rounded-none border border-black/10 flex flex-col overflow-hidden transition-[box-shadow,background-color] duration-300 ${
                 isCenter
                   ? "bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/15 ring-1 ring-white/80 cursor-default"
                   : "bg-white/50 backdrop-blur-md shadow-md shadow-black/[0.04] cursor-pointer hover:opacity-100"
