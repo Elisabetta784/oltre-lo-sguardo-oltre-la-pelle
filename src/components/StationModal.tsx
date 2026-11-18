@@ -392,17 +392,8 @@ export function StationModal({
                     )}
                   </div>
 
-                  {/* Bottom Actions inside Info section: [ ↑ Foto ] and [ (●) OLTRE ] */}
-                  <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none pb-7 sm:pb-8">
-                    <button
-                      type="button"
-                      onClick={scrollToTop}
-                      className="px-3 py-1 rounded-full bg-white/70 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wide flex items-center gap-1 shadow-xs transition-all cursor-pointer border border-black/10 backdrop-blur-xs"
-                    >
-                      <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>Foto</span>
-                    </button>
-
+                  {/* Bottom Action inside Info section: [ (●) OLTRE ] */}
+                  <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-end shrink-0 select-none pb-7 sm:pb-8">
                     <button
                       type="button"
                       onClick={() => setViewMode("oltre")}
