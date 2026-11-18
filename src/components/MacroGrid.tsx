@@ -22,146 +22,133 @@ interface MacroGridProps {
 
 export type BentoVariant = "1x1" | "2x1" | "1x2" | "2x2";
 
-interface PortionPlacement {
-  item: ArchiveItem;
-  row: number;
-  col: number;
-  colSpan: number;
-  rowSpan: number;
-  variant: BentoVariant;
+export interface MockupSlot {
+  x: number; // percentage (0..100)
+  y: number; // percentage (0..100)
+  w: number; // percentage
+  h: number; // percentage
+  ratio: number;
 }
 
-interface PortionData {
-  cols: number;
-  rows: number;
-  rowTemplate: string;
+export interface PortionPlacement {
+  item: ArchiveItem;
+  // Mockup-based percentage positioning (Full Archive mode)
+  x?: number;
+  y?: number;
+  w?: number;
+  h?: number;
+  ratio?: number;
+  // Dynamic Bento CSS Grid (Filtered mode)
+  row?: number;
+  col?: number;
+  colSpan?: number;
+  rowSpan?: number;
+  variant?: BentoVariant;
+}
+
+export interface PortionData {
+  isMockupLayout: boolean;
+  aspectHeightRatio?: number;
+  cols?: number;
+  rows?: number;
+  rowTemplate?: string;
   placements: PortionPlacement[];
 }
 
-interface SlotConfig {
-  row: number;
-  col: number;
-  colSpan: number;
-  rowSpan: number;
-  variant: BentoVariant;
-}
-
-// Station 1 (26 items): Interlocking 6-col x 8-row Mondrian Bento layout
-// Variants: "2x2" (grand square), "2x1" (horizontal rect), "1x2" (vertical rect), "1x1" (base square)
-// Mathematical occupancy: 2*(4) + 10*(2) + 6*(2) + 8*(1) = 8 + 20 + 12 + 8 = 48 cells (0 empty, 0 collisions)
-const S1_SLOTS: SlotConfig[] = [
-  // Tier 1: Rows 1-2 (12 cells, 7 items)
-  { row: 1, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
-  { row: 1, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 2, col: 3, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 2, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 1, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 1, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 2, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-
-  // Tier 2: Rows 3-4 (12 cells, 6 items)
-  { row: 3, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 3, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 4, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 3, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 4, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 3, col: 6, colSpan: 1, rowSpan: 2, variant: "1x2" },
-
-  // Tier 3: Rows 5-6 (12 cells, 6 items)
-  { row: 5, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 6, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 5, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
-  { row: 5, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 5, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 6, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-
-  // Tier 4: Rows 7-8 (12 cells, 7 items)
-  { row: 7, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 7, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 8, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 7, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 8, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 7, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 8, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
+// Station 1 (26 slots) - extracted directly from user Figma mockup (Screenshot 2026-11-18 alle 17.31.01.png)
+// Matches Station 1 items: 7 portraits, 2 squares, 17 landscapes (height/width aspect ~1.92)
+const S1_SLOTS: MockupSlot[] = [
+  { x: 45.1, y: 0.0, w: 13.65, h: 5.26, ratio: 1.353 },
+  { x: 0.0, y: 2.01, w: 39.47, h: 14.99, ratio: 1.371 },
+  { x: 67.36, y: 4.17, w: 21.96, h: 14.84, ratio: 0.771 },
+  { x: 45.1, y: 8.66, w: 16.32, h: 5.87, ratio: 1.447 },
+  { x: 11.87, y: 19.17, w: 18.4, h: 11.59, ratio: 0.827 },
+  { x: 67.36, y: 21.17, w: 32.64, h: 11.75, ratio: 1.447 },
+  { x: 34.12, y: 21.95, w: 21.96, h: 11.59, ratio: 0.987 },
+  { x: 0.0, y: 33.69, w: 15.43, h: 7.57, ratio: 1.061 },
+  { x: 67.36, y: 35.39, w: 20.77, h: 11.75, ratio: 0.921 },
+  { x: 23.15, y: 36.17, w: 39.17, h: 15.46, ratio: 1.32 },
+  { x: 0.0, y: 46.21, w: 18.4, h: 11.59, ratio: 0.827 },
+  { x: 80.42, y: 49.3, w: 18.99, h: 15.15, ratio: 0.653 },
+  { x: 67.36, y: 52.09, w: 9.79, h: 6.34, ratio: 0.805 },
+  { x: 33.53, y: 54.1, w: 22.55, h: 6.34, ratio: 1.854 },
+  { x: 11.28, y: 61.98, w: 23.15, h: 7.57, ratio: 1.592 },
+  { x: 45.1, y: 62.29, w: 29.97, h: 10.97, ratio: 1.423 },
+  { x: 81.01, y: 70.02, w: 18.4, h: 6.34, ratio: 1.512 },
+  { x: 0.0, y: 71.25, w: 33.53, h: 11.9, ratio: 1.468 },
+  { x: 41.84, y: 77.28, w: 14.24, h: 5.26, ratio: 1.412 },
+  { x: 62.02, y: 78.52, w: 37.39, h: 10.51, ratio: 1.853 },
+  { x: 0.0, y: 85.16, w: 18.4, h: 7.73, ratio: 1.24 },
+  { x: 39.76, y: 85.16, w: 16.32, h: 5.87, ratio: 1.447 },
+  { x: 24.33, y: 86.55, w: 10.09, h: 6.34, ratio: 0.829 },
+  { x: 77.45, y: 91.04, w: 14.24, h: 5.26, ratio: 1.412 },
+  { x: 45.1, y: 92.58, w: 22.85, h: 7.42, ratio: 1.604 },
+  { x: 11.87, y: 95.21, w: 21.66, h: 4.79, ratio: 2.355 },
 ];
 
-// Station 2 (25 items): Interlocking 6-col x 8-row Mondrian Bento layout
-// Mathematical occupancy: 2*(4) + 11*(2) + 6*(2) + 6*(1) = 8 + 22 + 12 + 6 = 48 cells (0 empty, 0 collisions)
-const S2_SLOTS: SlotConfig[] = [
-  // Tier 1: Rows 1-2 (12 cells, 6 items)
-  { row: 1, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 2, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 1, col: 3, colSpan: 2, rowSpan: 2, variant: "2x2" },
-  { row: 1, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 1, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 2, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-
-  // Tier 2: Rows 3-4 (12 cells, 6 items)
-  { row: 3, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 3, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 4, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 3, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 4, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 3, col: 5, colSpan: 2, rowSpan: 2, variant: "2x2" },
-
-  // Tier 3: Rows 5-6 (12 cells, 6 items)
-  { row: 5, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 5, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 6, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 5, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 6, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 5, col: 6, colSpan: 1, rowSpan: 2, variant: "1x2" },
-
-  // Tier 4: Rows 7-8 (12 cells, 7 items)
-  { row: 7, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 8, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 7, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 7, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 8, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 7, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 8, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
+// Station 2 (25 slots) - extracted directly from user Figma mockup
+// Matches Station 2 items: 6 portraits, 1 square, 18 landscapes (height/width aspect ~1.77)
+const S2_SLOTS: MockupSlot[] = [
+  { x: 70.49, y: 0.0, w: 20.49, h: 14.53, ratio: 0.798 },
+  { x: 0.0, y: 1.08, w: 33.61, h: 12.06, ratio: 1.577 },
+  { x: 39.89, y: 7.88, w: 20.49, h: 7.42, ratio: 1.562 },
+  { x: 10.66, y: 15.46, w: 20.77, h: 8.5, ratio: 1.382 },
+  { x: 70.49, y: 17.77, w: 27.05, h: 10.66, ratio: 1.435 },
+  { x: 39.89, y: 19.17, w: 25.96, h: 11.59, ratio: 1.267 },
+  { x: 10.11, y: 27.2, w: 17.21, h: 7.57, ratio: 1.286 },
+  { x: 29.78, y: 33.69, w: 32.24, h: 11.9, ratio: 1.532 },
+  { x: 70.49, y: 33.69, w: 24.32, h: 10.82, ratio: 1.271 },
+  { x: 5.19, y: 39.1, w: 14.48, h: 11.75, ratio: 0.697 },
+  { x: 82.79, y: 48.53, w: 17.21, h: 15.15, ratio: 0.643 },
+  { x: 29.51, y: 49.77, w: 30.87, h: 8.81, ratio: 1.982 },
+  { x: 70.49, y: 51.31, w: 9.29, h: 6.34, ratio: 0.829 },
+  { x: 10.66, y: 52.09, w: 9.02, h: 6.34, ratio: 0.805 },
+  { x: 43.44, y: 61.51, w: 27.32, h: 10.97, ratio: 1.408 },
+  { x: 10.66, y: 64.45, w: 18.85, h: 8.04, ratio: 1.327 },
+  { x: 78.14, y: 67.85, w: 19.4, h: 7.73, ratio: 1.42 },
+  { x: 5.19, y: 75.58, w: 14.48, h: 6.96, ratio: 1.178 },
+  { x: 46.99, y: 76.51, w: 13.39, h: 5.26, ratio: 1.441 },
+  { x: 27.87, y: 77.28, w: 12.3, h: 10.97, ratio: 0.634 },
+  { x: 65.85, y: 77.74, w: 34.15, h: 10.51, ratio: 1.838 },
+  { x: 45.08, y: 84.39, w: 15.3, h: 5.87, ratio: 1.474 },
+  { x: 76.5, y: 92.43, w: 21.04, h: 7.57, ratio: 1.571 },
+  { x: 0.55, y: 93.04, w: 14.48, h: 5.87, ratio: 1.395 },
+  { x: 19.67, y: 93.82, w: 20.49, h: 6.18, ratio: 1.875 },
 ];
 
-// Station 3 (25 items): Interlocking 6-col x 8-row Mondrian Bento layout
-// Mathematical occupancy: 2*(4) + 11*(2) + 6*(2) + 6*(1) = 8 + 22 + 12 + 6 = 48 cells (0 empty, 0 collisions)
-const S3_SLOTS: SlotConfig[] = [
-  // Tier 1: Rows 1-2 (12 cells, 6 items)
-  { row: 1, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 1, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 2, col: 2, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 1, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 2, col: 4, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 1, col: 5, colSpan: 2, rowSpan: 2, variant: "2x2" },
-
-  // Tier 2: Rows 3-4 (12 cells, 6 items)
-  { row: 3, col: 1, colSpan: 2, rowSpan: 2, variant: "2x2" },
-  { row: 3, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 4, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 3, col: 5, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 3, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 4, col: 6, colSpan: 1, rowSpan: 1, variant: "1x1" },
-
-  // Tier 3: Rows 5-6 (12 cells, 7 items)
-  { row: 5, col: 1, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 5, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 6, col: 2, colSpan: 1, rowSpan: 1, variant: "1x1" },
-  { row: 5, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 6, col: 3, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 5, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 6, col: 5, colSpan: 2, rowSpan: 1, variant: "2x1" },
-
-  // Tier 4: Rows 7-8 (12 cells, 6 items)
-  { row: 7, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 8, col: 1, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 7, col: 3, colSpan: 1, rowSpan: 2, variant: "1x2" },
-  { row: 7, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 8, col: 4, colSpan: 2, rowSpan: 1, variant: "2x1" },
-  { row: 7, col: 6, colSpan: 1, rowSpan: 2, variant: "1x2" },
+// Station 3 (25 slots) - extracted directly from user Figma mockup
+// Matches Station 3 items: 6 portraits, 0 squares, 19 landscapes (height/width aspect ~1.80)
+const S3_SLOTS: MockupSlot[] = [
+  { x: 48.06, y: 0.0, w: 12.5, h: 5.26, ratio: 1.324 },
+  { x: 5.56, y: 2.01, w: 37.22, h: 14.99, ratio: 1.381 },
+  { x: 68.33, y: 2.63, w: 20.83, h: 14.99, ratio: 0.773 },
+  { x: 48.06, y: 8.66, w: 15.28, h: 5.87, ratio: 1.447 },
+  { x: 16.67, y: 19.17, w: 23.06, h: 11.59, ratio: 1.107 },
+  { x: 47.78, y: 20.4, w: 15.28, h: 11.59, ratio: 0.733 },
+  { x: 68.61, y: 21.17, w: 31.39, h: 11.75, ratio: 1.487 },
+  { x: 27.22, y: 35.39, w: 28.89, h: 10.97, ratio: 1.465 },
+  { x: 68.61, y: 35.39, w: 19.72, h: 11.75, ratio: 0.934 },
+  { x: 5.56, y: 46.21, w: 17.22, h: 11.59, ratio: 0.827 },
+  { x: 26.94, y: 48.53, w: 25.0, h: 9.58, ratio: 1.452 },
+  { x: 78.06, y: 49.3, w: 21.94, h: 15.61, ratio: 0.782 },
+  { x: 58.61, y: 51.78, w: 14.44, h: 6.34, ratio: 1.268 },
+  { x: 16.39, y: 61.98, w: 21.39, h: 7.57, ratio: 1.571 },
+  { x: 48.06, y: 62.29, w: 28.06, h: 10.97, ratio: 1.423 },
+  { x: 82.5, y: 70.79, w: 17.5, h: 6.49, ratio: 1.5 },
+  { x: 0.0, y: 71.25, w: 31.67, h: 11.9, ratio: 1.481 },
+  { x: 37.5, y: 75.89, w: 13.33, h: 5.26, ratio: 1.412 },
+  { x: 63.89, y: 79.44, w: 36.11, h: 10.82, ratio: 1.857 },
+  { x: 5.56, y: 85.16, w: 17.22, h: 7.73, ratio: 1.24 },
+  { x: 42.78, y: 85.16, w: 15.56, h: 5.87, ratio: 1.474 },
+  { x: 28.61, y: 86.55, w: 9.17, h: 6.34, ratio: 0.805 },
+  { x: 78.06, y: 92.43, w: 13.33, h: 5.26, ratio: 1.412 },
+  { x: 48.06, y: 92.58, w: 21.39, h: 7.42, ratio: 1.604 },
+  { x: 16.67, y: 95.21, w: 20.56, h: 4.79, ratio: 2.387 },
 ];
 
 /**
  * Dynamic Bento packing algorithm for filtered views with fewer items (< 18).
- * Ensures zero overflow, tight packing across 4 columns, and strict adherence to the 4 variants.
+ * Ensures zero overflow, tight packing across 6 columns, and strict adherence to the 4 variants.
  */
 function packDynamicBento(
   items: ArchiveItem[],
@@ -274,10 +261,13 @@ function packDynamicBento(
 
   let maxRow = 1;
   for (const p of placements) {
-    maxRow = Math.max(maxRow, p.row + p.rowSpan - 1);
+    if (p.row && p.rowSpan) {
+      maxRow = Math.max(maxRow, p.row + p.rowSpan - 1);
+    }
   }
 
   return {
+    isMockupLayout: false,
     cols,
     rows: maxRow,
     rowTemplate: `repeat(${maxRow}, clamp(85px, 10vh, 120px))`,
@@ -286,113 +276,60 @@ function packDynamicBento(
 }
 
 /**
- * Builds a strict Mondrian Bento interlocking grid for a portion:
- * - Exactly 4 standardized variants: 1x1, 2x1, 1x2, 2x2.
- * - Perfectly interlocking with 0 empty gaps and shared aligned edges.
- * - Assigns items by orientation to best-fitting variants.
+ * Builds the exact layout from the user's Figma mockup (Screenshot 2026-11-18 alle 17.31.01.png).
+ * Adapts case studies by assigning each item to the slot with the closest natural aspect ratio.
  */
-function packMondrianPortion(
+function packMockupPortion(
   portionItems: ArchiveItem[],
+  slots: MockupSlot[],
   ratiosMap: Record<string, { w: number; h: number; ratio: number }>,
-  portionIndex: number
+  aspectHeightRatio: number
 ): PortionData {
-  const count = portionItems.length;
-  if (count === 0) {
-    return { cols: 1, rows: 1, rowTemplate: "1fr", placements: [] };
+  if (portionItems.length === 0) {
+    return {
+      isMockupLayout: true,
+      aspectHeightRatio,
+      placements: [],
+    };
   }
 
-  // Full-archive mode: 6 columns x 8 rows
-  if (count >= 18) {
-    const cols = 6;
-    const rows = 8;
-    const rowTemplate = "repeat(8, clamp(85px, 10vh, 120px))";
+  // Sort items by natural aspect ratio ascending
+  const itemsSorted = [...portionItems].sort((a, b) => {
+    const rA = ratiosMap[a.id]?.ratio || a.aspectRatio || 1.33;
+    const rB = ratiosMap[b.id]?.ratio || b.aspectRatio || 1.33;
+    return rA - rB;
+  });
 
-    let slots: SlotConfig[] = [];
-    if (portionIndex === 0) {
-      slots = S1_SLOTS;
-    } else if (portionIndex === 1) {
-      slots = S2_SLOTS;
-    } else {
-      slots = S3_SLOTS;
-    }
+  // Sort slots by target slot ratio ascending
+  const slotsSorted = [...slots].sort((a, b) => a.ratio - b.ratio);
 
-    // Classify items by aspect ratio
-    const landscapes = portionItems.filter(
-      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.25
-    );
-    const portraits = portionItems.filter(
-      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) < 0.95
-    );
-    const squares = portionItems.filter(
-      (it) => !landscapes.includes(it) && !portraits.includes(it)
-    );
-
-    // Group slots by variant
-    const slots2x2 = slots.filter((s) => s.variant === "2x2");
-    const slots1x2 = slots.filter((s) => s.variant === "1x2");
-    const slots2x1 = slots.filter((s) => s.variant === "2x1");
-    const slots1x1 = slots.filter((s) => s.variant === "1x1");
-
-    // Pools of available items prioritizing natural aspect ratio fit
-    const pool2x2 = [...squares, ...landscapes, ...portraits];
-    const pool1x2 = [...portraits, ...squares, ...landscapes];
-    const pool2x1 = [...landscapes, ...squares, ...portraits];
-    const pool1x1 = [...squares, ...portraits, ...landscapes];
-
-    const usedIds = new Set<string>();
-    const assignments = new Map<SlotConfig, ArchiveItem>();
-
-    function pickFromPool(pool: ArchiveItem[]): ArchiveItem {
-      for (const item of pool) {
-        if (!usedIds.has(item.id)) {
-          usedIds.add(item.id);
-          return item;
-        }
-      }
-      for (const item of portionItems) {
-        if (!usedIds.has(item.id)) {
-          usedIds.add(item.id);
-          return item;
-        }
-      }
-      return portionItems[0];
-    }
-
-    // 1. Assign 2x2 hero slots
-    for (const s of slots2x2) assignments.set(s, pickFromPool(pool2x2));
-    // 2. Assign 1x2 vertical slots
-    for (const s of slots1x2) assignments.set(s, pickFromPool(pool1x2));
-    // 3. Assign 2x1 horizontal slots
-    for (const s of slots2x1) assignments.set(s, pickFromPool(pool2x1));
-    // 4. Assign 1x1 square slots
-    for (const s of slots1x1) assignments.set(s, pickFromPool(pool1x1));
-
-    const placements: PortionPlacement[] = [];
-    for (const s of slots) {
-      const it = assignments.get(s) || portionItems[0];
-      placements.push({
-        item: it,
-        row: s.row,
-        col: s.col,
-        colSpan: s.colSpan,
-        rowSpan: s.rowSpan,
-        variant: s.variant,
-      });
-    }
-
-    return { cols, rows, rowTemplate, placements };
+  const placements: PortionPlacement[] = [];
+  for (let i = 0; i < slotsSorted.length; i++) {
+    const slot = slotsSorted[i];
+    const item = itemsSorted[i] || portionItems[i % portionItems.length];
+    placements.push({
+      item,
+      x: slot.x,
+      y: slot.y,
+      w: slot.w,
+      h: slot.h,
+      ratio: slot.ratio,
+    });
   }
 
-  // Filtered mode (< 18 items)
-  return packDynamicBento(portionItems, ratiosMap);
+  return {
+    isMockupLayout: true,
+    aspectHeightRatio,
+    placements,
+  };
 }
 
 /**
  * Computes deterministic 3-portion layout for the exhibition media wall:
- * - Station 1 (Left): 26 items
- * - Station 2 (Center): 25 items
- * - Station 3 (Right): 25 items
- * Total: 76 cases across 3 stations, interlocking with constant 16px gap.
+ * - Station 1 (Left): 26 items (Casi 001 - 026) -> S1_SLOTS
+ * - Station 2 (Center): 25 items (Casi 027 - 051) -> S2_SLOTS
+ * - Station 3 (Right): 25 items (Casi 052 - 076) -> S3_SLOTS
+ * Total: 76 cases across 3 physical stations, matching Figma mockup layout.
  */
 function getThreePortionsLayout(
   displayItems: ArchiveItem[],
@@ -410,9 +347,9 @@ function getThreePortionsLayout(
     const p3Items = displayItems.slice(51, 76);
 
     return {
-      portion1: packMondrianPortion(p1Items, ratiosMap, 0),
-      portion2: packMondrianPortion(p2Items, ratiosMap, 1),
-      portion3: packMondrianPortion(p3Items, ratiosMap, 2),
+      portion1: packMockupPortion(p1Items, S1_SLOTS, ratiosMap, 1.92),
+      portion2: packMockupPortion(p2Items, S2_SLOTS, ratiosMap, 1.77),
+      portion3: packMockupPortion(p3Items, S3_SLOTS, ratiosMap, 1.80),
     };
   }
 
@@ -428,9 +365,9 @@ function getThreePortionsLayout(
   });
 
   return {
-    portion1: packMondrianPortion(p1Items, ratiosMap, 0),
-    portion2: packMondrianPortion(p2Items, ratiosMap, 1),
-    portion3: packMondrianPortion(p3Items, ratiosMap, 2),
+    portion1: packDynamicBento(p1Items, ratiosMap),
+    portion2: packDynamicBento(p2Items, ratiosMap),
+    portion3: packDynamicBento(p3Items, ratiosMap),
   };
 }
 
@@ -439,11 +376,8 @@ interface MacroTileProps {
   isActive: boolean;
   isHovered: boolean;
   isFilterOpen: boolean;
-  row: number;
-  col: number;
-  colSpan: number;
-  rowSpan: number;
-  variant: BentoVariant;
+  placement: PortionPlacement;
+  isMockupLayout: boolean;
   isClone?: boolean;
   onSelect: (item: ArchiveItem) => void;
   onHover: (item: ArchiveItem | null) => void;
@@ -454,17 +388,27 @@ const MacroTile = React.memo(function MacroTile({
   isActive,
   isHovered,
   isFilterOpen,
-  row,
-  col,
-  colSpan,
-  rowSpan,
-  variant,
+  placement,
+  isMockupLayout,
   isClone = false,
   onSelect,
   onHover,
 }: MacroTileProps) {
   // Track pointer down coordinate to distinguish drag from tap
   const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
+
+  const style: React.CSSProperties = isMockupLayout
+    ? {
+        position: "absolute",
+        left: `${placement.x}%`,
+        top: `${placement.y}%`,
+        width: `${placement.w}%`,
+        height: `${placement.h}%`,
+      }
+    : {
+        gridRow: `${placement.row} / span ${placement.rowSpan}`,
+        gridColumn: `${placement.col} / span ${placement.colSpan}`,
+      };
 
   return (
     <div
@@ -495,13 +439,10 @@ const MacroTile = React.memo(function MacroTile({
       }}
       onMouseEnter={() => onHover(item)}
       onMouseLeave={() => onHover(null)}
-      style={{
-        gridRow: `${row} / span ${rowSpan}`,
-        gridColumn: `${col} / span ${colSpan}`,
-      }}
-      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 relative group select-none ${
-        isHovered ? "z-30" : "z-10"
-      }`}
+      style={style}
+      className={`pointer-events-auto min-h-0 min-w-0 select-none group ${
+        isMockupLayout ? "" : "w-full h-full relative"
+      } ${isHovered ? "z-30" : "z-10"}`}
     >
       <motion.div
         layoutId={isClone ? undefined : `item-media-${item.id}`}
@@ -517,19 +458,21 @@ const MacroTile = React.memo(function MacroTile({
             : "shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
         }`}
       >
-        {/* 1. PHOTO - edge-to-edge cover */}
+        {/* 1. PHOTO - fully uncropped, scaled to preserve natural proportions */}
         {item.type === "photo" && (
-          <img
-            src={item.thumbnailUrl || item.imageUrl || ""}
-            alt={item.title}
-            draggable={false}
-            loading="eager"
-            decoding="async"
-            style={{
-              imageRendering: "-webkit-optimize-contrast",
-            }}
-            className="w-full h-full object-cover block pointer-events-none select-none filter-none"
-          />
+          <div className="w-full h-full flex items-center justify-center p-0.5 sm:p-1 overflow-hidden">
+            <img
+              src={item.thumbnailUrl || item.imageUrl || ""}
+              alt={item.title}
+              draggable={false}
+              loading="eager"
+              decoding="async"
+              style={{
+                imageRendering: "-webkit-optimize-contrast",
+              }}
+              className="max-w-full max-h-full w-auto h-auto object-contain block pointer-events-none select-none filter-none"
+            />
+          </div>
         )}
 
         {/* 2. AUDIO */}
@@ -632,20 +575,40 @@ function StationColumn({
   const currentDriftSpeedRef = useRef(0);
   const lastInteractionTimeRef = useRef<number>(performance.now());
 
-  // Measure copy height with ResizeObserver
+  // Measure copy height with ResizeObserver:
+  // For mockup percentage layout: height = containerWidth * aspectHeightRatio (~1.80)
+  // For CSS grid layout: height = copyEl.clientHeight
   useEffect(() => {
-    const el = copyRef.current;
-    if (!el) return;
+    const containerEl = containerRef.current;
+    if (!containerEl) return;
+
     const update = () => {
-      const h = el.clientHeight;
-      if (h > 0) {
-        copyHeightRef.current = h;
-        setCopyHeight(h);
+      if (portion.isMockupLayout) {
+        const w = containerEl.clientWidth;
+        if (w > 0) {
+          const mult = portion.aspectHeightRatio || 1.80;
+          const h = Math.round(w * mult);
+          if (h > 0 && h !== copyHeightRef.current) {
+            copyHeightRef.current = h;
+            setCopyHeight(h);
+          }
+        }
+      } else {
+        const copyEl = copyRef.current;
+        if (copyEl) {
+          const h = copyEl.clientHeight;
+          if (h > 0 && h !== copyHeightRef.current) {
+            copyHeightRef.current = h;
+            setCopyHeight(h);
+          }
+        }
       }
     };
+
     update();
     const ro = new ResizeObserver(update);
-    ro.observe(el);
+    ro.observe(containerEl);
+    if (copyRef.current) ro.observe(copyRef.current);
     return () => ro.disconnect();
   }, [portion]);
 
@@ -849,20 +812,17 @@ function StationColumn({
 
   const renderTilesCopy = (copyIdx: 0 | 1 | 2) => {
     const isClone = copyIdx !== 1;
-    return portion.placements.map((p) => {
+    return portion.placements.map((p, idx) => {
       const isHovered = !isThisModalOpen && hoveredTileItem?.id === p.item.id;
       return (
         <MacroTile
-          key={`c${copyIdx}-${p.item.id}-${p.row}-${p.col}`}
+          key={`c${copyIdx}-${p.item.id}-${idx}`}
           item={p.item}
           isActive={activeItemId === p.item.id}
           isHovered={isHovered}
           isFilterOpen={isFilterOpen}
-          row={p.row}
-          col={p.col}
-          colSpan={p.colSpan}
-          rowSpan={p.rowSpan}
-          variant={p.variant}
+          placement={p}
+          isMockupLayout={portion.isMockupLayout}
           isClone={isClone}
           onSelect={handleSelectTile}
           onHover={(item) => {
@@ -901,51 +861,92 @@ function StationColumn({
           willChange: "transform",
         }}
       >
-        {/* Copy 0: clone above */}
-        <div
-          style={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
-            gridTemplateRows: portion.rowTemplate,
-            gap: "16px",
-            flexShrink: 0,
-          }}
-          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
-        >
-          {renderTilesCopy(0)}
-        </div>
+        {portion.isMockupLayout ? (
+          <>
+            {/* Copy 0: clone above */}
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: `${copyHeight}px`,
+                flexShrink: 0,
+              }}
+            >
+              {renderTilesCopy(0)}
+            </div>
 
-        {/* Copy 1: original center */}
-        <div
-          ref={copyRef}
-          style={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
-            gridTemplateRows: portion.rowTemplate,
-            gap: "16px",
-            flexShrink: 0,
-          }}
-          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
-        >
-          {renderTilesCopy(1)}
-        </div>
+            {/* Copy 1: original center */}
+            <div
+              ref={copyRef}
+              style={{
+                position: "relative",
+                width: "100%",
+                height: `${copyHeight}px`,
+                flexShrink: 0,
+              }}
+            >
+              {renderTilesCopy(1)}
+            </div>
 
-        {/* Copy 2: clone below */}
-        <div
-          style={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
-            gridTemplateRows: portion.rowTemplate,
-            gap: "16px",
-            flexShrink: 0,
-          }}
-          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
-        >
-          {renderTilesCopy(2)}
-        </div>
+            {/* Copy 2: clone below */}
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: `${copyHeight}px`,
+                flexShrink: 0,
+              }}
+            >
+              {renderTilesCopy(2)}
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Dynamic Bento CSS Grid for filtered mode */}
+            <div
+              style={{
+                width: "100%",
+                display: "grid",
+                gridTemplateColumns: `repeat(${portion.cols || 6}, minmax(0, 1fr))`,
+                gridTemplateRows: portion.rowTemplate,
+                gap: "16px",
+                flexShrink: 0,
+              }}
+              className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
+            >
+              {renderTilesCopy(0)}
+            </div>
+
+            <div
+              ref={copyRef}
+              style={{
+                width: "100%",
+                display: "grid",
+                gridTemplateColumns: `repeat(${portion.cols || 6}, minmax(0, 1fr))`,
+                gridTemplateRows: portion.rowTemplate,
+                gap: "16px",
+                flexShrink: 0,
+              }}
+              className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
+            >
+              {renderTilesCopy(1)}
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                display: "grid",
+                gridTemplateColumns: `repeat(${portion.cols || 6}, minmax(0, 1fr))`,
+                gridTemplateRows: portion.rowTemplate,
+                gap: "16px",
+                flexShrink: 0,
+              }}
+              className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
+            >
+              {renderTilesCopy(2)}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Station Modal: strictly bounded inside this Station, scaled down with generous breathing room */}
