@@ -57,8 +57,9 @@ interface PortionPlacement {
   row: number;
   col: number;
   colSpan: number;
-  rowSpan: number;
-  role?: string;
+  staggerX: number;
+  staggerY: number;
+  sizeTier: SizeTier;
 }
 
 interface PortionData {
@@ -72,212 +73,274 @@ interface SlotConfig {
   row: number;
   col: number;
   colSpan: number;
-  rowSpan: number;
-  role?: string;
-  id: string;
+  sizeTier: SizeTier;
+  staggerX: number;
+  staggerY: number;
 }
 
-// Station 1 (26 items): Left station of museum installation, staggered top-left contour matching griglia2.jpg
-const S1_SLOTS: SlotConfig[] = [
-  // Row 1: Col 1 empty (stepped!), Col 2-3 single
-  { row: 1, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-004" },
-  { row: 1, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-005" },
+// Portion 1 (26 items): Organic 4-column x 7-row layout with 2 hero 2-col spans + 24 single slots
+const P1_SLOTS: SlotConfig[] = [
+  // Row 1: Hero landscape (cols 1-2, Large) + 2 Medium items
+  { row: 1, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 
-  // Row 2: Col 1 single, Col 2-3 Hero Wide
-  { row: 2, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-006" },
-  { row: 2, col: 2, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-001" },
+  // Row 2: 4 items (Medium, Small, Medium, Medium)
+  { row: 2, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 2, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 2, staggerY: 1 },
 
-  // Row 3: Col 1 Tall (rows 3-4), Col 2 audio card, Col 3 manuscript text card
-  { row: 3, col: 1, colSpan: 1, rowSpan: 2, role: "tall", id: "caso-002" },
-  { row: 3, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-019" },
-  { row: 3, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-020" },
+  // Row 3: 4 items (Small, Medium, Medium, Small)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
 
-  // Row 4: Col 1 is taken by row 3 tall. Col 2-3 singles
-  { row: 4, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-011" },
-  { row: 4, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-012" },
+  // Row 4: 3 items (Medium, Small, Hero landscape cols 3-4 Large)
+  { row: 4, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 4, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
 
-  // Row 5: 3 singles
-  { row: 5, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-013" },
-  { row: 5, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-014" },
-  { row: 5, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-015" },
+  // Row 5: 4 items (Medium, Medium, Medium, Medium)
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 
-  // Row 6: Col 1-2 Hero Wide, Col 3 Tall (rows 6-7)
-  { row: 6, col: 1, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-010" },
-  { row: 6, col: 3, colSpan: 1, rowSpan: 2, role: "tall", id: "caso-007" },
+  // Row 6: 4 items (Medium, Medium, Small, Medium)
+  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 6, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 6, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
 
-  // Row 7: Col 1-2 singles (Col 3 taken)
-  { row: 7, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-017" },
-  { row: 7, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-018" },
-
-  // Row 8: 3 singles
-  { row: 8, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-021" },
-  { row: 8, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-023" },
-  { row: 8, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-024" },
-
-  // Row 9: Col 1 Tall (rows 9-10), Col 2-3 Hero Wide
-  { row: 9, col: 1, colSpan: 1, rowSpan: 2, role: "tall", id: "caso-008" },
-  { row: 9, col: 2, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-016" },
-
-  // Row 10: Col 2-3 singles (Col 1 taken)
-  { row: 10, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-025" },
-  { row: 10, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-026" },
-
-  // Row 11: 3 singles
-  { row: 11, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-027" },
-  { row: 11, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-028" },
-  { row: 11, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-029" },
+  // Row 7: 4 items (Small, Medium, Medium, Medium)
+  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 1 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 ];
 
-// Station 2 (25 items): Center station with iconic Grand Hero 2x2 centerpiece and stepped center silhouette matching griglia2.jpg
-const S2_SLOTS: SlotConfig[] = [
-  // Row 1: 3 singles
-  { row: 1, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-032" },
-  { row: 1, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-033" },
-  { row: 1, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-036" },
+// Portion 2 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
+const P2_SLOTS: SlotConfig[] = [
+  // Row 1: 4 items (Medium, Small, Medium, Medium)
+  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 1, col: 2, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 1, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 1, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
 
-  // Row 2: Col 1 audio card, Col 2-3 Grand Hero 2x2 centerpiece (Van Gogh inspired focal screen!)
-  { row: 2, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-037" },
-  { row: 2, col: 2, colSpan: 2, rowSpan: 2, role: "hero2x2", id: "caso-022" },
+  // Row 2: 3 items (Hero landscape cols 1-2 Large, Small, Medium)
+  { row: 2, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
 
-  // Row 3: Col 1 manuscript text card (Cols 2-3 taken by Grand Hero)
-  { row: 3, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-038" },
+  // Row 3: 4 items (Medium, Medium, Medium, Small)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
 
-  // Row 4: 3 singles
-  { row: 4, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-039" },
-  { row: 4, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-040" },
-  { row: 4, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-041" },
+  // Row 4: 3 items (Small, Medium, Hero landscape cols 3-4 Large)
+  { row: 4, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 4, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 4, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
 
-  // Row 5: Col 1-2 Hero Wide, Col 3 single
-  { row: 5, col: 1, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-030" },
-  { row: 5, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-043" },
+  // Row 5: 4 items (Medium, Medium, Small, Medium)
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
 
-  // Row 6: Col 1 Tall (rows 6-7), Col 2-3 Hero Wide
-  { row: 6, col: 1, colSpan: 1, rowSpan: 2, role: "tall", id: "caso-031" },
-  { row: 6, col: 2, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-034" },
+  // Row 6: 3 items (Hero landscape cols 1-2 Large, Medium, Medium)
+  { row: 6, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 6, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
 
-  // Row 7: Col 2-3 singles (Col 1 taken)
-  { row: 7, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-044" },
-  { row: 7, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-045" },
-
-  // Row 8: 3 singles
-  { row: 8, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-046" },
-  { row: 8, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-047" },
-  { row: 8, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-048" },
-
-  // Row 9: Col 1-2 Hero Wide, Col 3 Tall (rows 9-10)
-  { row: 9, col: 1, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-042" },
-  { row: 9, col: 3, colSpan: 1, rowSpan: 2, role: "tall", id: "caso-035" },
-
-  // Row 10: Col 1-2 singles (Col 3 taken)
-  { row: 10, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-049" },
-  { row: 10, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-050" },
-
-  // Row 11: 3 singles
-  { row: 11, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-051" },
-  { row: 11, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-052" },
-  { row: 11, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-053" },
+  // Row 7: 4 items (Medium, Small, Medium, Medium)
+  { row: 7, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 ];
 
-// Station 3 (25 items): Right station with wide cinematic landscape panels and stepped edges matching griglia2.jpg
-const S3_SLOTS: SlotConfig[] = [
-  // Row 1: Col 1 empty (stepped!), Col 2-3 Hero Wide
-  { row: 1, col: 2, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-070" },
+// Portion 3 (25 items): Organic 4-column x 7-row layout with 3 hero 2-col spans + 22 single slots
+const P3_SLOTS: SlotConfig[] = [
+  // Row 1: 3 items (Medium, Medium, Hero landscape cols 3-4 Large)
+  { row: 1, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 1, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 2 },
+  { row: 1, col: 3, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
 
-  // Row 2: Col 1 audio, Col 2 manuscript text, Col 3 single
-  { row: 2, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-055" },
-  { row: 2, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-056" },
-  { row: 2, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-058" },
+  // Row 2: 4 items (Small, Medium, Medium, Small)
+  { row: 2, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 2, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 2, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 2, col: 4, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: -2 },
 
-  // Row 3: Col 1-2 Hero Wide (Kintsugi), Col 3 single
-  { row: 3, col: 1, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-003" },
-  { row: 3, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-059" },
+  // Row 3: 4 items (Medium, Medium, Small, Medium)
+  { row: 3, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -2 },
+  { row: 3, col: 2, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 3, col: 3, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 3, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
 
-  // Row 4: Col 1-2 singles, Col 3 Tall (rows 4-5)
-  { row: 4, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-060" },
-  { row: 4, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-061" },
-  { row: 4, col: 3, colSpan: 1, rowSpan: 2, role: "tall", id: "caso-054" },
+  // Row 4: 3 items (Hero landscape cols 1-2 Large, Medium, Small)
+  { row: 4, col: 1, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 4, col: 3, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 4, col: 4, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
 
-  // Row 5: Col 1-2 singles (Col 3 taken)
-  { row: 5, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-062" },
-  { row: 5, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-063" },
+  // Row 5: 4 items (Medium, Small, Medium, Medium)
+  { row: 5, col: 1, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 5, col: 2, colSpan: 1, sizeTier: "small", staggerX: -1, staggerY: 2 },
+  { row: 5, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: -1 },
+  { row: 5, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 
-  // Row 6: 3 singles
-  { row: 6, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-065" },
-  { row: 6, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-066" },
-  { row: 6, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-067" },
+  // Row 6: 3 items (Medium, Hero landscape cols 2-3 Large, Medium)
+  { row: 6, col: 1, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 6, col: 2, colSpan: 2, sizeTier: "large", staggerX: 0, staggerY: 0 },
+  { row: 6, col: 4, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
 
-  // Row 7: Col 1 Tall (rows 7-8), Col 2-3 Hero Wide
-  { row: 7, col: 1, colSpan: 1, rowSpan: 2, role: "tall", id: "caso-068" },
-  { row: 7, col: 2, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-064" },
-
-  // Row 8: Col 2-3 singles (Col 1 taken)
-  { row: 8, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-069" },
-  { row: 8, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-071" },
-
-  // Row 9: Col 1-2 Hero Wide, Col 3 single
-  { row: 9, col: 1, colSpan: 2, rowSpan: 1, role: "wide", id: "caso-057" },
-  { row: 9, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-009" },
-
-  // Row 10: 3 singles
-  { row: 10, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-169" },
-  { row: 10, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-172" },
-  { row: 10, col: 3, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-171" },
-
-  // Row 11: Col 1-2 singles, Col 3 empty (stepped bottom!)
-  { row: 11, col: 1, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-159" },
-  { row: 11, col: 2, colSpan: 1, rowSpan: 1, role: "mid", id: "caso-168" },
+  // Row 7: 4 items (Small, Medium, Medium, Medium)
+  { row: 7, col: 1, colSpan: 1, sizeTier: "small", staggerX: 1, staggerY: 2 },
+  { row: 7, col: 2, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
+  { row: 7, col: 3, colSpan: 1, sizeTier: "medium", staggerX: 1, staggerY: 1 },
+  { row: 7, col: 4, colSpan: 1, sizeTier: "medium", staggerX: -1, staggerY: -1 },
 ];
 
-function packFilteredPortion(
+/**
+ * Builds an organic, semi-random, and harmoniously scaled distribution for a portion:
+ * - Exactly 3 sizes across the entire wall (Large, Medium, Small).
+ * - Artworks of the same shape/orientation share a common dimension (height).
+ * - Original aspect ratios are strictly preserved without cropping or stretching.
+ * - Dynamic placement with subtle organic staggers creates a modern museum gallery aesthetic.
+ */
+function packHomogeneousPortion(
   portionItems: ArchiveItem[],
-  ratiosMap: Record<string, { w: number; h: number; ratio: number }>
+  ratiosMap: Record<string, { w: number; h: number; ratio: number }>,
+  portionIndex: number
 ): PortionData {
   const count = portionItems.length;
   if (count === 0) {
-    return {
-      cols: 3,
-      rows: 1,
-      rowTemplate: "clamp(135px, 16vh, 185px)",
-      placements: [],
-    };
+    return { cols: 1, rows: 1, rowTemplate: "1fr", placements: [] };
   }
 
-  const cols = 3;
+  // Full-archive mode: 4 columns x 7 rows
+  if (count >= 18) {
+    const cols = 4;
+    const rows = 7;
+    // Balanced row template matching homee.png visual cadence:
+    // Row 1 (1.22fr) & Row 4 (1.12fr) for hero landscape anchors, remaining rows (~0.98fr) for calm rhythm
+    const rowTemplate = "1.22fr 1.02fr 0.96fr 1.12fr 0.96fr 0.98fr 0.96fr";
+
+    let slots: SlotConfig[] = [];
+    if (portionIndex === 0) {
+      slots = P1_SLOTS;
+    } else if (portionIndex === 1) {
+      slots = P2_SLOTS;
+    } else {
+      slots = P3_SLOTS;
+    }
+
+    // Separate items by format
+    const wideHeroes = portionItems.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) >= 1.45
+    );
+    const portraits = portionItems.filter(
+      (it) => (ratiosMap[it.id]?.ratio || it.aspectRatio || 1.33) < 0.95
+    );
+    const others = portionItems.filter(
+      (it) => !wideHeroes.includes(it) && !portraits.includes(it)
+    );
+
+    // Slots needing 2-column span heroes
+    const heroSlots = slots.filter((s) => s.colSpan === 2);
+    const singleSlots = slots.filter((s) => s.colSpan === 1);
+
+    // Assign hero slots to wide landscapes
+    let wideHeroIdx = 0;
+    const heroAssignments: { slot: SlotConfig; item: ArchiveItem }[] = [];
+    for (const s of heroSlots) {
+      const it = wideHeroes[wideHeroIdx++] || others.pop() || portionItems[0];
+      heroAssignments.push({ slot: s, item: it });
+    }
+
+    // Remaining items to distribute across single slots
+    const remainingWide = wideHeroes.slice(wideHeroIdx);
+    const remainingItems = [...portraits, ...others, ...remainingWide];
+
+    const placements: PortionPlacement[] = [];
+
+    // Add hero placements
+    for (const ha of heroAssignments) {
+      placements.push({
+        item: ha.item,
+        row: ha.slot.row,
+        col: ha.slot.col,
+        colSpan: ha.slot.colSpan,
+        staggerX: ha.slot.staggerX,
+        staggerY: ha.slot.staggerY,
+        sizeTier: ha.slot.sizeTier,
+      });
+    }
+
+    // Add single slots placements
+    let remIdx = 0;
+    for (const s of singleSlots) {
+      if (remIdx < remainingItems.length) {
+        const it = remainingItems[remIdx++];
+        placements.push({
+          item: it,
+          row: s.row,
+          col: s.col,
+          colSpan: s.colSpan,
+          staggerX: s.staggerX,
+          staggerY: s.staggerY,
+          sizeTier: s.sizeTier,
+        });
+      }
+    }
+
+    return { cols, rows, rowTemplate, placements };
+  }
+
+  // Filtered mode with fewer items per portion (1 to 17 items)
+  const cols = Math.max(1, Math.min(3, Math.ceil(Math.sqrt(count * 1.2))));
+  const rows = Math.ceil(count / cols);
   const placements: PortionPlacement[] = [];
-  let curRow = 1;
-  let curCol = 1;
 
   for (let i = 0; i < count; i++) {
-    const item = portionItems[i];
-    const r = ratiosMap[item.id]?.ratio || item.aspectRatio || 1.33;
-    const isWide = r >= 1.5 && curCol <= 2;
-    const isTall = r <= 0.85;
-
-    const colSpan = isWide ? 2 : 1;
-    const rowSpan = isTall ? 2 : 1;
+    const col = (i % cols) + 1;
+    const row = Math.floor(i / cols) + 1;
+    const staggerY = (col + row) % 2 === 0 ? 3 : -3;
+    const staggerX = col % 2 === 0 ? -2 : 2;
+    // Exactly 3 size tiers in a balanced rhythm
+    const sizeTier: SizeTier = i % 5 === 0 ? "large" : i % 3 === 0 ? "small" : "medium";
 
     placements.push({
-      item,
-      row: curRow,
-      col: curCol,
-      colSpan,
-      rowSpan,
-      role: isWide ? "wide" : isTall ? "tall" : "mid",
+      item: portionItems[i],
+      row,
+      col,
+      colSpan: 1,
+      staggerX,
+      staggerY,
+      sizeTier,
     });
-
-    curCol += colSpan;
-    if (curCol > cols) {
-      curCol = 1;
-      curRow += 1;
-    }
   }
 
-  const rows = Math.max(1, curCol === 1 ? curRow - 1 : curRow);
-  const rowTemplate = `repeat(${rows}, clamp(135px, 16vh, 185px))`;
-
-  return { cols, rows, rowTemplate, placements };
+  return {
+    cols,
+    rows,
+    rowTemplate: `repeat(${rows}, minmax(0, 1fr))`,
+    placements,
+  };
 }
 
+/**
+ * Computes deterministic 3-portion layout for the 5m x 3m wall:
+ * - Portion 1 (Left 1/3): 26 items
+ * - Portion 2 (Center 1/3): 25 items
+ * - Portion 3 (Right 1/3): 25 items
+ * Strictly zero items placed across portion boundaries.
+ * Spaced with subtle organic gutters so the wall appears unified and continuous ("non palese").
+ */
 function getThreePortionsLayout(
   displayItems: ArchiveItem[],
   ratiosMap: Record<string, { w: number; h: number; ratio: number }>
@@ -289,42 +352,15 @@ function getThreePortionsLayout(
   const total = displayItems.length;
 
   if (total >= 60) {
-    const itemMap = new Map<string, ArchiveItem>();
-    displayItems.forEach((it) => itemMap.set(it.id, it));
-
-    const p1Placements: PortionPlacement[] = S1_SLOTS.map((s) => ({
-      item: itemMap.get(s.id) || displayItems[0],
-      row: s.row,
-      col: s.col,
-      colSpan: s.colSpan,
-      rowSpan: s.rowSpan,
-      role: s.role,
-    }));
-
-    const p2Placements: PortionPlacement[] = S2_SLOTS.map((s) => ({
-      item: itemMap.get(s.id) || displayItems[0],
-      row: s.row,
-      col: s.col,
-      colSpan: s.colSpan,
-      rowSpan: s.rowSpan,
-      role: s.role,
-    }));
-
-    const p3Placements: PortionPlacement[] = S3_SLOTS.map((s) => ({
-      item: itemMap.get(s.id) || displayItems[0],
-      row: s.row,
-      col: s.col,
-      colSpan: s.colSpan,
-      rowSpan: s.rowSpan,
-      role: s.role,
-    }));
-
-    const rowTemplate = "repeat(11, clamp(135px, 16vh, 185px))";
+    // Exact 76 cases split into 26 + 25 + 25
+    const p1Items = displayItems.slice(0, 26);
+    const p2Items = displayItems.slice(26, 51);
+    const p3Items = displayItems.slice(51, 76);
 
     return {
-      portion1: { cols: 3, rows: 11, rowTemplate, placements: p1Placements },
-      portion2: { cols: 3, rows: 11, rowTemplate, placements: p2Placements },
-      portion3: { cols: 3, rows: 11, rowTemplate, placements: p3Placements },
+      portion1: packHomogeneousPortion(p1Items, ratiosMap, 0),
+      portion2: packHomogeneousPortion(p2Items, ratiosMap, 1),
+      portion3: packHomogeneousPortion(p3Items, ratiosMap, 2),
     };
   }
 
@@ -340,9 +376,9 @@ function getThreePortionsLayout(
   });
 
   return {
-    portion1: packFilteredPortion(p1Items, ratiosMap),
-    portion2: packFilteredPortion(p2Items, ratiosMap),
-    portion3: packFilteredPortion(p3Items, ratiosMap),
+    portion1: packHomogeneousPortion(p1Items, ratiosMap, 0),
+    portion2: packHomogeneousPortion(p2Items, ratiosMap, 1),
+    portion3: packHomogeneousPortion(p3Items, ratiosMap, 2),
   };
 }
 
@@ -354,8 +390,9 @@ interface MacroTileProps {
   row: number;
   col: number;
   colSpan?: number;
-  rowSpan?: number;
-  role?: string;
+  staggerX: number;
+  staggerY: number;
+  sizeTier: SizeTier;
   isClone?: boolean;
   onSelect: (item: ArchiveItem) => void;
   onHover: (item: ArchiveItem | null) => void;
@@ -369,12 +406,22 @@ const MacroTile = React.memo(function MacroTile({
   row,
   col,
   colSpan = 1,
-  rowSpan = 1,
-  role,
+  staggerX,
+  staggerY,
+  sizeTier,
   isClone = false,
   onSelect,
   onHover,
 }: MacroTileProps) {
+  // Retrieve natural pixel dimensions & aspect ratio:
+  const dim = ARCHIVE_ASPECT_RATIOS[item.id] || {
+    w: 100,
+    h: 100,
+    ratio: item.aspectRatio || 1.33,
+  };
+  const orientation = getOrientation(dim.ratio);
+  const targetHeight = TIER_HEIGHTS[sizeTier][orientation];
+
   // Track pointer down coordinate to distinguish drag from tap
   const pointerDownPosRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -408,29 +455,37 @@ const MacroTile = React.memo(function MacroTile({
       onMouseEnter={() => onHover(item)}
       onMouseLeave={() => onHover(null)}
       style={{
-        gridRow: `${row} / span ${rowSpan}`,
+        gridRow: `${row} / span 1`,
         gridColumn: `${col} / span ${colSpan}`,
+        transform: `translate3d(${staggerX}px, ${staggerY}px, 0px)`,
         opacity: 1,
       }}
-      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 cursor-pointer relative group ${
+      className={`pointer-events-auto w-full h-full min-h-0 min-w-0 flex items-center justify-center cursor-pointer relative group ${
         isHovered ? "z-30" : "z-10"
       }`}
     >
       <motion.div
         layoutId={isClone ? undefined : `item-media-${item.id}`}
         animate={{
-          scale: isHovered ? 1.03 : 1,
+          scale: isHovered ? 1.08 : 1,
         }}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        className={`w-full h-full rounded-[6px] overflow-hidden bg-[#161718] transition-all duration-200 cursor-pointer flex items-center justify-center relative border border-black/15 ${
+        style={{
+          aspectRatio: `${dim.w} / ${dim.h}`,
+          height: targetHeight,
+          width: "auto",
+          maxWidth: colSpan > 1 ? "97%" : "95%",
+          maxHeight: "95%",
+        }}
+        className={`w-auto h-auto rounded-none overflow-hidden bg-transparent transition-all duration-200 cursor-pointer flex items-center justify-center border-0 ${
           isHovered
-            ? "shadow-2xl shadow-black/40 ring-1 ring-black/40"
+            ? "shadow-2xl shadow-black/30"
             : isActive
-            ? "shadow-lg shadow-black/25 ring-2 ring-black/60"
-            : "shadow-[0_2px_8px_rgba(0,0,0,0.12)]"
+            ? "shadow-md shadow-black/20"
+            : "shadow-2xs"
         }`}
       >
-        {/* 1. PHOTO - Edge-to-edge coverage filling the modular exhibition screen */}
+        {/* 1. PHOTO - 100% natural shape, NO white borders, edge-to-edge coverage */}
         {item.type === "photo" && (
           <img
             src={item.thumbnailUrl || item.imageUrl || ""}
@@ -447,39 +502,27 @@ const MacroTile = React.memo(function MacroTile({
 
         {/* 2. AUDIO */}
         {item.type === "audio" && (
-          <div className="w-full h-full flex flex-col items-center justify-center p-3 bg-[#1C1E20] text-white select-none">
-            <div className="flex items-center gap-1.5 h-8 w-full justify-center overflow-hidden px-2">
-              {(item.audioWaveform || [40, 70, 90, 50, 80, 100, 60, 40, 75, 55])
-                .slice(0, 10)
+          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#EAEAE5]">
+            <div className="flex items-center gap-1 h-6 w-full justify-center overflow-hidden">
+              {(item.audioWaveform || [40, 70, 90, 50, 80, 100, 60, 40])
+                .slice(0, 8)
                 .map((h, bIdx) => (
                   <div
                     key={bIdx}
-                    style={{ height: `${h * 0.8}%` }}
-                    className="w-1 bg-white/90 rounded-full"
+                    style={{ height: `${h * 0.75}%` }}
+                    className="w-1 bg-black rounded-none"
                   />
                 ))}
             </div>
-            <div className="flex items-center gap-1.5 mt-2 opacity-80">
-              <Volume2 className="w-3.5 h-3.5 text-white" />
-              <span className="font-mono text-[9px] uppercase tracking-widest text-white/90">AUDIO</span>
-            </div>
-            <span className="font-sans text-[10px] text-white/70 tracking-wide mt-0.5 line-clamp-1 px-2 text-center">
-              {item.microKeyword || item.title}
-            </span>
+            <Volume2 className="w-3.5 h-3.5 text-black mt-1 opacity-80" />
           </div>
         )}
 
-        {/* 3. TEXT / MANUSCRIPT */}
+        {/* 3. TEXT / ESSAY */}
         {item.type === "text" && (
-          <div className="w-full h-full p-3.5 flex flex-col justify-between items-center bg-[#F4F3EE] overflow-hidden text-center select-none border border-black/10">
-            <span className="font-sans text-[8.5px] font-bold text-black/50 tracking-widest uppercase">
-              {item.authorOrSubject || "TESTIMONIANZA"}
-            </span>
-            <p className="font-serif italic text-[11px] sm:text-[12px] text-black/85 leading-snug line-clamp-4 px-1 my-auto">
-              &ldquo;{item.excerpt || item.sintesiConcettuale || item.title}&rdquo;
-            </p>
-            <span className="font-mono text-[8px] uppercase tracking-wider text-black/45">
-              {item.microKeyword || item.segno}
+          <div className="w-full h-full p-2 flex flex-col justify-center items-center bg-[#E5E5DE] overflow-hidden text-center select-none">
+            <span className="font-display text-[9px] font-bold text-black tracking-wider uppercase leading-tight line-clamp-2">
+              {item.microKeyword || item.title}
             </span>
           </div>
         )}
@@ -513,15 +556,12 @@ function StationColumn({
 }: StationColumnProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const copyRef = useRef<HTMLDivElement>(null);
-  const copyHeightRef = useRef<number>(1800);
-  const [copyHeight, setCopyHeight] = useState<number>(1800);
+  const heightRef = useRef(0);
+  const [height, setHeight] = useState(0);
 
   const isThisModalOpen = Boolean(stationModal);
 
-  // Staggered initial vertical offset across the 3 stations
-  const initialOffset = portionIndex === 2 ? -60 : portionIndex === 3 ? -30 : 0;
-  const offsetYRef = useRef(initialOffset);
+  const offsetYRef = useRef(0);
   const isDraggingRef = useRef(false);
   const startYRef = useRef(0);
   const lastYRef = useRef(0);
@@ -531,7 +571,7 @@ function StationColumn({
   const hasMovedRef = useRef(false);
 
   // Micro-scorrimento autonomo (Idle Drift):
-  // Velocità ultra-lenta (11-14 px/s) e non invadente, con lieve sfasamento tra le 3 stazioni
+  // Velocità ultra-lenta (11-15 px/s) e non invadente, con lieve sfasamento tra le 3 stazioni
   const targetDriftSpeed = useMemo(() => {
     if (portionIndex === 1) return 11;
     if (portionIndex === 2) return 14;
@@ -541,38 +581,39 @@ function StationColumn({
   const currentDriftSpeedRef = useRef(0);
   const lastInteractionTimeRef = useRef<number>(performance.now());
 
-  const applyTransform = useCallback(() => {
-    if (!trackRef.current) return;
-    const H = copyHeightRef.current > 0 ? copyHeightRef.current : 1800;
-    const cycleHeight = H + 10; // 10px row gap between repeating copies
-    const normY = ((offsetYRef.current % cycleHeight) + cycleHeight) % cycleHeight;
-    const trackY = -cycleHeight + normY;
-
-    trackRef.current.style.transform = `translate3d(0px, ${trackY.toFixed(2)}px, 0px)`;
-  }, []);
-
-  // Measure rendered copy height dynamically with ResizeObserver
+  // Measure container height with ResizeObserver
   useEffect(() => {
-    const el = copyRef.current;
+    const el = containerRef.current;
     if (!el) return;
     const update = () => {
-      const h = el.offsetHeight;
+      const h = el.clientHeight;
       if (h > 0) {
-        copyHeightRef.current = h;
-        setCopyHeight(h);
-        applyTransform();
+        heightRef.current = h;
+        setHeight(h);
       }
     };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [applyTransform]);
+  }, []);
 
-  // Update transform whenever copyHeight changes
+  const applyTransform = useCallback(() => {
+    if (!trackRef.current || heightRef.current <= 0) return;
+    const H = heightRef.current;
+    const cycleHeight = H + 8; // 8px row gap between repeating copies
+    const normY = ((offsetYRef.current % cycleHeight) + cycleHeight) % cycleHeight;
+    const trackY = -cycleHeight + normY;
+
+    trackRef.current.style.transform = `translate3d(0px, ${trackY.toFixed(2)}px, 0px)`;
+  }, []);
+
+  // Update transform whenever height changes
   useEffect(() => {
-    applyTransform();
-  }, [copyHeight, applyTransform]);
+    if (height > 0) {
+      applyTransform();
+    }
+  }, [height, applyTransform]);
 
   // Loop di animazione per il micro-scorrimento autonomo quando nessuno tocca lo schermo
   useEffect(() => {
@@ -603,9 +644,9 @@ function StationColumn({
         );
         lastInteractionTimeRef.current = currentTime;
       } else {
-        // Stato inattivo (Idle): dopo 3.5 secondi di quiete, avvia la discesa lenta e continua
+        // Stato inattivo (Idle): dopo 4 secondi di quiete, avvia la discesa lenta e continua
         const idleDuration = currentTime - lastInteractionTimeRef.current;
-        const IDLE_WAIT_MS = 3500;
+        const IDLE_WAIT_MS = 4000;
 
         if (idleDuration > IDLE_WAIT_MS) {
           // Accelera in modo ultra-morbido nell'arco di 2 secondi
@@ -615,7 +656,7 @@ function StationColumn({
             currentDriftSpeedRef.current + rampRate * dt
           );
 
-          if (currentDriftSpeedRef.current > 0.01) {
+          if (currentDriftSpeedRef.current > 0.01 && heightRef.current > 0) {
             offsetYRef.current += currentDriftSpeedRef.current * dt;
             applyTransform();
           }
@@ -770,8 +811,9 @@ function StationColumn({
           row={p.row}
           col={p.col}
           colSpan={p.colSpan}
-          rowSpan={p.rowSpan}
-          role={p.role}
+          staggerX={p.staggerX}
+          staggerY={p.staggerY}
+          sizeTier={p.sizeTier}
           isClone={isClone}
           onSelect={handleSelectTile}
           onHover={(item) => {
@@ -806,37 +848,39 @@ function StationColumn({
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          gap: "10px",
+          gap: "8px",
           willChange: "transform",
+          transform: height > 0 ? undefined : "translateY(-33.333333%)",
         }}
       >
         {/* Copy 0: clone above */}
         <div
           style={{
             width: "100%",
+            height: height > 0 ? `${height}px` : "100%",
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "10px",
+            gap: "8px",
             flexShrink: 0,
           }}
-          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
+          className="items-center justify-items-center relative min-h-0 min-w-0"
         >
           {renderTilesCopy(0)}
         </div>
 
-        {/* Copy 1: original center (measured) */}
+        {/* Copy 1: original center */}
         <div
-          ref={copyRef}
           style={{
             width: "100%",
+            height: height > 0 ? `${height}px` : "100%",
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "10px",
+            gap: "8px",
             flexShrink: 0,
           }}
-          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
+          className="items-center justify-items-center relative min-h-0 min-w-0"
         >
           {renderTilesCopy(1)}
         </div>
@@ -845,13 +889,14 @@ function StationColumn({
         <div
           style={{
             width: "100%",
+            height: height > 0 ? `${height}px` : "100%",
             display: "grid",
             gridTemplateColumns: `repeat(${portion.cols}, minmax(0, 1fr))`,
             gridTemplateRows: portion.rowTemplate,
-            gap: "10px",
+            gap: "8px",
             flexShrink: 0,
           }}
-          className="items-stretch justify-items-stretch relative min-h-0 min-w-0"
+          className="items-center justify-items-center relative min-h-0 min-w-0"
         >
           {renderTilesCopy(2)}
         </div>
@@ -1138,7 +1183,7 @@ export function MacroGrid({
               transformOrigin: "center center",
               willChange: "transform",
             }}
-            className="w-full h-full max-h-full grid grid-cols-3 gap-x-2.5 items-stretch justify-items-stretch"
+            className="w-full h-full max-h-full grid grid-cols-3 gap-x-1.5 sm:gap-x-2 items-stretch justify-items-stretch"
           >
             {/* PORTION 1: LEFT STATION (CASI 001 - 026) */}
             <StationColumn
