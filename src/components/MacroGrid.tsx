@@ -86,65 +86,7 @@ const S1_SLOTS: MockupSlot[] = [
   { x: 11.87, y: 95.21, w: 21.66, h: 4.79, ratio: 2.355 },
 ];
 
-// Station 2 (25 slots) - extracted directly from user Figma mockup
-// Matches Station 2 items: 6 portraits, 1 square, 18 landscapes (height/width aspect ~1.77)
-const S2_SLOTS: MockupSlot[] = [
-  { x: 70.49, y: 0.0, w: 20.49, h: 14.53, ratio: 0.798 },
-  { x: 0.0, y: 1.08, w: 33.61, h: 12.06, ratio: 1.577 },
-  { x: 39.89, y: 7.88, w: 20.49, h: 7.42, ratio: 1.562 },
-  { x: 10.66, y: 15.46, w: 20.77, h: 8.5, ratio: 1.382 },
-  { x: 70.49, y: 17.77, w: 27.05, h: 10.66, ratio: 1.435 },
-  { x: 39.89, y: 19.17, w: 25.96, h: 11.59, ratio: 1.267 },
-  { x: 10.11, y: 27.2, w: 17.21, h: 7.57, ratio: 1.286 },
-  { x: 29.78, y: 33.69, w: 32.24, h: 11.9, ratio: 1.532 },
-  { x: 70.49, y: 33.69, w: 24.32, h: 10.82, ratio: 1.271 },
-  { x: 5.19, y: 39.1, w: 14.48, h: 11.75, ratio: 0.697 },
-  { x: 82.79, y: 48.53, w: 17.21, h: 15.15, ratio: 0.643 },
-  { x: 29.51, y: 49.77, w: 30.87, h: 8.81, ratio: 1.982 },
-  { x: 70.49, y: 51.31, w: 9.29, h: 6.34, ratio: 0.829 },
-  { x: 10.66, y: 52.09, w: 9.02, h: 6.34, ratio: 0.805 },
-  { x: 43.44, y: 61.51, w: 27.32, h: 10.97, ratio: 1.408 },
-  { x: 10.66, y: 64.45, w: 18.85, h: 8.04, ratio: 1.327 },
-  { x: 78.14, y: 67.85, w: 19.4, h: 7.73, ratio: 1.42 },
-  { x: 5.19, y: 75.58, w: 14.48, h: 6.96, ratio: 1.178 },
-  { x: 46.99, y: 76.51, w: 13.39, h: 5.26, ratio: 1.441 },
-  { x: 27.87, y: 77.28, w: 12.3, h: 10.97, ratio: 0.634 },
-  { x: 65.85, y: 77.74, w: 34.15, h: 10.51, ratio: 1.838 },
-  { x: 45.08, y: 84.39, w: 15.3, h: 5.87, ratio: 1.474 },
-  { x: 76.5, y: 92.43, w: 21.04, h: 7.57, ratio: 1.571 },
-  { x: 0.55, y: 93.04, w: 14.48, h: 5.87, ratio: 1.395 },
-  { x: 19.67, y: 93.82, w: 20.49, h: 6.18, ratio: 1.875 },
-];
 
-// Station 3 (25 slots) - extracted directly from user Figma mockup
-// Matches Station 3 items: 6 portraits, 0 squares, 19 landscapes (height/width aspect ~1.80)
-const S3_SLOTS: MockupSlot[] = [
-  { x: 48.06, y: 0.0, w: 12.5, h: 5.26, ratio: 1.324 },
-  { x: 5.56, y: 2.01, w: 37.22, h: 14.99, ratio: 1.381 },
-  { x: 68.33, y: 2.63, w: 20.83, h: 14.99, ratio: 0.773 },
-  { x: 48.06, y: 8.66, w: 15.28, h: 5.87, ratio: 1.447 },
-  { x: 16.67, y: 19.17, w: 23.06, h: 11.59, ratio: 1.107 },
-  { x: 47.78, y: 20.4, w: 15.28, h: 11.59, ratio: 0.733 },
-  { x: 68.61, y: 21.17, w: 31.39, h: 11.75, ratio: 1.487 },
-  { x: 27.22, y: 35.39, w: 28.89, h: 10.97, ratio: 1.465 },
-  { x: 68.61, y: 35.39, w: 19.72, h: 11.75, ratio: 0.934 },
-  { x: 5.56, y: 46.21, w: 17.22, h: 11.59, ratio: 0.827 },
-  { x: 26.94, y: 48.53, w: 25.0, h: 9.58, ratio: 1.452 },
-  { x: 78.06, y: 49.3, w: 21.94, h: 15.61, ratio: 0.782 },
-  { x: 58.61, y: 51.78, w: 14.44, h: 6.34, ratio: 1.268 },
-  { x: 16.39, y: 61.98, w: 21.39, h: 7.57, ratio: 1.571 },
-  { x: 48.06, y: 62.29, w: 28.06, h: 10.97, ratio: 1.423 },
-  { x: 82.5, y: 70.79, w: 17.5, h: 6.49, ratio: 1.5 },
-  { x: 0.0, y: 71.25, w: 31.67, h: 11.9, ratio: 1.481 },
-  { x: 37.5, y: 75.89, w: 13.33, h: 5.26, ratio: 1.412 },
-  { x: 63.89, y: 79.44, w: 36.11, h: 10.82, ratio: 1.857 },
-  { x: 5.56, y: 85.16, w: 17.22, h: 7.73, ratio: 1.24 },
-  { x: 42.78, y: 85.16, w: 15.56, h: 5.87, ratio: 1.474 },
-  { x: 28.61, y: 86.55, w: 9.17, h: 6.34, ratio: 0.805 },
-  { x: 78.06, y: 92.43, w: 13.33, h: 5.26, ratio: 1.412 },
-  { x: 48.06, y: 92.58, w: 21.39, h: 7.42, ratio: 1.604 },
-  { x: 16.67, y: 95.21, w: 20.56, h: 4.79, ratio: 2.387 },
-];
 
 /**
  * Dynamic Bento packing algorithm for filtered views with fewer items (< 18).
@@ -327,9 +269,9 @@ function packMockupPortion(
 /**
  * Computes deterministic 3-portion layout for the exhibition media wall:
  * - Station 1 (Left): 26 items (Casi 001 - 026) -> S1_SLOTS
- * - Station 2 (Center): 25 items (Casi 027 - 051) -> S2_SLOTS
- * - Station 3 (Right): 25 items (Casi 052 - 076) -> S3_SLOTS
- * Total: 76 cases across 3 physical stations, matching Figma mockup layout.
+ * - Station 2 (Center): 26 items (Casi 027 - 051 + 1 duplicate with alternate cover) -> S1_SLOTS
+ * - Station 3 (Right): 26 items (Casi 052 - 076 + 1 duplicate with alternate cover) -> S1_SLOTS
+ * Reproduces the balanced left layout across all 3 stations with zero large white spaces.
  */
 function getThreePortionsLayout(
   displayItems: ArchiveItem[],
@@ -342,14 +284,35 @@ function getThreePortionsLayout(
   const total = displayItems.length;
 
   if (total >= 60) {
+    // Station 1: exactly 26 items (Casi 001 - 026)
     const p1Items = displayItems.slice(0, 26);
-    const p2Items = displayItems.slice(26, 51);
-    const p3Items = displayItems.slice(51, 76);
+
+    // Station 2: 25 items (Casi 027 - 051) + 1 duplicate with alternate cover photo
+    const baseP2 = displayItems.slice(26, 51);
+    const itemToDupP2 = baseP2.find((it) => it.id === "caso-028") || baseP2[0];
+    const dupP2: ArchiveItem = {
+      ...itemToDupP2,
+      id: `${itemToDupP2.id}-alt`,
+      imageUrl: "/archive/case-028-1.jpg",
+      thumbnailUrl: "/archive/case-028-1.jpg",
+    };
+    const p2Items = [...baseP2, dupP2];
+
+    // Station 3: 25 items (Casi 052 - 076) + 1 duplicate with alternate cover photo
+    const baseP3 = displayItems.slice(51, 76);
+    const itemToDupP3 = baseP3.find((it) => it.id === "caso-053") || baseP3[0];
+    const dupP3: ArchiveItem = {
+      ...itemToDupP3,
+      id: `${itemToDupP3.id}-alt`,
+      imageUrl: "/archive/case-053-1.jpg",
+      thumbnailUrl: "/archive/case-053-1.jpg",
+    };
+    const p3Items = [...baseP3, dupP3];
 
     return {
       portion1: packMockupPortion(p1Items, S1_SLOTS, ratiosMap, 1.92),
-      portion2: packMockupPortion(p2Items, S2_SLOTS, ratiosMap, 1.77),
-      portion3: packMockupPortion(p3Items, S3_SLOTS, ratiosMap, 1.80),
+      portion2: packMockupPortion(p2Items, S1_SLOTS, ratiosMap, 1.92),
+      portion3: packMockupPortion(p3Items, S1_SLOTS, ratiosMap, 1.92),
     };
   }
 
@@ -450,34 +413,30 @@ const MacroTile = React.memo(function MacroTile({
           scale: isHovered ? 1.025 : 1,
         }}
         transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-        className={`w-full h-full relative overflow-hidden bg-[#ECECE8] border border-black/10 transition-shadow duration-200 cursor-pointer flex items-center justify-center ${
+        className={`w-full h-full relative overflow-hidden transition-shadow duration-200 cursor-pointer flex items-center justify-center ${
           isHovered
-            ? "shadow-[0_12px_28px_rgba(0,0,0,0.18)]"
-            : isActive
-            ? "shadow-[0_6px_16px_rgba(0,0,0,0.14)] ring-1 ring-black"
+            ? "shadow-[0_12px_28px_rgba(0,0,0,0.22)]"
             : "shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
         }`}
       >
-        {/* 1. PHOTO - fully uncropped, scaled to preserve natural proportions */}
+        {/* 1. PHOTO - edge-to-edge, NO box/frame around photo, NO border */}
         {item.type === "photo" && (
-          <div className="w-full h-full flex items-center justify-center p-0.5 sm:p-1 overflow-hidden">
-            <img
-              src={item.thumbnailUrl || item.imageUrl || ""}
-              alt={item.title}
-              draggable={false}
-              loading="eager"
-              decoding="async"
-              style={{
-                imageRendering: "-webkit-optimize-contrast",
-              }}
-              className="max-w-full max-h-full w-auto h-auto object-contain block pointer-events-none select-none filter-none"
-            />
-          </div>
+          <img
+            src={item.thumbnailUrl || item.imageUrl || ""}
+            alt={item.title}
+            draggable={false}
+            loading="eager"
+            decoding="async"
+            style={{
+              imageRendering: "-webkit-optimize-contrast",
+            }}
+            className="w-full h-full object-cover block pointer-events-none select-none filter-none"
+          />
         )}
 
-        {/* 2. AUDIO */}
+        {/* 2. AUDIO - subtle neutral card, NO border */}
         {item.type === "audio" && (
-          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#EBECE6]">
+          <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-[#EAEAE6]">
             <div className="flex items-center gap-1 h-6 w-full justify-center overflow-hidden">
               {(item.audioWaveform || [40, 70, 90, 50, 80, 100, 60, 40])
                 .slice(0, 8)
@@ -498,9 +457,9 @@ const MacroTile = React.memo(function MacroTile({
           </div>
         )}
 
-        {/* 3. TEXT / ESSAY */}
+        {/* 3. TEXT / ESSAY - subtle neutral card, NO border */}
         {item.type === "text" && (
-          <div className="w-full h-full p-2.5 flex flex-col justify-center items-center bg-[#F7F6F2] overflow-hidden text-center select-none border border-black/5">
+          <div className="w-full h-full p-2.5 flex flex-col justify-center items-center bg-[#F4F4EE] overflow-hidden text-center select-none">
             <span className="font-mono text-[8px] uppercase tracking-widest text-black/50 mb-0.5">
               TESTO • {item.number}
             </span>
@@ -818,7 +777,10 @@ function StationColumn({
         <MacroTile
           key={`c${copyIdx}-${p.item.id}-${idx}`}
           item={p.item}
-          isActive={activeItemId === p.item.id}
+          isActive={
+            activeItemId === p.item.id ||
+            Boolean(activeItemId && activeItemId === p.item.id.replace("-alt", ""))
+          }
           isHovered={isHovered}
           isFilterOpen={isFilterOpen}
           placement={p}
@@ -1011,9 +973,10 @@ export function MacroGrid({
   // Automatically open target case in its respective portion when triggered externally (e.g. from BeyondView)
   useEffect(() => {
     if (!modalTargetItem) return;
-    const idxInP1 = portion1.placements.findIndex((p) => p.item.id === modalTargetItem.id);
-    const idxInP2 = portion2.placements.findIndex((p) => p.item.id === modalTargetItem.id);
-    const idxInP3 = portion3.placements.findIndex((p) => p.item.id === modalTargetItem.id);
+    const cleanTargetId = modalTargetItem.id.replace("-alt", "");
+    const idxInP1 = portion1.placements.findIndex((p) => p.item.id.replace("-alt", "") === cleanTargetId);
+    const idxInP2 = portion2.placements.findIndex((p) => p.item.id.replace("-alt", "") === cleanTargetId);
+    const idxInP3 = portion3.placements.findIndex((p) => p.item.id.replace("-alt", "") === cleanTargetId);
 
     let targetPortion: 1 | 2 | 3 = 2;
     if (idxInP1 !== -1) targetPortion = 1;
@@ -1241,9 +1204,10 @@ export function MacroGrid({
               stationModal={stationModals[1]}
               hoveredTileItem={hoveredTileItem}
               onSelectItem={(item) => {
-                setStationModals((prev) => ({ ...prev, 1: item }));
+                const cleanItem = displayItems.find((it) => it.id === item.id.replace("-alt", "")) || item;
+                setStationModals((prev) => ({ ...prev, 1: cleanItem }));
                 setHoveredTileItem(null);
-                onSelectItem(item);
+                onSelectItem(cleanItem);
               }}
               onCloseModal={() => setStationModals((prev) => ({ ...prev, 1: null }))}
               onHoverTile={setHoveredTileItem}
@@ -1258,9 +1222,10 @@ export function MacroGrid({
               stationModal={stationModals[2]}
               hoveredTileItem={hoveredTileItem}
               onSelectItem={(item) => {
-                setStationModals((prev) => ({ ...prev, 2: item }));
+                const cleanItem = displayItems.find((it) => it.id === item.id.replace("-alt", "")) || item;
+                setStationModals((prev) => ({ ...prev, 2: cleanItem }));
                 setHoveredTileItem(null);
-                onSelectItem(item);
+                onSelectItem(cleanItem);
               }}
               onCloseModal={() => setStationModals((prev) => ({ ...prev, 2: null }))}
               onHoverTile={setHoveredTileItem}
@@ -1275,9 +1240,10 @@ export function MacroGrid({
               stationModal={stationModals[3]}
               hoveredTileItem={hoveredTileItem}
               onSelectItem={(item) => {
-                setStationModals((prev) => ({ ...prev, 3: item }));
+                const cleanItem = displayItems.find((it) => it.id === item.id.replace("-alt", "")) || item;
+                setStationModals((prev) => ({ ...prev, 3: cleanItem }));
                 setHoveredTileItem(null);
-                onSelectItem(item);
+                onSelectItem(cleanItem);
               }}
               onCloseModal={() => setStationModals((prev) => ({ ...prev, 3: null }))}
               onHoverTile={setHoveredTileItem}

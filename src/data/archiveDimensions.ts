@@ -148,6 +148,11 @@ export const ARCHIVE_ASPECT_RATIOS: Record<string, { w: number; h: number; ratio
     "h": 667,
     "ratio": 1.4993
   },
+  "caso-028-alt": {
+    "w": 1200,
+    "h": 1612,
+    "ratio": 0.7444
+  },
   "caso-029": {
     "w": 1200,
     "h": 800,
@@ -272,6 +277,11 @@ export const ARCHIVE_ASPECT_RATIOS: Record<string, { w: number; h: number; ratio
     "w": 1200,
     "h": 800,
     "ratio": 1.5
+  },
+  "caso-053-alt": {
+    "w": 1200,
+    "h": 718,
+    "ratio": 1.6713
   },
   "caso-054": {
     "w": 800,
