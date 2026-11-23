@@ -131,7 +131,7 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "clusterTags": [
       "Trasformazione"
     ],
-    "stileVisivo": "Rassicurante, sobrio, naturale; bianco e nero fine art; luce morbida e radente che enfatizza la texture della pelle",
+    "stileVisivo": "Rassicurante, sobrio, naturale;  bianco e nero fine art; luce morbida e radente che enfatizza la texture della pelle",
     "sintesiConcettuale": "Beall ha ideato il corpus per contrastare l'ansia da prestazione del \"ritorno in forma\" post-parto. Le fotografie ritraggono le donne in pose piene di serenità, abbracciate ai figli: le smagliature vengono illuminate come linee d'oro o fiumi d'argento, definite dall'autrice e dalle partecipanti come \"le mappe del passaggio dei nostri figli al mondo\", ribaltando la vergogna in celebrazione vitale.",
     "notes": "Conservato nell'archivio.",
     "externalLink": "https://www.organiconcrete.com/2015/10/21/beatiful-body-project-jade-beall-gli-scatti-un-corpo-evoluzione/",
@@ -2527,7 +2527,7 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "Traumi",
       "Sistemici"
     ],
-    "stileVisivo": "Fotografia documentaria sociale e ritrattistica d'impatto accostata a dipinti d'arte contemporanea per la pace; testimonianza visiva di cicatrici da mine antiuomo.",
+    "stileVisivo": "Fotografia documentaria sociale e ritrattistica d'impatto accostata a dipinti d'arte contemporanea per la pace; testimonianza visiva di  cicatrici da mine antiuomo.",
     "sintesiConcettuale": "Esposizione internazionale d'arte e fotogiornalismo promossa per denunciare l'eredità mortale delle mine terrestri e degli ordigni inesplosi, documentando le ferite fisiche indelebili e la resilienza dei sopravvissuti.",
     "notes": "Mostra organizzata presso la Lin Xiang Xiong Art Gallery di Penang in collaborazione con la International Campaign to Ban Landmines (ICBL-CMC), con 38 scatti documentari e 4 dipinti per la pace.",
     "externalLink": "https://www.buletinmutiara.com/scars-of-war-exhibition-turns-art-into-a-call-for-peace/",
@@ -2868,7 +2868,7 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "Traumi"
     ],
     "stileVisivo": "Giornalismo investigativo televisivo; interviste frontali e documentazione fotografica dei segni fisici impressi a fuoco.",
-    "sintesiConcettuale": "«Mi avevano promesso un piccolo tatuaggio simbolico durante un rito di iniziazione. Invece mi hanno marchiata con le iniziali del leader di NXIVM. Quel segno mi ricordava ogni giorno il tradimento e il controllo subìto. All’inizio l’ho conservato come prova: rendeva visibile agli altri una violenza difficile da spiegare. Con il tempo, però, non volevo più portare il suo nome sul mio corpo. Dopo diversi trattamenti, ho scelto un intervento per rimuovere il marchio. È rimasta una cicatrice, ma questa volta era il risultato di una mia decisione. Per me non significava cancellare il passato, ma riprendere possesso del mio corpo e scegliere quale significato dare a quel segno.»",
+    "sintesiConcettuale": "«Mi avevano promesso un piccolo tatuaggio simbolico durante un rito di iniziazione. Invece mi hanno marchiata con le iniziali del leader di NXIVM. Quel segno mi ricordava ogni giorno il tradimento e il controllo subìto. All’inizio l’ho conservato come prova: rendeva visibile agli altri una violenza difficile da spiegare.\nCon il tempo, però, non volevo più portare il suo nome sul mio corpo. Dopo diversi trattamenti, ho scelto un intervento per rimuovere il marchio. È rimasta una cicatrice, ma questa volta era il risultato di una mia decisione. Per me non significava cancellare il passato, ma riprendere possesso del mio corpo e scegliere quale significato dare a quel segno.»",
     "notes": "Inchiesta speciale della trasmissione 20/20 di ABC News che ha portato all'attenzione pubblica e giudiziaria i crimini dell'organizzazione.",
     "externalLink": "https://abcnews.com/US/nxivm-member-invited-secret-sorority-branded/story?id=51617201",
     "driveLink": "",
