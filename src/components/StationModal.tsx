@@ -406,11 +406,11 @@ export function StationModal({
                 </div>
               </div>
 
-              {/* Floating Quick Action Button (Tastino): Arrow Down to scroll to info, Arrow UP to return to photo */}
+              {/* Floating Quick Action Button (Tastino squadrato): Arrow Down to scroll to info, Arrow UP to return to photo */}
               <button
                 type="button"
                 onClick={isScrolledDown ? scrollToTop : scrollToInfo}
-                className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 w-7.5 h-7.5 rounded-full bg-white/85 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-md border border-black/10 group"
+                className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 w-7.5 h-7.5 rounded-none bg-white/85 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-md border border-black/10 group"
                 aria-label={isScrolledDown ? "Torna alla foto" : "Scorri verso il basso"}
                 title={isScrolledDown ? "Torna alla foto" : "Scorri verso la spiegazione"}
               >
@@ -435,9 +435,9 @@ export function StationModal({
               transition={{ duration: 0.2 }}
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
-              {/* Header: Category Badge (NO 'X' in top-right) */}
+              {/* Header: Category Badge (Squadrato, NO 'X' in top-right) */}
               <div className="px-5 pt-3 pb-1 flex items-center justify-between shrink-0 select-none border-b border-black/8">
-                <div className="px-3 py-0.5 rounded-full bg-white/60 backdrop-blur-xs text-black font-display font-bold text-[8px] sm:text-[8.5px] tracking-wider uppercase border border-black/10 shadow-xs">
+                <div className="px-3 py-0.5 rounded-none bg-white/60 backdrop-blur-xs text-black font-display font-bold text-[8px] sm:text-[8.5px] tracking-wider uppercase border border-black/10 shadow-xs">
                   {currentCatConfig.num} {currentCatConfig.label}
                 </div>
               </div>
