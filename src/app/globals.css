@@ -83,6 +83,9 @@ html, body {
 
 .font-body {
   font-family: "Indivisible", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-wrap: pretty;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .font-mono-text {
@@ -139,12 +142,4 @@ html, body {
 /* Prevent native ghost image drag when dragging to scroll */
 img {
   -webkit-user-drag: none;
-}
-
-/* Typography: Text Justification without hyphenation */
-.text-justify {
-  text-align: justify !important;
-  text-justify: inter-word;
-  hyphens: none !important;
-  -webkit-hyphens: none !important;
 }

@@ -42,7 +42,7 @@ export const BEYOND_CATEGORIES: BeyondCategoryMeta[] = [
     excelHeader: "Mascherabilità",
     subtitle: "Visibilità corporea: occultamento vs esposizione del segno",
     considerations:
-      "La mascherabilità definisce la misura per cui un segno può essere nascosto deliberatamente o esposto allo sguardo esterno. Nei casi studio analizzati la maggior parte tratta di segni camuffabili, perché presenti in aree del corpo quali addome, seno e cosce. I segni mascherabili consentono di mantenere un controllo biografico, l'individuo sceglie volontariamente a chi mostrare i propri segni cutanei e a chi rivelarne la storia. I segni più mascherabili che vengono mostrati in opere e campagne hanno più comunemente lo scopo di sensibilizzare e normalizzare.\n\nQuando invece un segno è impossibile da nascondere, diventa soggetto ad esposizioni a reazioni sociali spesso penalizzanti. Vengono ritenuti maggiormente come non accettati socialmente e come esteticamente respingenti.",
+      "La mascherabilità definisce la misura per cui un segno può essere nascosto deliberatamente o esposto allo sguardo esterno. Nei casi studio analizzati la maggior parte tratta di segni camuffabili, perché presenti in aree del corpo quali addome, seno e cosce. I segni mascherabili consentono di mantenere un controllo biografico, l'individuo sceglie volontariamente a chi mostrare i propri segni cutanei e a chi rivelarne la storia. I segni più mascherabili che vengono mostrati in opere e campagne hanno più comunemente lo scopo di sensibilizzare e normalizzare. Quando invece un segno è impossibile da nascondere, diventa soggetto ad esposizioni a reazioni sociali spesso penalizzanti. Vengono ritenuti maggiormente come non accettati socialmente e come esteticamente respingenti.",
     groups: [
       {
         value: "Mascherabile",
@@ -278,9 +278,9 @@ export function BeyondView({
             </span>
           </div>
 
-          {/* Symmetrical 2-Row Layout of Categories */}
-          <div className="flex flex-col items-start gap-1.5 flex-shrink-0">
-            <div className="flex flex-wrap items-center gap-1.5">
+          {/* Symmetrical 2-Row Layout of Categories (Clean without grey enclosing boxes) */}
+          <div className="flex flex-col items-start gap-1 flex-shrink-0">
+            <div className="flex flex-wrap items-center gap-1">
               {BEYOND_CATEGORIES.slice(0, 3).map((cat) => {
                 const isActive = cat.id === activeCategoryId;
                 return (
@@ -288,19 +288,19 @@ export function BeyondView({
                     key={cat.id}
                     type="button"
                     onClick={() => setActiveCategoryId(cat.id)}
-                    className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
+                    className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 transition-all cursor-pointer whitespace-nowrap rounded-none ${
                       isActive
-                        ? "border-black bg-black text-[#ECEEF0] font-bold shadow-sm"
-                        : "border-black/20 text-black/80 hover:border-black hover:text-black bg-transparent"
+                        ? "bg-black text-[#ECEEF0] font-bold shadow-sm"
+                        : "text-black/60 hover:text-black bg-transparent"
                     }`}
                   >
-                    [{cat.label}]
+                    {cat.label}
                   </button>
                 );
               })}
             </div>
 
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1">
               {BEYOND_CATEGORIES.slice(3, 6).map((cat) => {
                 const isActive = cat.id === activeCategoryId;
                 return (
@@ -308,13 +308,13 @@ export function BeyondView({
                     key={cat.id}
                     type="button"
                     onClick={() => setActiveCategoryId(cat.id)}
-                    className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 border transition-all cursor-pointer whitespace-nowrap rounded-none ${
+                    className={`font-display text-[10px] tracking-wider uppercase px-2.5 py-1 transition-all cursor-pointer whitespace-nowrap rounded-none ${
                       isActive
-                        ? "border-black bg-black text-[#ECEEF0] font-bold shadow-sm"
-                        : "border-black/20 text-black/80 hover:border-black hover:text-black bg-transparent"
+                        ? "bg-black text-[#ECEEF0] font-bold shadow-sm"
+                        : "text-black/60 hover:text-black bg-transparent"
                     }`}
                   >
-                    [{cat.label}]
+                    {cat.label}
                   </button>
                 );
               })}
@@ -490,8 +490,8 @@ export function BeyondView({
                     </div>
                   </div>
 
-                  <div className="font-body text-[10.5px] text-black leading-relaxed text-justify opacity-95 pt-2 border-t border-black/10 whitespace-pre-line">
-                    {activeCategory.considerations}
+                  <div className="font-body text-[10.5px] text-black leading-relaxed text-left opacity-95 pt-2 border-t border-black/10 text-pretty hyphens-auto">
+                    {activeCategory.considerations?.replace(/\s+/g, ' ')}
                   </div>
 
                   <div className="mt-4 pt-2 border-t border-black/15 flex items-center justify-between font-body text-[8.5px] text-black/60 uppercase tracking-wider">
