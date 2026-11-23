@@ -143,3 +143,18 @@ html, body {
 img {
   -webkit-user-drag: none;
 }
+
+/* ========================================================================== */
+/* GLOBAL SQUADRATO RULE: all buttons, controls, pills, interactive keys      */
+/* ========================================================================== */
+button,
+[role="button"],
+input,
+select,
+.btn,
+a[role="button"],
+button[class*="rounded"],
+[role="button"][class*="rounded"] {
+  border-radius: 0px !important;
+}
+
