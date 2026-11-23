@@ -337,8 +337,8 @@ export function StationModal({
                     <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1">
                       Descrizione
                     </span>
-                    <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-justify">
-                      {item.sintesiConcettuale || item.excerpt || item.notes}
+                    <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-left text-pretty hyphens-auto">
+                      {(item.sintesiConcettuale || item.excerpt || item.notes)?.replace(/\s+/g, ' ')}
                     </p>
                   </div>
 
@@ -385,8 +385,8 @@ export function StationModal({
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
                           Stile visivo
                         </span>
-                        <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed text-justify block mt-0.5">
-                          {item.stileVisivo}
+                        <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed text-left text-pretty hyphens-auto block mt-0.5">
+                          {item.stileVisivo?.replace(/\s+/g, ' ')}
                         </span>
                       </div>
                     )}

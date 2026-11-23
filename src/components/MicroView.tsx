@@ -170,8 +170,8 @@ export function MicroView({
                     </div>
                   )}
                   <span className="text-4xl font-serif text-black/30 mb-2 select-none leading-none">“</span>
-                  <p className="font-body text-xs sm:text-sm text-black leading-relaxed italic text-justify">
-                    {item.sintesiConcettuale || item.excerpt}
+                  <p className="font-body text-xs sm:text-sm text-black leading-relaxed italic text-left text-pretty hyphens-auto">
+                    {(item.sintesiConcettuale || item.excerpt)?.replace(/\s+/g, ' ')}
                   </p>
                   <span className="font-body text-[10px] text-black/60 uppercase tracking-wider mt-4 text-right block">
                     — {item.authorOrSubject} ({item.year})
@@ -267,8 +267,8 @@ export function MicroView({
               </div>
 
               {/* Sintesi Concettuale / Story in Indivisible */}
-              <div className="font-body text-xs sm:text-[13px] text-black/85 leading-relaxed max-w-xl mb-6 text-justify">
-                <p>{item.sintesiConcettuale || item.caption || item.excerpt}</p>
+              <div className="font-body text-xs sm:text-[13px] text-black/85 leading-relaxed max-w-xl mb-6 text-left text-pretty hyphens-auto">
+                <p>{(item.sintesiConcettuale || item.caption || item.excerpt)?.replace(/\s+/g, ' ')}</p>
               </div>
 
               {/* TECHNICAL SPECIFICATION TABLE */}
@@ -325,7 +325,9 @@ export function MicroView({
                 {item.stileVisivo && item.stileVisivo !== "—" && (
                   <div className="py-1.5 border-b border-black/10">
                     <span className="text-black/50 text-[10px] uppercase block mb-0.5 font-semibold">STILE VISIVO</span>
-                    <span className="text-black text-[11px] font-body text-justify block">{item.stileVisivo}</span>
+                    <span className="text-black text-[11px] font-body text-left text-pretty hyphens-auto block">
+                      {item.stileVisivo?.replace(/\s+/g, ' ')}
+                    </span>
                   </div>
                 )}
 
@@ -360,11 +362,11 @@ export function MicroView({
 
               {/* Extra notes / context */}
               {item.notes && item.notes !== "Conservato nell'archivio." && (
-                <div className="bg-black/[0.03] border-l-2 border-black p-3 font-body text-xs text-black/80 mb-4 text-justify">
+                <div className="bg-black/[0.03] border-l-2 border-black p-3 font-body text-xs text-black/80 mb-4 text-left text-pretty hyphens-auto">
                   <span className="text-[10px] uppercase font-display font-bold text-black block mb-1">
                     NOTE & CONTESTO CURATORIALE:
                   </span>
-                  {item.notes}
+                  {item.notes?.replace(/\s+/g, ' ')}
                 </div>
               )}
 

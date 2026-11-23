@@ -490,8 +490,8 @@ export function BeyondView({
                     </div>
                   </div>
 
-                  <div className="font-body text-[10.5px] text-black leading-relaxed text-justify opacity-95 pt-2 border-t border-black/10 whitespace-pre-line">
-                    {activeCategory.considerations}
+                  <div className="font-body text-[10.5px] text-black leading-relaxed text-left text-pretty hyphens-auto opacity-95 pt-2 border-t border-black/10">
+                    {activeCategory.considerations?.replace(/\s+/g, ' ')}
                   </div>
 
                   <div className="mt-4 pt-2 border-t border-black/15 flex items-center justify-between font-body text-[8.5px] text-black/60 uppercase tracking-wider">
