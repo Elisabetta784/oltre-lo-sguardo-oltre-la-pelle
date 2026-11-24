@@ -323,95 +323,90 @@ export function StationModal({
                 {/* SCREEN 2: Info Content Arriving by Scrolling */}
                 <div
                   id="station-modal-info-section"
-                  className="w-full shrink-0 flex flex-col px-5 pt-3.5 pb-4 gap-2 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none min-h-[430px] sm:min-h-[465px]"
+                  className="w-full shrink-0 flex flex-col justify-between px-5 pt-3.5 pb-3 gap-2 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none min-h-[430px] sm:min-h-[465px]"
                 >
-                  {/* Header row: CASO and back-to-photo button */}
-                  <div className="flex items-center justify-between pb-1 shrink-0 select-none border-b border-black/6">
+                  {/* Header row: CASO (centered, no up arrow button here) */}
+                  <div className="flex items-center justify-center pb-1 shrink-0 select-none border-b border-black/6">
                     <span className="font-display font-bold text-[8.5px] sm:text-[9px] uppercase tracking-wide text-black/60">
                       CASO {item.number}
                     </span>
-                    <button
-                      type="button"
-                      onClick={scrollToTop}
-                      className="px-2 py-0.5 rounded-none bg-white/60 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors border border-black/10 shadow-xs"
-                    >
-                      <ChevronUp className="w-3 h-3 stroke-[2.5]" />
-                      <span>Foto</span>
-                    </button>
                   </div>
 
-                  {/* Title */}
-                  <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight">
-                    {item.title}
-                  </h2>
+                  {/* Vertically & Horizontally Centered Information Body (Optimal accessibility on LED wall) */}
+                  <div className="flex-1 my-auto flex flex-col justify-center items-center text-center gap-2 py-2">
+                    {/* Title */}
+                    <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight text-center max-w-sm">
+                      {item.title}
+                    </h2>
 
-                  {/* Subtitle: Author & Year */}
-                  <p className="font-display text-[9px] sm:text-[9.5px] text-black/75 font-medium -mt-1">
-                    {item.authorOrSubject} {item.year ? `— ${item.year}` : ""}
-                  </p>
-
-                  {/* Section Descrizione */}
-                  <div className="mt-0.5">
-                    <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1">
-                      Descrizione
-                    </span>
-                    <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-left text-pretty hyphens-auto">
-                      {(item.sintesiConcettuale || item.excerpt || item.notes)?.replace(/\s+/g, ' ')}
+                    {/* Subtitle: Author & Year */}
+                    <p className="font-display text-[9px] sm:text-[9.5px] text-black/75 font-medium text-center">
+                      {item.authorOrSubject} {item.year ? `— ${item.year}` : ""}
                     </p>
-                  </div>
 
-                  {/* Metadata Grid */}
-                  <div className="mt-1 pt-2 border-t border-black/8 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[9px]">
-                    <div>
-                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                        Segno
+                    {/* Section Descrizione */}
+                    <div className="mt-1 w-full max-w-sm flex flex-col items-center text-center">
+                      <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1 text-center">
+                        Descrizione
                       </span>
-                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                        {item.segno || "—"}
-                      </span>
+                      <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-center text-pretty hyphens-auto">
+                        {(item.sintesiConcettuale || item.excerpt || item.notes)?.replace(/\s+/g, ' ')}
+                      </p>
                     </div>
 
-                    <div>
-                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                        Tono
-                      </span>
-                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                        {item.tono || "—"}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                        Tipologia
-                      </span>
-                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                        {item.tipologia || "—"}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                        Media
-                      </span>
-                      <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
-                        {item.tipoDiMedia || "—"}
-                      </span>
-                    </div>
-
-                    {item.stileVisivo && (
-                      <div className="col-span-2 sm:col-span-4 pt-1.5 border-t border-black/8">
+                    {/* Metadata Grid (Centered) */}
+                    <div className="mt-1 pt-2 border-t border-black/8 w-full max-w-sm flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[9px] text-center">
+                      <div className="min-w-[55px]">
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                          Stile visivo
+                          Segno
                         </span>
-                        <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed text-left text-pretty hyphens-auto block mt-0.5">
-                          {item.stileVisivo?.replace(/\s+/g, ' ')}
+                        <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                          {item.segno || "—"}
                         </span>
                       </div>
-                    )}
+
+                      <div className="min-w-[55px]">
+                        <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                          Tono
+                        </span>
+                        <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                          {item.tono || "—"}
+                        </span>
+                      </div>
+
+                      <div className="min-w-[55px]">
+                        <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                          Tipologia
+                        </span>
+                        <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                          {item.tipologia || "—"}
+                        </span>
+                      </div>
+
+                      <div className="min-w-[55px]">
+                        <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                          Media
+                        </span>
+                        <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
+                          {item.tipoDiMedia || "—"}
+                        </span>
+                      </div>
+
+                      {item.stileVisivo && (
+                        <div className="w-full pt-1.5 border-t border-black/8 text-center">
+                          <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
+                            Stile visivo
+                          </span>
+                          <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed block mt-0.5 max-w-sm mx-auto text-pretty">
+                            {item.stileVisivo?.replace(/\s+/g, ' ')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Bottom Actions inside Info section: [ ↑ Torna alla foto ] and [ (●) OLTRE ] */}
-                  <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none pb-3">
+                  {/* Bottom Actions inside Info section: [ ↑ Torna su ] and [ (●) OLTRE ] */}
+                  <div className="mt-auto pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none pb-1">
                     <button
                       type="button"
                       onClick={scrollToTop}
@@ -449,7 +444,7 @@ export function StationModal({
             >
               {/* Header: Category Badge (Squadrato, NO 'X' in top-right) */}
               <div className="px-5 pt-3 pb-1 flex items-center justify-between shrink-0 select-none border-b border-black/8">
-                <div className="px-3 py-0.5 rounded-none bg-white/60 backdrop-blur-xs text-black font-display font-bold text-[8px] sm:text-[8.5px] tracking-wider uppercase border border-black/10 shadow-xs">
+                <div className="px-3 py-0.5 rounded-none bg-white/75 backdrop-blur-xs text-black font-display font-bold text-[8px] sm:text-[8.5px] tracking-wider uppercase border-0 shadow-xs">
                   {currentCatConfig.num} {currentCatConfig.label}
                 </div>
               </div>
@@ -503,7 +498,7 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
-                  className="px-3.5 py-1 rounded-none bg-white/70 hover:bg-white text-black font-display font-semibold text-[8.5px] sm:text-[9px] tracking-wide flex items-center gap-1.5 shadow-xs transition-all cursor-pointer border border-black/10 backdrop-blur-xs"
+                  className="px-3.5 py-1 rounded-none bg-white/80 hover:bg-white text-black font-display font-semibold text-[8.5px] sm:text-[9px] tracking-wide flex items-center gap-1.5 shadow-xs transition-all cursor-pointer border-0 backdrop-blur-xs"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Opera</span>
@@ -924,9 +919,9 @@ function OltreCardCarousel({
                 willChange: "transform, opacity",
                 pointerEvents,
               }}
-              className={`absolute top-1/2 left-1/2 w-[175px] sm:w-[190px] h-[225px] sm:h-[245px] -mt-[112px] sm:-mt-[122px] -ml-[87px] sm:-ml-[95px] rounded-none border border-black/10 flex flex-col overflow-hidden transition-[box-shadow,background-color] duration-300 ${
+              className={`absolute top-1/2 left-1/2 w-[175px] sm:w-[190px] h-[225px] sm:h-[245px] -mt-[112px] sm:-mt-[122px] -ml-[87px] sm:-ml-[95px] rounded-none border-0 border-none ring-0 outline-none flex flex-col overflow-hidden transition-[box-shadow,background-color] duration-300 ${
                 isCenter
-                  ? "bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/15 ring-1 ring-white/80 cursor-default"
+                  ? "bg-white/85 backdrop-blur-xl shadow-2xl shadow-black/12 cursor-default"
                   : "bg-white/50 backdrop-blur-md shadow-md shadow-black/[0.04] cursor-pointer hover:opacity-100"
               }`}
             >
