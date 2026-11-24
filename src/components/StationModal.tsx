@@ -222,7 +222,7 @@ export function StationModal({
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
-        className="relative z-50 flex flex-col shrink-0 border border-white/70 shadow-xl shadow-black/[0.05] overflow-hidden text-black select-none rounded-none bg-white/[0.22] backdrop-blur-[11px] ring-1 ring-white/60 w-[88%] sm:w-[84%] max-w-[430px] sm:max-w-[465px] h-[370px] sm:h-[395px] max-h-[54vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        className="relative z-50 flex flex-col shrink-0 border-0 border-none ring-0 outline-none shadow-2xl shadow-black/[0.08] overflow-hidden text-black select-none rounded-none bg-white/[0.25] backdrop-blur-[12px] w-[88%] sm:w-[84%] max-w-[430px] sm:max-w-[465px] h-[430px] sm:h-[465px] max-h-[66vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]"
       >
         <AnimatePresence mode="wait" initial={false}>
           {/* =============================================================== */}
@@ -255,57 +255,75 @@ export function StationModal({
                 }`}
               >
                 {/* SCREEN 1: Large Artwork Image View (fills first screen of modal) */}
-                <div className="relative w-full min-h-full h-[370px] sm:h-[395px] max-h-[54vh] shrink-0 flex items-center justify-center p-3.5 sm:p-4 overflow-hidden select-none">
+                <div className="relative w-full h-[430px] sm:h-[465px] max-h-[66vh] shrink-0 flex flex-col justify-between overflow-hidden select-none">
                   {/* Floating Badge: CASO XX (top-left, squadrato) */}
-                  <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-none bg-white/70 backdrop-blur-md text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border border-black/10 shadow-xs pointer-events-none">
+                  <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-none bg-white/75 backdrop-blur-md text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border border-black/10 shadow-xs pointer-events-none">
                     CASO {item.number}
                   </div>
 
-                  {/* Artwork Image maintaining its original aspect ratio */}
-                  <img
-                    src={currentImg}
-                    alt={item.title}
-                    draggable={false}
-                    className="w-auto h-auto max-w-full max-h-full object-contain block filter-none select-none shadow-xs rounded-none"
-                    style={{
-                      imageRendering: "-webkit-optimize-contrast",
-                      aspectRatio: dim ? `${dim.w} / ${dim.h}` : undefined,
-                    }}
-                  />
+                  {/* Artwork Image Area (Clean, Unobstructed - gallery arrows NEVER overlay the image) */}
+                  <div className="flex-1 min-h-0 w-full flex items-center justify-center pt-8 pb-1 px-4 sm:px-6 overflow-hidden">
+                    <img
+                      src={currentImg}
+                      alt={item.title}
+                      draggable={false}
+                      className="w-auto h-auto max-w-full max-h-full object-contain block filter-none select-none shadow-xs rounded-none"
+                      style={{
+                        imageRendering: "-webkit-optimize-contrast",
+                        aspectRatio: dim ? `${dim.w} / ${dim.h}` : undefined,
+                      }}
+                    />
+                  </div>
 
-                  {/* Squared Gallery Navigation Arrows */}
+                  {/* Gallery Navigation: Dedicated row BELOW the artwork, ONLY when there are multiple images */}
                   {allImages.length > 1 && (
-                    <>
+                    <div className="shrink-0 w-full flex items-center justify-center gap-2.5 py-1 z-20 select-none">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           setImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length);
                         }}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 rounded-none bg-white/70 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-md cursor-pointer border border-black/10"
+                        className="w-6 h-6 rounded-none bg-white/80 hover:bg-white text-black flex items-center justify-center active:scale-95 transition-all shadow-xs cursor-pointer border border-black/10"
                         title="Immagine precedente"
                       >
                         <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
                       </button>
+                      <span className="font-display font-bold text-[8.5px] uppercase tracking-widest text-black/60 select-none px-1">
+                        {imgIdx + 1} / {allImages.length}
+                      </span>
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           setImgIdx((prev) => (prev + 1) % allImages.length);
                         }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-7.5 h-7.5 rounded-none bg-white/70 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-md cursor-pointer border border-black/10"
+                        className="w-6 h-6 rounded-none bg-white/80 hover:bg-white text-black flex items-center justify-center active:scale-95 transition-all shadow-xs cursor-pointer border border-black/10"
                         title="Immagine successiva"
                       >
                         <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
                       </button>
-                    </>
+                    </div>
                   )}
+
+                  {/* VISIBLE SCROLL DIVIDER & DISTINCTIVE SCROLL-DOWN ACTION */}
+                  <div className="w-full shrink-0 relative flex items-center justify-center py-2 px-4 border-t border-black/15 bg-white/25 backdrop-blur-xs select-none">
+                    <button
+                      type="button"
+                      onClick={scrollToInfo}
+                      className="group flex items-center gap-2 px-3.5 py-1 bg-black text-white hover:bg-black/85 rounded-none font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider shadow-sm transition-all cursor-pointer"
+                      title="Scorri verso le informazioni del caso studio"
+                    >
+                      <span>Scorri per le info</span>
+                      <ChevronDown className="w-3.5 h-3.5 stroke-[2.5] text-white animate-bounce" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* SCREEN 2: Info Content Arriving by Scrolling */}
                 <div
                   id="station-modal-info-section"
-                  className="w-full shrink-0 flex flex-col px-5 pt-3.5 pb-4 gap-2 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none"
+                  className="w-full shrink-0 flex flex-col px-5 pt-3.5 pb-4 gap-2 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none min-h-[430px] sm:min-h-[465px]"
                 >
                   {/* Header row: CASO and back-to-photo button */}
                   <div className="flex items-center justify-between pb-1 shrink-0 select-none border-b border-black/6">
@@ -315,10 +333,10 @@ export function StationModal({
                     <button
                       type="button"
                       onClick={scrollToTop}
-                      className="text-black/50 hover:text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors"
+                      className="px-2 py-0.5 rounded-none bg-white/60 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors border border-black/10 shadow-xs"
                     >
-                      <span>Foto</span>
                       <ChevronUp className="w-3 h-3 stroke-[2.5]" />
+                      <span>Foto</span>
                     </button>
                   </div>
 
@@ -392,8 +410,17 @@ export function StationModal({
                     )}
                   </div>
 
-                  {/* Bottom Action inside Info section: [ (●) OLTRE ] */}
-                  <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-end shrink-0 select-none pb-7 sm:pb-8">
+                  {/* Bottom Actions inside Info section: [ ↑ Torna alla foto ] and [ (●) OLTRE ] */}
+                  <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none pb-3">
+                    <button
+                      type="button"
+                      onClick={scrollToTop}
+                      className="px-3 py-1 rounded-none bg-white/70 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1 shadow-xs transition-all cursor-pointer border border-black/10"
+                    >
+                      <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Torna su</span>
+                    </button>
+
                     <button
                       type="button"
                       onClick={() => setViewMode("oltre")}
@@ -405,21 +432,6 @@ export function StationModal({
                   </div>
                 </div>
               </div>
-
-              {/* Floating Quick Action Button (Tastino squadrato): Arrow Down to scroll to info, Arrow UP to return to photo */}
-              <button
-                type="button"
-                onClick={isScrolledDown ? scrollToTop : scrollToInfo}
-                className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 w-7.5 h-7.5 rounded-none bg-white/85 hover:bg-white backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all cursor-pointer shadow-md border border-black/10 group"
-                aria-label={isScrolledDown ? "Torna alla foto" : "Scorri verso il basso"}
-                title={isScrolledDown ? "Torna alla foto" : "Scorri verso la spiegazione"}
-              >
-                {isScrolledDown ? (
-                  <ChevronUp className="w-4 h-4 stroke-[2.5] text-black/80 group-hover:text-black" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 stroke-[2.5] text-black/80 group-hover:text-black animate-bounce" />
-                )}
-              </button>
             </motion.div>
           )}
 
