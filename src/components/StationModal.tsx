@@ -323,40 +323,40 @@ export function StationModal({
                 {/* SCREEN 2: Info Content Arriving by Scrolling */}
                 <div
                   id="station-modal-info-section"
-                  className="w-full shrink-0 flex flex-col justify-between px-5 pt-3.5 pb-3 gap-2 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none min-h-[430px] sm:min-h-[465px]"
+                  className="w-full shrink-0 flex flex-col justify-center px-5 py-4 border-t border-black/8 bg-white/[0.12] backdrop-blur-xs select-none h-[430px] sm:h-[465px] min-h-[430px] sm:min-h-[465px]"
                 >
-                  {/* Header row: CASO (centered, no up arrow button here) */}
-                  <div className="flex items-center justify-center pb-1 shrink-0 select-none border-b border-black/6">
-                    <span className="font-display font-bold text-[8.5px] sm:text-[9px] uppercase tracking-wide text-black/60">
-                      CASO {item.number}
-                    </span>
-                  </div>
+                  {/* Centered vertically inside the riquadro with balanced space above & below */}
+                  <div className="w-full my-auto flex flex-col gap-2">
+                    {/* Header row: CASO (left-aligned as previous version) */}
+                    <div className="flex items-center justify-between pb-1 shrink-0 select-none border-b border-black/6">
+                      <span className="font-display font-bold text-[8.5px] sm:text-[9px] uppercase tracking-wide text-black/60">
+                        CASO {item.number}
+                      </span>
+                    </div>
 
-                  {/* Vertically & Horizontally Centered Information Body (Optimal accessibility on LED wall) */}
-                  <div className="flex-1 my-auto flex flex-col justify-center items-center text-center gap-2 py-2">
                     {/* Title */}
-                    <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight text-center max-w-sm">
+                    <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight">
                       {item.title}
                     </h2>
 
                     {/* Subtitle: Author & Year */}
-                    <p className="font-display text-[9px] sm:text-[9.5px] text-black/75 font-medium text-center">
+                    <p className="font-display text-[9px] sm:text-[9.5px] text-black/75 font-medium -mt-1">
                       {item.authorOrSubject} {item.year ? `— ${item.year}` : ""}
                     </p>
 
                     {/* Section Descrizione */}
-                    <div className="mt-1 w-full max-w-sm flex flex-col items-center text-center">
-                      <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1 text-center">
+                    <div className="mt-0.5">
+                      <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1">
                         Descrizione
                       </span>
-                      <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-center text-pretty hyphens-auto">
+                      <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-left text-pretty hyphens-auto">
                         {(item.sintesiConcettuale || item.excerpt || item.notes)?.replace(/\s+/g, ' ')}
                       </p>
                     </div>
 
-                    {/* Metadata Grid (Centered) */}
-                    <div className="mt-1 pt-2 border-t border-black/8 w-full max-w-sm flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[9px] text-center">
-                      <div className="min-w-[55px]">
+                    {/* Metadata Grid */}
+                    <div className="mt-1 pt-2 border-t border-black/8 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[9px]">
+                      <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
                           Segno
                         </span>
@@ -365,7 +365,7 @@ export function StationModal({
                         </span>
                       </div>
 
-                      <div className="min-w-[55px]">
+                      <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
                           Tono
                         </span>
@@ -374,7 +374,7 @@ export function StationModal({
                         </span>
                       </div>
 
-                      <div className="min-w-[55px]">
+                      <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
                           Tipologia
                         </span>
@@ -383,7 +383,7 @@ export function StationModal({
                         </span>
                       </div>
 
-                      <div className="min-w-[55px]">
+                      <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
                           Media
                         </span>
@@ -393,37 +393,37 @@ export function StationModal({
                       </div>
 
                       {item.stileVisivo && (
-                        <div className="w-full pt-1.5 border-t border-black/8 text-center">
+                        <div className="col-span-2 sm:col-span-4 pt-1.5 border-t border-black/8">
                           <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
                             Stile visivo
                           </span>
-                          <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed block mt-0.5 max-w-sm mx-auto text-pretty">
+                          <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed text-left text-pretty hyphens-auto block mt-0.5">
                             {item.stileVisivo?.replace(/\s+/g, ' ')}
                           </span>
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  {/* Bottom Actions inside Info section: [ ↑ Torna su ] and [ (●) OLTRE ] */}
-                  <div className="mt-auto pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none pb-1">
-                    <button
-                      type="button"
-                      onClick={scrollToTop}
-                      className="px-3 py-1 rounded-none bg-white/70 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1 shadow-xs transition-all cursor-pointer border border-black/10"
-                    >
-                      <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>Torna su</span>
-                    </button>
+                    {/* Bottom Actions inside Info section: [ ↑ Torna su ] and [ (●) OLTRE ] */}
+                    <div className="mt-2 pt-2 border-t border-black/8 flex items-center justify-between shrink-0 select-none pb-1">
+                      <button
+                        type="button"
+                        onClick={scrollToTop}
+                        className="px-3 py-1 rounded-none bg-white/70 hover:bg-white text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1 shadow-xs transition-all cursor-pointer border border-black/10"
+                      >
+                        <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>Torna su</span>
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => setViewMode("oltre")}
-                      className="px-3.5 py-1 rounded-none bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-none bg-white/90" />
-                      <span>OLTRE</span>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => setViewMode("oltre")}
+                        className="px-3.5 py-1 rounded-none bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-none bg-white/90" />
+                        <span>OLTRE</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
