@@ -492,9 +492,9 @@ export function StationModal({
                 })}
               </div>
 
-              {/* Bottom Navigation Bar: [ ← Opera ] and [ (●) OLTRE ] (squadrati) */}
-              <div className="px-5 py-2.5 border-t border-black/8 bg-white/20 backdrop-blur-xs flex items-center justify-between shrink-0 select-none">
-                {/* Back to Artwork on bottom-left */}
+              {/* Bottom Navigation Bar: [ ← Opera ] */}
+              <div className="px-5 py-2.5 border-t border-black/8 bg-white/20 backdrop-blur-xs flex items-center justify-start shrink-0 select-none">
+                {/* Back to Artwork */}
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
@@ -502,17 +502,6 @@ export function StationModal({
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Opera</span>
-                </button>
-
-                {/* Active OLTRE toggle on bottom-right (clicking toggles back to artwork) */}
-                <button
-                  type="button"
-                  onClick={() => setViewMode("image")}
-                  className="px-3.5 py-1 rounded-none bg-black text-white hover:bg-black/85 font-display font-semibold text-[8.5px] sm:text-[9px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                  title="Torna all'opera"
-                >
-                  <span className="w-1.5 h-1.5 rounded-none bg-[#FF3B30] animate-pulse" />
-                  <span>OLTRE</span>
                 </button>
               </div>
             </motion.div>
