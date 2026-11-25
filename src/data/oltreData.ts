@@ -30,7 +30,7 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
     id: "denuncia",
     num: "02",
     label: "DENUNCIA POLITICA",
-    tabLabel: "Denuncia",
+    tabLabel: "Denuncia Politica",
     tagline: "Rivendicazione, accusa & giustizia sociale",
     description:
       "La ferita come atto d'accusa contro violenze sistemiche, abusi patriarcali o conflitti armati. Il corpo segnato si fa manifesto politico e prova tangibile di ingiustizia sociale.",
@@ -39,7 +39,7 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
     id: "testimonianza",
     num: "03",
     label: "TESTIMONIANZA & ARCHIVIO",
-    tabLabel: "Testimonianza",
+    tabLabel: "Testimonianza e Archivio",
     tagline: "Memoria storica, archivio & documento",
     description:
       "Il corpo come documento storico e archivio vivente. La cicatrice si fa traccia testimoniale indelebile per custodire la memoria collettiva e resistere all'oblio del tempo.",
@@ -57,7 +57,7 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
     id: "risignificazione",
     num: "05",
     label: "RISIGNIFICAZIONE ESTETICA",
-    tabLabel: "Risignificazione",
+    tabLabel: "Risignificazione Estetica",
     tagline: "Kintsugi, sublimazione poetica & trasfigurazione",
     description:
       "La ferita risemantizzata attraverso il gesto artistico, l'ornamento e la poetica del kintsugi. La cicatrice non viene celata, ma sublimata in nuovo linguaggio visivo.",
