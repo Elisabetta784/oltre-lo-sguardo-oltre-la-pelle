@@ -256,8 +256,8 @@ export function StationModal({
               >
                 {/* SCREEN 1: Large Artwork Image View (fills first screen of modal) */}
                 <div className="relative w-full h-[430px] sm:h-[465px] max-h-[66vh] shrink-0 flex flex-col justify-between overflow-hidden select-none">
-                  {/* Floating Badge: CASO XX (top-left, squadrato glass) */}
-                  <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-none bg-white/35 backdrop-blur-md text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border border-white/50 shadow-xs pointer-events-none">
+                  {/* Floating Badge: CASO XX (top-left, squadrato glass, no borders, sheer) */}
+                  <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-none bg-white/[0.18] backdrop-blur-sm text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border-0 border-none shadow-2xs pointer-events-none">
                     CASO {item.number}
                   </div>
 
@@ -284,7 +284,7 @@ export function StationModal({
                           e.stopPropagation();
                           setImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length);
                         }}
-                        className="w-6 h-6 rounded-none bg-white/35 hover:bg-white/65 backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-xs cursor-pointer border border-white/50"
+                        className="w-6 h-6 rounded-none bg-white/[0.18] hover:bg-white/[0.35] backdrop-blur-sm text-black flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer border-0 border-none"
                         title="Immagine precedente"
                       >
                         <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -298,7 +298,7 @@ export function StationModal({
                           e.stopPropagation();
                           setImgIdx((prev) => (prev + 1) % allImages.length);
                         }}
-                        className="w-6 h-6 rounded-none bg-white/35 hover:bg-white/65 backdrop-blur-md text-black flex items-center justify-center active:scale-95 transition-all shadow-xs cursor-pointer border border-white/50"
+                        className="w-6 h-6 rounded-none bg-white/[0.18] hover:bg-white/[0.35] backdrop-blur-sm text-black flex items-center justify-center active:scale-95 transition-all shadow-2xs cursor-pointer border-0 border-none"
                         title="Immagine successiva"
                       >
                         <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -307,11 +307,11 @@ export function StationModal({
                   )}
 
                   {/* VISIBLE SCROLL DIVIDER & DISTINCTIVE SCROLL-DOWN ACTION */}
-                  <div className="w-full shrink-0 relative flex items-center justify-center py-2 px-4 border-t border-black/15 bg-white/25 backdrop-blur-xs select-none">
+                  <div className="w-full shrink-0 relative flex items-center justify-center py-2 px-4 border-t border-black/15 bg-white/20 backdrop-blur-xs select-none">
                     <button
                       type="button"
                       onClick={scrollToInfo}
-                      className="group flex items-center gap-2 px-3.5 py-1 bg-black/85 hover:bg-black text-white backdrop-blur-md rounded-none font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider shadow-sm transition-all cursor-pointer border border-white/20"
+                      className="group flex items-center gap-2 px-3.5 py-1 bg-black text-white hover:bg-black/85 rounded-none font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider shadow-sm transition-all cursor-pointer border-0 border-none"
                       title="Scorri verso le informazioni del caso studio"
                     >
                       <span>Scorri per le info</span>
@@ -409,7 +409,7 @@ export function StationModal({
                       <button
                         type="button"
                         onClick={scrollToTop}
-                        className="px-3 py-1 rounded-none bg-white/35 hover:bg-white/65 backdrop-blur-md text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1 shadow-xs transition-all cursor-pointer border border-white/50"
+                        className="px-3 py-1 rounded-none bg-white/[0.18] hover:bg-white/[0.35] backdrop-blur-sm text-black font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1 shadow-2xs transition-all cursor-pointer border-0 border-none"
                       >
                         <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
                         <span>Torna su</span>
@@ -418,7 +418,7 @@ export function StationModal({
                       <button
                         type="button"
                         onClick={() => setViewMode("oltre")}
-                        className="px-3.5 py-1 rounded-none bg-black/85 hover:bg-black text-white backdrop-blur-md font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer border border-white/20"
+                        className="px-3.5 py-1 rounded-none bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer border-0 border-none"
                       >
                         <span className="w-1.5 h-1.5 rounded-none bg-white/90" />
                         <span>OLTRE</span>
@@ -442,9 +442,9 @@ export function StationModal({
               transition={{ duration: 0.2 }}
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
-              {/* Header: Category Badge (Squadrato glass, NO 'X' in top-right) */}
+              {/* Header: Category Badge (Squadrato sheer glass, NO 'X' in top-right) */}
               <div className="px-5 pt-3 pb-1 flex items-center justify-between shrink-0 select-none border-b border-black/8">
-                <div className="px-3 py-0.5 rounded-none bg-white/35 backdrop-blur-md text-black font-display font-bold text-[8px] sm:text-[8.5px] tracking-wider uppercase border border-white/50 shadow-xs">
+                <div className="px-3 py-0.5 rounded-none bg-white/[0.18] backdrop-blur-sm text-black font-display font-bold text-[8px] sm:text-[8.5px] tracking-wider uppercase border-0 border-none shadow-2xs">
                   {currentCatConfig.num} {currentCatConfig.label}
                 </div>
               </div>
@@ -498,7 +498,7 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
-                  className="px-3.5 py-1 rounded-none bg-white/35 hover:bg-white/65 backdrop-blur-md text-black font-display font-semibold text-[8.5px] sm:text-[9px] tracking-wide flex items-center gap-1.5 shadow-xs transition-all cursor-pointer border border-white/50"
+                  className="px-3.5 py-1 rounded-none bg-white/[0.18] hover:bg-white/[0.35] backdrop-blur-sm text-black font-display font-semibold text-[8.5px] sm:text-[9px] tracking-wide flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer border-0 border-none"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Opera</span>
@@ -624,7 +624,7 @@ function OltreCardContent({
   return (
     <>
       {/* Card Header: Subcategory Title (oltre.jpg) */}
-      <div className="h-8 px-3 border-b border-black/8 flex items-center justify-between bg-white/30 backdrop-blur-md shrink-0 select-none">
+      <div className="h-8 px-3 border-b border-black/6 flex items-center justify-between bg-white/[0.12] backdrop-blur-xs shrink-0 select-none">
         <span className="font-display font-bold text-[8px] sm:text-[8.5px] uppercase tracking-wider text-black">
           {subcat}
         </span>
@@ -908,10 +908,10 @@ function OltreCardCarousel({
                 willChange: "transform, opacity",
                 pointerEvents,
               }}
-              className={`absolute top-1/2 left-1/2 w-[175px] sm:w-[190px] h-[225px] sm:h-[245px] -mt-[112px] sm:-mt-[122px] -ml-[87px] sm:-ml-[95px] rounded-none border border-white/45 ring-0 outline-none flex flex-col overflow-hidden transition-[box-shadow,background-color] duration-300 ${
+              className={`absolute top-1/2 left-1/2 w-[175px] sm:w-[190px] h-[225px] sm:h-[245px] -mt-[112px] sm:-mt-[122px] -ml-[87px] sm:-ml-[95px] rounded-none border-0 border-none ring-0 outline-none flex flex-col overflow-hidden transition-[box-shadow,background-color] duration-300 ${
                 isCenter
-                  ? "bg-white/35 backdrop-blur-xl shadow-2xl shadow-black/10 cursor-default"
-                  : "bg-white/20 backdrop-blur-md shadow-md shadow-black/[0.04] cursor-pointer hover:opacity-100"
+                  ? "bg-white/[0.18] backdrop-blur-md shadow-xl shadow-black/[0.06] cursor-default"
+                  : "bg-white/[0.10] backdrop-blur-sm shadow-md shadow-black/[0.03] cursor-pointer hover:opacity-100"
               }`}
             >
               {/* Opaline frosted veil over side cards: catches clicks to bring the card to center without opening any case study */}
@@ -929,7 +929,7 @@ function OltreCardCarousel({
                   isCenter
                     ? "pointer-events-none"
                     : "pointer-events-auto cursor-pointer"
-                } bg-white/20 backdrop-blur-[2px]`}
+                } bg-white/[0.12] backdrop-blur-[1px]`}
                 title="Tocca per mettere a fuoco questa scheda"
               />
 
