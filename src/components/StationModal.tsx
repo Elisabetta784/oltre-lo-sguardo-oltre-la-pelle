@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ITEMS, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 import {
   OLTRE_CATEGORIES,
   OltreCategoryKey,
-  OltreCategoryConfig,
   getItemsByOltreCategory,
   getOltreCategoryForCase,
 } from "@/data/oltreData";
@@ -31,7 +30,7 @@ export function StationModal({
     setItem(initialItem);
   }, [initialItem]);
 
-  // Mode: "image" opens with large artwork + scrollable info, "oltre" opens 3D categorical perspective
+  // Image details and the compact narrative grid share the same modal.
   const [viewMode, setViewMode] = useState<"image" | "oltre">("image");
   const [imgIdx, setImgIdx] = useState(0);
 
@@ -446,7 +445,30 @@ export function StationModal({
               transition={{ duration: 0.2 }}
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
-              {/* Header: Category Badge + Description matching oltre.jpg */}
+              {/* Narrative controls wrap within the modal, never outside its edges. */}
+              <div className="px-5 pt-3.5 pb-2.5 shrink-0 border-b border-black/8 bg-white/15 backdrop-blur-xs">
+                <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase mb-2">
+                  Narrazioni
+                </h2>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Narrazioni">
+                  {OLTRE_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      aria-pressed={cat.id === activeCatKey}
+                      onClick={() => setActiveCatKey(cat.id)}
+                      className={`px-3.5 py-1 rounded-none font-display font-semibold text-[8.5px] sm:text-[9px] uppercase tracking-wide whitespace-nowrap shadow-2xs transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                        cat.id === activeCatKey
+                          ? "bg-black text-white"
+                          : "bg-white/[0.18] hover:bg-white/[0.35] text-black"
+                      }`}
+                    >
+                      {cat.tabLabel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="px-5 pt-3.5 pb-2.5 flex flex-col gap-1 shrink-0 select-none border-b border-black/8 bg-white/10 backdrop-blur-xs">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -466,8 +488,8 @@ export function StationModal({
                 </p>
               </div>
 
-              {/* Grid of Artwork Thumbnails matching oltre.jpg: larger boxes with scattered / staggered arrangement */}
-              <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar p-4 sm:p-6 pb-20">
+              {/* Sized by the modal width, with all thumbnails kept in normal grid flow. */}
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar p-3 sm:p-4">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={activeCatKey}
@@ -475,9 +497,9 @@ export function StationModal({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.18 }}
-                    className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-x-5 sm:gap-x-7 md:gap-x-9 gap-y-8 sm:gap-y-12 justify-items-center items-start max-w-4xl mx-auto py-4"
+                    className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,72px),1fr))] gap-2 items-start"
                   >
-                    {categoryItems.map((c, idx) => {
+                    {categoryItems.map((c) => {
                       const isSelected = c.id === item.id;
                       const imgSrc =
                         c.imageUrl ||
@@ -485,33 +507,24 @@ export function StationModal({
                         (c.galleryUrls && c.galleryUrls[0]) ||
                         "";
 
-                      // Staggered vertical displacement creating the organic scattered "griglia sparsa" of oltre.jpg
-                      const offsetPatterns = [
-                        "translate-y-0",
-                        "translate-y-5 sm:translate-y-8",
-                        "-translate-y-2 sm:-translate-y-3",
-                        "translate-y-7 sm:translate-y-11",
-                        "translate-y-1 sm:translate-y-2",
-                      ];
-                      const staggerClass = offsetPatterns[idx % offsetPatterns.length];
-
                       return (
                         <button
                           key={c.id}
                           type="button"
                           onClick={() => handleSelectCaseFromOltre(c)}
                           title={`${c.number} — ${c.title} (${c.authorOrSubject})`}
-                          className={`group relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 aspect-square overflow-hidden bg-black/5 transition-all duration-200 cursor-pointer ${staggerClass} ${
+                          aria-label={`Caso ${c.number}: ${c.title}`}
+                          className={`group relative w-full min-w-0 aspect-square overflow-hidden transition-shadow duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                             isSelected
-                              ? "border-[2.5px] border-black z-20 scale-[1.04] shadow-md"
-                              : "border-0 border-none hover:scale-[1.04] hover:shadow-md hover:z-10"
+                              ? "ring-2 ring-inset ring-black bg-black/5"
+                              : "hover:bg-white/30 hover:shadow-sm"
                           }`}
                         >
                           {imgSrc ? (
                             <img
                               src={imgSrc}
                               alt={c.title}
-                              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                              className="w-full h-full object-contain p-1"
                               loading="lazy"
                             />
                           ) : (
@@ -528,27 +541,6 @@ export function StationModal({
                     })}
                   </motion.div>
                 </AnimatePresence>
-              </div>
-
-              {/* 5 Category Selector tabs (written in full, never broken / non spezzate, underlined when active) */}
-              <div className="px-4 py-2.5 flex items-center justify-center gap-3 sm:gap-6 md:gap-8 overflow-x-auto no-scrollbar shrink-0 select-none border-t border-black/8 bg-white/15 backdrop-blur-xs whitespace-nowrap">
-                {OLTRE_CATEGORIES.map((cat) => {
-                  const isActive = cat.id === activeCatKey;
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setActiveCatKey(cat.id)}
-                      className={`font-display text-[9px] sm:text-[10px] md:text-[10.5px] uppercase tracking-wider transition-all duration-150 cursor-pointer py-1 px-1 bg-transparent rounded-none border-0 whitespace-nowrap shrink-0 ${
-                        isActive
-                          ? "text-black font-black underline underline-offset-4 decoration-[1.5px] decoration-black"
-                          : "text-black/45 hover:text-black font-semibold no-underline"
-                      }`}
-                    >
-                      {cat.tabLabel}
-                    </button>
-                  );
-                })}
               </div>
 
               {/* Bottom Navigation Bar: [ ← Opera ] */}

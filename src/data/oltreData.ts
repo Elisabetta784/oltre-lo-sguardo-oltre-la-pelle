@@ -4,8 +4,7 @@ export type OltreCategoryKey =
   | "eroicizzazione"
   | "denuncia"
   | "testimonianza"
-  | "normalizzazione"
-  | "risignificazione";
+  | "normalizzazione";
 
 export interface OltreCategoryConfig {
   id: OltreCategoryKey;
@@ -20,8 +19,8 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
   {
     id: "eroicizzazione",
     num: "01",
-    label: "EROICIZZAZIONE",
-    tabLabel: "Eroicizzazione",
+    label: "EROICO",
+    tabLabel: "Eroico",
     tagline: "Celebrazione, fierezza & riscatto",
     description:
       "La cicatrice come trofeo di sopravvivenza, forza e riscatto. Il corpo esibisce il segno con fierezza celebrativa, trasformando la vulnerabilità in monumento di resilienza.",
@@ -29,8 +28,8 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
   {
     id: "denuncia",
     num: "02",
-    label: "DENUNCIA POLITICA",
-    tabLabel: "Denuncia Politica",
+    label: "DENUNCIA",
+    tabLabel: "Denuncia",
     tagline: "Rivendicazione, accusa & giustizia sociale",
     description:
       "La ferita come atto d'accusa contro violenze sistemiche, abusi patriarcali o conflitti armati. Il corpo segnato si fa manifesto politico e prova tangibile di ingiustizia sociale.",
@@ -38,8 +37,8 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
   {
     id: "testimonianza",
     num: "03",
-    label: "TESTIMONIANZA & ARCHIVIO",
-    tabLabel: "Testimonianza e Archivio",
+    label: "POLITICO",
+    tabLabel: "Politico",
     tagline: "Memoria storica, archivio & documento",
     description:
       "Il corpo come documento storico e archivio vivente. La cicatrice si fa traccia testimoniale indelebile per custodire la memoria collettiva e resistere all'oblio del tempo.",
@@ -47,20 +46,11 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
   {
     id: "normalizzazione",
     num: "04",
-    label: "NORMALIZZAZIONE",
-    tabLabel: "Normalizzazione",
+    label: "NORMALIZZATO",
+    tabLabel: "Normalizzato",
     tagline: "De-stigmatizzazione & pelle reale",
     description:
-      "La cicatrice restituita alla sua ordinaria umanità e quotidianità. Rifiuto dei canoni omologati e della retorica epica, a favore della de-stigmatizzazione della pelle reale.",
-  },
-  {
-    id: "risignificazione",
-    num: "05",
-    label: "RISIGNIFICAZIONE ESTETICA",
-    tabLabel: "Risignificazione Estetica",
-    tagline: "Kintsugi, sublimazione poetica & trasfigurazione",
-    description:
-      "La ferita risemantizzata attraverso il gesto artistico, l'ornamento e la poetica del kintsugi. La cicatrice non viene celata, ma sublimata in nuovo linguaggio visivo.",
+      "La cicatrice restituita alla sua ordinaria umanità e quotidianità o risignificata attraverso il gesto artistico. La pelle reale diventa presenza, ornamento e linguaggio visivo, oltre i canoni omologati.",
   },
 ];
 
@@ -139,17 +129,17 @@ export const OLTRE_CLASSIFICATIONS: Record<string, OltreCategoryKey> = {
   "caso-032": "normalizzazione",
   "caso-159": "normalizzazione",
 
-  // 05 RISIGNIFICAZIONE ESTETICA (10 casi)
-  "caso-009": "risignificazione",
-  "caso-013": "risignificazione",
-  "caso-014": "risignificazione",
-  "caso-019": "risignificazione",
-  "caso-022": "risignificazione",
-  "caso-027": "risignificazione",
-  "caso-028": "risignificazione",
-  "caso-051": "risignificazione",
-  "caso-052": "risignificazione",
-  "caso-061": "risignificazione",
+  // Risignificazione estetica, inclusa nella narrazione Normalizzato (10 casi)
+  "caso-009": "normalizzazione",
+  "caso-013": "normalizzazione",
+  "caso-014": "normalizzazione",
+  "caso-019": "normalizzazione",
+  "caso-022": "normalizzazione",
+  "caso-027": "normalizzazione",
+  "caso-028": "normalizzazione",
+  "caso-051": "normalizzazione",
+  "caso-052": "normalizzazione",
+  "caso-061": "normalizzazione",
 };
 
 export function getOltreCategoryForCase(caseId: string): OltreCategoryKey {
