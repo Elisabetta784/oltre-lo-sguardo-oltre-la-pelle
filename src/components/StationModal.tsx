@@ -125,6 +125,34 @@ export function StationModal({
     [activeCatKey]
   );
 
+  const [oltreGridElement, setOltreGridElement] = useState<HTMLDivElement | null>(null);
+  const [oltreGridColumns, setOltreGridColumns] = useState(5);
+
+  useEffect(() => {
+    if (!oltreGridElement) return;
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      const count = categoryItems.length;
+      const gap = 6;
+      let bestColumns = 1;
+      let bestSize = 0;
+      for (let columns = 1; columns <= count; columns++) {
+        const rows = Math.ceil(count / columns);
+        const size = Math.min(
+          (width - gap * (columns - 1)) / columns,
+          (height - gap * (rows - 1)) / rows
+        );
+        if (size > bestSize) {
+          bestSize = size;
+          bestColumns = columns;
+        }
+      }
+      setOltreGridColumns(bestColumns);
+    });
+    observer.observe(oltreGridElement);
+    return () => observer.disconnect();
+  }, [oltreGridElement, categoryItems.length]);
+
   const handleSelectCaseFromOltre = (selectedCase: ArchiveItem) => {
     setItem(selectedCase);
     setViewMode("image");
@@ -225,7 +253,7 @@ export function StationModal({
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
-        className="relative z-50 flex flex-col shrink-0 border-0 border-none ring-0 outline-none shadow-2xl shadow-black/[0.08] overflow-hidden text-black select-none rounded-none bg-white/[0.25] backdrop-blur-[12px] w-[88%] sm:w-[84%] max-w-[430px] sm:max-w-[465px] h-[430px] sm:h-[465px] max-h-[66vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        className={`relative z-50 flex flex-col shrink-0 border-0 border-none ring-0 outline-none shadow-2xl shadow-black/[0.08] overflow-hidden text-black select-none rounded-none bg-white/[0.25] backdrop-blur-[12px] w-[88%] sm:w-[84%] max-w-[430px] sm:max-w-[465px] ${viewMode === "oltre" ? "h-[560px] sm:h-[600px] max-h-[82vh]" : "h-[430px] sm:h-[465px] max-h-[66vh]"} transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]`}
       >
         <AnimatePresence mode="wait" initial={false}>
           {/* =============================================================== */}
@@ -445,31 +473,10 @@ export function StationModal({
               transition={{ duration: 0.2 }}
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
-              {/* Narrative controls wrap within the modal, never outside its edges. */}
-              <div className="px-5 pt-3.5 pb-2.5 shrink-0 border-b border-black/8 bg-white/15 backdrop-blur-xs">
-                <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase mb-2">
+              <div className="px-5 pt-3.5 pb-2.5 flex flex-col gap-1.5 shrink-0 select-none border-b border-black/8 bg-white/20 backdrop-blur-xs">
+                <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase">
                   Narrazioni
                 </h2>
-                <div className="flex flex-wrap gap-1.5" role="group" aria-label="Narrazioni">
-                  {OLTRE_CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      aria-pressed={cat.id === activeCatKey}
-                      onClick={() => setActiveCatKey(cat.id)}
-                      className={`px-3.5 py-1 rounded-none font-display font-semibold text-[8.5px] sm:text-[9px] uppercase tracking-wide whitespace-nowrap shadow-2xs transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
-                        cat.id === activeCatKey
-                          ? "bg-black text-white"
-                          : "bg-white/[0.18] hover:bg-white/[0.35] text-black"
-                      }`}
-                    >
-                      {cat.tabLabel}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="px-5 pt-3.5 pb-2.5 flex flex-col gap-1 shrink-0 select-none border-b border-black/8 bg-white/10 backdrop-blur-xs">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[9.5px] font-bold text-black/60 tracking-wider">
@@ -483,21 +490,20 @@ export function StationModal({
                     {categoryItems.length} OPERE
                   </span>
                 </div>
-                <p className="font-body text-[8.5px] sm:text-[9.5px] text-black/75 leading-relaxed max-w-3xl line-clamp-2">
+                <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4]">
                   {currentCatConfig.description}
                 </p>
               </div>
 
-              {/* Sized by the modal width, with all thumbnails kept in normal grid flow. */}
-              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar p-3 sm:p-4">
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={activeCatKey}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.18 }}
-                    className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,72px),1fr))] gap-2 items-start"
+              {/* Both axes share the available space: every case fits on one page. */}
+              <div className="flex-1 min-h-0 p-3 sm:p-4">
+                  <div
+                    ref={setOltreGridElement}
+                    className="grid w-full h-full min-h-0 gap-1.5"
+                    style={{
+                      gridTemplateColumns: `repeat(${oltreGridColumns}, minmax(0, 1fr))`,
+                      gridTemplateRows: `repeat(${Math.max(1, Math.ceil(categoryItems.length / oltreGridColumns))}, minmax(0, 1fr))`,
+                    }}
                   >
                     {categoryItems.map((c) => {
                       const isSelected = c.id === item.id;
@@ -514,7 +520,7 @@ export function StationModal({
                           onClick={() => handleSelectCaseFromOltre(c)}
                           title={`${c.number} — ${c.title} (${c.authorOrSubject})`}
                           aria-label={`Caso ${c.number}: ${c.title}`}
-                          className={`group relative w-full min-w-0 aspect-square overflow-hidden transition-shadow duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                          className={`group relative w-full h-full min-w-0 min-h-0 overflow-hidden transition-shadow duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                             isSelected
                               ? "ring-2 ring-inset ring-black bg-black/5"
                               : "hover:bg-white/30 hover:shadow-sm"
@@ -539,8 +545,28 @@ export function StationModal({
                         </button>
                       );
                     })}
-                  </motion.div>
-                </AnimatePresence>
+                  </div>
+              </div>
+
+              {/* Fixed category controls remain reachable below the complete grid. */}
+              <div className="@container px-4 py-2.5 shrink-0 border-t border-black/8 bg-white/30 backdrop-blur-xs">
+                <div className="grid grid-cols-2 @min-[340px]:grid-cols-4 gap-1.5 w-full" role="group" aria-label="Narrazioni">
+                  {OLTRE_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      aria-pressed={cat.id === activeCatKey}
+                      onClick={() => setActiveCatKey(cat.id)}
+                      className={`min-h-8 px-2 py-1.5 rounded-none font-display font-semibold text-[8.5px] sm:text-[9px] uppercase tracking-wide whitespace-nowrap shadow-2xs transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                        cat.id === activeCatKey
+                          ? "bg-black text-white"
+                          : "bg-white/[0.18] hover:bg-white/[0.35] text-black"
+                      }`}
+                    >
+                      {cat.tabLabel}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Bottom Navigation Bar: [ ← Opera ] */}
