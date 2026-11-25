@@ -1,608 +1,167 @@
 import { ArchiveItem } from "./archiveData";
 
-export type OltreCategoryKey = "origine" | "intenzione" | "sguardo" | "scala" | "cromia";
+export type OltreCategoryKey =
+  | "eroicizzazione"
+  | "denuncia"
+  | "testimonianza"
+  | "normalizzazione"
+  | "risignificazione";
 
 export interface OltreCategoryConfig {
   id: OltreCategoryKey;
   num: string;
   label: string;
-  subcategories: string[];
+  tabLabel: string;
+  tagline: string;
+  description: string;
 }
 
 export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
   {
-    id: "origine",
+    id: "eroicizzazione",
     num: "01",
-    label: "ORIGINE",
-    subcategories: ["Fisiologico", "Medico", "Violenza subita"],
+    label: "EROICIZZAZIONE",
+    tabLabel: "Eroicizzazione",
+    tagline: "Celebrazione, fierezza & riscatto",
+    description:
+      "La cicatrice come trofeo di sopravvivenza, forza e riscatto. Il corpo esibisce il segno con fierezza celebrativa, trasformando la vulnerabilità in monumento di resilienza.",
   },
   {
-    id: "intenzione",
+    id: "denuncia",
     num: "02",
-    label: "INTENZIONE",
-    subcategories: ["Valorizzazione", "Testimonianza", "Denuncia", "Memoria"],
+    label: "DENUNCIA POLITICA",
+    tabLabel: "Denuncia",
+    tagline: "Rivendicazione, accusa & giustizia sociale",
+    description:
+      "La ferita come atto d'accusa contro violenze sistemiche, abusi patriarcali o conflitti armati. Il corpo segnato si fa manifesto politico e prova tangibile di ingiustizia sociale.",
   },
   {
-    id: "sguardo",
+    id: "testimonianza",
     num: "03",
-    label: "SGUARDO",
-    subcategories: ["In camera", "Volto non inquadrato", "Distolto o chiuso", "Nessun soggetto in posa"],
+    label: "TESTIMONIANZA & ARCHIVIO",
+    tabLabel: "Testimonianza",
+    tagline: "Memoria storica, archivio & documento",
+    description:
+      "Il corpo come documento storico e archivio vivente. La cicatrice si fa traccia testimoniale indelebile per custodire la memoria collettiva e resistere all'oblio del tempo.",
   },
   {
-    id: "scala",
+    id: "normalizzazione",
     num: "04",
-    label: "SCALA",
-    subcategories: ["Dettaglio o macro", "Volto o busto", "Figura intera", "Ambiente o scena"],
+    label: "NORMALIZZAZIONE",
+    tabLabel: "Normalizzazione",
+    tagline: "De-stigmatizzazione & pelle reale",
+    description:
+      "La cicatrice restituita alla sua ordinaria umanità e quotidianità. Rifiuto dei canoni omologati e della retorica epica, a favore della de-stigmatizzazione della pelle reale.",
   },
   {
-    id: "cromia",
+    id: "risignificazione",
     num: "05",
-    label: "CROMIA",
-    subcategories: ["bianco e nero", "colore", "misto"],
+    label: "RISIGNIFICAZIONE ESTETICA",
+    tabLabel: "Risignificazione",
+    tagline: "Kintsugi, sublimazione poetica & trasfigurazione",
+    description:
+      "La ferita risemantizzata attraverso il gesto artistico, l'ornamento e la poetica del kintsugi. La cicatrice non viene celata, ma sublimata in nuovo linguaggio visivo.",
   },
 ];
 
-export interface CaseOltreClassification {
-  origine: "Fisiologico" | "Medico" | "Violenza subita";
-  intenzione: "Valorizzazione" | "Testimonianza" | "Denuncia" | "Memoria";
-  sguardo: "In camera" | "Volto non inquadrato" | "Distolto o chiuso" | "Nessun soggetto in posa";
-  scala: "Dettaglio o macro" | "Volto o busto" | "Figura intera" | "Ambiente o scena";
-  cromia: "bianco e nero" | "colore" | "misto";
-}
+export const OLTRE_CLASSIFICATIONS: Record<string, OltreCategoryKey> = {
+  // 01 EROICIZZAZIONE (14 casi)
+  "caso-015": "eroicizzazione",
+  "caso-017": "eroicizzazione",
+  "caso-018": "eroicizzazione",
+  "caso-025": "eroicizzazione",
+  "caso-026": "eroicizzazione",
+  "caso-031": "eroicizzazione",
+  "caso-037": "eroicizzazione",
+  "caso-040": "eroicizzazione",
+  "caso-043": "eroicizzazione",
+  "caso-045": "eroicizzazione",
+  "caso-047": "eroicizzazione",
+  "caso-048": "eroicizzazione",
+  "caso-050": "eroicizzazione",
+  "caso-169": "eroicizzazione",
 
-export const OLTRE_CLASSIFICATIONS: Record<string, CaseOltreClassification> = {
-  "caso-001": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Dettaglio o macro",
-    "cromia": "bianco e nero"
-  },
-  "caso-070": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-002": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-003": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Dettaglio o macro",
-    "cromia": "colore"
-  },
-  "caso-004": {
-    "origine": "Fisiologico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-005": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Dettaglio o macro",
-    "cromia": "colore"
-  },
-  "caso-006": {
-    "origine": "Fisiologico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-007": {
-    "origine": "Fisiologico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-008": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Dettaglio o macro",
-    "cromia": "bianco e nero"
-  },
-  "caso-009": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-010": {
-    "origine": "Fisiologico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-011": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Dettaglio o macro",
-    "cromia": "colore"
-  },
-  "caso-012": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-013": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Dettaglio o macro",
-    "cromia": "bianco e nero"
-  },
-  "caso-014": {
-    "origine": "Fisiologico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-015": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-016": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-017": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "misto"
-  },
-  "caso-018": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-019": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-020": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-021": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Dettaglio o macro",
-    "cromia": "bianco e nero"
-  },
-  "caso-022": {
-    "origine": "Medico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-023": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-024": {
-    "origine": "Fisiologico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-025": {
-    "origine": "Medico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-026": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-027": {
-    "origine": "Medico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "misto"
-  },
-  "caso-028": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Dettaglio o macro",
-    "cromia": "colore"
-  },
-  "caso-029": {
-    "origine": "Medico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-030": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "misto"
-  },
-  "caso-031": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-032": {
-    "origine": "Medico",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-033": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-034": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-035": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-036": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-037": {
-    "origine": "Violenza subita",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-038": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-039": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-040": {
-    "origine": "Violenza subita",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-041": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-042": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-043": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-044": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-045": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-046": {
-    "origine": "Violenza subita",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-047": {
-    "origine": "Violenza subita",
-    "intenzione": "Valorizzazione",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-048": {
-    "origine": "Violenza subita",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Figura intera",
-    "cromia": "colore"
-  },
-  "caso-049": {
-    "origine": "Medico",
-    "intenzione": "Memoria",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-050": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-051": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "misto"
-  },
-  "caso-052": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-053": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-054": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-055": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-056": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-057": {
-    "origine": "Violenza subita",
-    "intenzione": "Testimonianza",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-058": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-059": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-060": {
-    "origine": "Violenza subita",
-    "intenzione": "Testimonianza",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-061": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "misto"
-  },
-  "caso-062": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-063": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "misto"
-  },
-  "caso-064": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "bianco e nero"
-  },
-  "caso-065": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "In camera",
-    "scala": "Figura intera",
-    "cromia": "misto"
-  },
-  "caso-066": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Figura intera",
-    "cromia": "bianco e nero"
-  },
-  "caso-067": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-068": {
-    "origine": "Medico",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-069": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "Nessun soggetto in posa",
-    "scala": "Ambiente o scena",
-    "cromia": "colore"
-  },
-  "caso-071": {
-    "origine": "Violenza subita",
-    "intenzione": "Memoria",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-171": {
-    "origine": "Violenza subita",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-159": {
-    "origine": "Medico",
-    "intenzione": "Testimonianza",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-168": {
-    "origine": "Fisiologico",
-    "intenzione": "Denuncia",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-169": {
-    "origine": "Violenza subita",
-    "intenzione": "Testimonianza",
-    "sguardo": "Volto non inquadrato",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  },
-  "caso-172": {
-    "origine": "Violenza subita",
-    "intenzione": "Valorizzazione",
-    "sguardo": "In camera",
-    "scala": "Volto o busto",
-    "cromia": "colore"
-  }
+  // 02 DENUNCIA POLITICA (21 casi)
+  "caso-034": "denuncia",
+  "caso-035": "denuncia",
+  "caso-036": "denuncia",
+  "caso-038": "denuncia",
+  "caso-041": "denuncia",
+  "caso-042": "denuncia",
+  "caso-044": "denuncia",
+  "caso-053": "denuncia",
+  "caso-056": "denuncia",
+  "caso-057": "denuncia",
+  "caso-058": "denuncia",
+  "caso-059": "denuncia",
+  "caso-060": "denuncia",
+  "caso-062": "denuncia",
+  "caso-066": "denuncia",
+  "caso-067": "denuncia",
+  "caso-068": "denuncia",
+  "caso-069": "denuncia",
+  "caso-070": "denuncia",
+  "caso-168": "denuncia",
+  "caso-171": "denuncia",
+
+  // 03 TESTIMONIANZA & ARCHIVIO (14 casi)
+  "caso-016": "testimonianza",
+  "caso-021": "testimonianza",
+  "caso-030": "testimonianza",
+  "caso-033": "testimonianza",
+  "caso-039": "testimonianza",
+  "caso-046": "testimonianza",
+  "caso-049": "testimonianza",
+  "caso-054": "testimonianza",
+  "caso-055": "testimonianza",
+  "caso-063": "testimonianza",
+  "caso-064": "testimonianza",
+  "caso-065": "testimonianza",
+  "caso-071": "testimonianza",
+  "caso-172": "testimonianza",
+
+  // 04 NORMALIZZAZIONE (17 casi)
+  "caso-001": "normalizzazione",
+  "caso-002": "normalizzazione",
+  "caso-003": "normalizzazione",
+  "caso-004": "normalizzazione",
+  "caso-005": "normalizzazione",
+  "caso-006": "normalizzazione",
+  "caso-007": "normalizzazione",
+  "caso-008": "normalizzazione",
+  "caso-010": "normalizzazione",
+  "caso-011": "normalizzazione",
+  "caso-012": "normalizzazione",
+  "caso-020": "normalizzazione",
+  "caso-023": "normalizzazione",
+  "caso-024": "normalizzazione",
+  "caso-029": "normalizzazione",
+  "caso-032": "normalizzazione",
+  "caso-159": "normalizzazione",
+
+  // 05 RISIGNIFICAZIONE ESTETICA (10 casi)
+  "caso-009": "risignificazione",
+  "caso-013": "risignificazione",
+  "caso-014": "risignificazione",
+  "caso-019": "risignificazione",
+  "caso-022": "risignificazione",
+  "caso-027": "risignificazione",
+  "caso-028": "risignificazione",
+  "caso-051": "risignificazione",
+  "caso-052": "risignificazione",
+  "caso-061": "risignificazione",
 };
 
-export function getOltreClassification(caseId: string): CaseOltreClassification {
-  return OLTRE_CLASSIFICATIONS[caseId] || {
-    origine: "Fisiologico",
-    intenzione: "Testimonianza",
-    sguardo: "In camera",
-    scala: "Volto o busto",
-    cromia: "colore",
-  };
+export function getOltreCategoryForCase(caseId: string): OltreCategoryKey {
+  return OLTRE_CLASSIFICATIONS[caseId] || "eroicizzazione";
 }
 
-export function getItemsByOltreSubcategory(
+export function getItemsByOltreCategory(
   items: ArchiveItem[],
-  category: OltreCategoryKey,
-  subcategory: string
+  category: OltreCategoryKey
 ): ArchiveItem[] {
   return items.filter((item) => {
-    const classification = OLTRE_CLASSIFICATIONS[item.id];
-    if (!classification) return false;
-    return classification[category].toLowerCase() === subcategory.toLowerCase();
+    const cat = OLTRE_CLASSIFICATIONS[item.id];
+    return cat === category;
   });
 }
