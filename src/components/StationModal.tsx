@@ -471,8 +471,8 @@ export function StationModal({
                 </AnimatePresence>
               </div>
 
-              {/* 5 Category Selector tabs as squared buttons */}
-              <div className="px-4 py-1.5 flex items-center justify-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 select-none border-t border-black/8 bg-white/12 backdrop-blur-xs">
+              {/* 5 Category Selector tabs (underlined when active, no enclosing box) */}
+              <div className="px-4 py-1.5 flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar shrink-0 select-none border-t border-black/8 bg-white/12 backdrop-blur-xs">
                 {OLTRE_CATEGORIES.map((cat) => {
                   const isActive = cat.id === activeCatKey;
                   return (
@@ -480,10 +480,10 @@ export function StationModal({
                       key={cat.id}
                       type="button"
                       onClick={() => setActiveCatKey(cat.id)}
-                      className={`font-display text-[7.5px] sm:text-[8px] font-bold uppercase tracking-wider transition-colors duration-200 cursor-pointer px-2.5 py-0.5 rounded-none ${
+                      className={`font-display text-[8px] sm:text-[8.5px] uppercase tracking-wider transition-all duration-150 cursor-pointer py-1 px-1 bg-transparent rounded-none border-0 ${
                         isActive
-                          ? "bg-black text-white shadow-xs"
-                          : "text-black/60 hover:text-black hover:bg-black/5"
+                          ? "text-black font-black underline underline-offset-4 decoration-[1.5px] decoration-black"
+                          : "text-black/45 hover:text-black font-semibold no-underline"
                       }`}
                     >
                       {cat.label.charAt(0) + cat.label.slice(1).toLowerCase()}
