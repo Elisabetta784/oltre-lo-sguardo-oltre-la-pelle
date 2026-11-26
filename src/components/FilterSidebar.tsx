@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, SlidersHorizontal } from "lucide-react";
+import { Search, X } from "lucide-react";
+import { BrandSlashes } from "./BrandSlashes";
 import {
   FILTER_CATEGORIES,
   FilterCategoryId,
@@ -87,7 +88,7 @@ function KineticTypoEcho({ text, categoryLabel }: { text: string; categoryLabel?
             <span className="font-display text-[9px] uppercase tracking-widest text-black/70 font-bold">
               [{categoryLabel}]
             </span>
-            <span className="w-3.5 h-[1px] bg-black/25" />
+            <BrandSlashes count={1} className="text-[9px]" />
             <span className="font-display text-[8.5px] uppercase tracking-wider text-black/50 font-medium">
               FILTRO ATTIVO
             </span>
@@ -192,7 +193,7 @@ export function FilterSidebar({
             <div className="p-2.5 sm:p-3 border-b-2 border-black bg-[#ECEEF0]/95 flex flex-col gap-2 shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <SlidersHorizontal className="w-3.5 h-3.5 text-black" />
+                  <BrandSlashes count={5} className="text-xs" />
                   <span className="font-display font-bold text-xs uppercase tracking-wider text-black">
                     FILTRI ARCHIVIO
                   </span>

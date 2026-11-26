@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Info, ExternalLink } from "lucide-react";
 import { ArchiveItem } from "@/data/archiveData";
 import { AudioPlayerSnippet } from "./AudioPlayerSnippet";
+import { BrandSlashes } from "./BrandSlashes";
 
 interface MicroViewProps {
   item: ArchiveItem;
@@ -258,6 +259,7 @@ export function MicroView({
 
               {/* Big Bold Headline in Alte Haas Grotesk */}
               <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-black leading-[1.08] mb-2">
+                <BrandSlashes count={5} className="mr-2" />
                 {item.title}
               </h1>
 
@@ -268,7 +270,11 @@ export function MicroView({
 
               {/* Sintesi Concettuale / Story in Indivisible */}
               <div className="font-body text-xs sm:text-[13px] text-black/85 leading-relaxed max-w-xl mb-6 text-left text-pretty hyphens-auto">
-                <p>{(item.sintesiConcettuale || item.caption || item.excerpt)?.replace(/\s+/g, ' ')}</p>
+                <p>
+                  <BrandSlashes className="mr-1.5" />
+                  {(item.sintesiConcettuale || item.caption || item.excerpt)?.replace(/\s+/g, ' ')}
+                  <BrandSlashes count={1} className="ml-1.5" />
+                </p>
               </div>
 
               {/* TECHNICAL SPECIFICATION TABLE */}

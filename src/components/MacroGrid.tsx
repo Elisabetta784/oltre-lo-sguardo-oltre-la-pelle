@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Volume2 } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 import { StationModal } from "./StationModal";
+import { BrandSlashes } from "./BrandSlashes";
 
 interface MacroGridProps {
   items: ArchiveItem[];
@@ -461,6 +462,7 @@ const MacroTile = React.memo(function MacroTile({
         {item.type === "text" && (
           <div className="w-full h-full p-2.5 flex flex-col justify-center items-center bg-[#F4F4EE] overflow-hidden text-center select-none">
             <span className="font-mono text-[8px] uppercase tracking-widest text-black/50 mb-0.5">
+              <BrandSlashes className="mr-1.5" />
               TESTO • {item.number}
             </span>
             <span className="font-display text-[10px] sm:text-xs font-bold text-black tracking-wide uppercase leading-tight line-clamp-2 sm:line-clamp-3">
@@ -472,6 +474,7 @@ const MacroTile = React.memo(function MacroTile({
         {/* Subtle hover overlay with case number and title */}
         <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none flex flex-col justify-end text-white">
           <span className="font-mono text-[8px] tracking-wider uppercase opacity-85">
+            <BrandSlashes count={1} className="mr-1.5" />
             CASO {item.number}
           </span>
           <span className="font-display text-[10px] font-medium leading-tight truncate">
@@ -809,6 +812,9 @@ function StationColumn({
       }}
       className="relative min-h-0 min-w-0 overflow-hidden w-full h-full flex flex-col cursor-grab active:cursor-grabbing touch-none select-none"
     >
+      <div className="absolute top-1 right-2 z-20 text-[11px] text-black pointer-events-none">
+        <BrandSlashes count={portionIndex === 1 ? 1 : portionIndex === 2 ? 3 : 5} />
+      </div>
       {/* Moving track with 3 seamlessly repeating copies for infinite continuous loop */}
       <div
         ref={trackRef}
@@ -1180,6 +1186,7 @@ export function MacroGrid({
         {displayItems.length === 0 ? (
           <div className="pointer-events-auto flex flex-col items-center justify-center p-8 text-center border border-dashed border-black/30 bg-[#ECEEF0] w-full max-w-md my-auto shadow-md">
             <p className="font-display text-sm uppercase tracking-wider text-black font-bold mb-1.5">
+              <BrandSlashes count={5} className="mr-2" />
               NESSUN SEGNO CORRISPONDENTE
             </p>
             <p className="font-body text-xs text-black/60 max-w-xs">
