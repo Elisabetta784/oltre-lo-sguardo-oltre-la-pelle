@@ -454,12 +454,23 @@ export function StationModal({
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
               <div className="px-5 pt-3.5 pb-2.5 flex flex-col gap-1.5 shrink-0 select-none border-b border-black/8 bg-white/20 backdrop-blur-xs">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase">
                     <BrandSlashes count={5} className="mr-2" />
                     Narrazioni
                   </h2>
-                  <BrandSlashCluster />
+                  <div className="flex items-center gap-3">
+                    <BrandSlashCluster />
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("image")}
+                      aria-label="Torna all’opera"
+                      className="min-h-8 px-2 py-1 rounded-none bg-transparent hover:bg-white/30 text-black font-display font-medium text-[10px] sm:text-[10.5px] tracking-wide flex items-center gap-1.5 transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Opera</span>
+                    </button>
+                  </div>
                 </div>
                 <p className="w-full text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
                   Trascina per esplorare
@@ -515,19 +526,7 @@ export function StationModal({
                 </div>
               </div>
 
-              {/* Bottom Navigation Bar: [ ← Opera ] */}
-              <div className="px-5 py-2.5 border-t border-black/8 bg-white/20 backdrop-blur-xs flex items-center justify-start shrink-0 select-none">
-                {/* Back to Artwork */}
-                <button
-                  type="button"
-                  onClick={() => setViewMode("image")}
-                  aria-label="Torna all’opera"
-                  className="min-h-9 px-4 py-2 rounded-none bg-white/55 hover:bg-white/80 backdrop-blur-sm text-black font-display font-bold text-[11px] sm:text-[12px] tracking-wide flex items-center gap-2 shadow-2xs transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                >
-                  <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
-                  <span>Opera</span>
-                </button>
-              </div>
+
             </motion.div>
           )}
         </AnimatePresence>
