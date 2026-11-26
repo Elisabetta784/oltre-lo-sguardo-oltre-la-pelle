@@ -461,17 +461,17 @@ export function StationModal({
                   </h2>
                   <BrandSlashCluster />
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="grid grid-cols-[4.5rem_minmax(0,1fr)_4.5rem] items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setViewMode("image")}
                     aria-label="Torna all’opera"
-                    className="shrink-0 min-h-8 px-2.5 py-1 rounded-none border border-black/15 bg-white/50 hover:bg-white/80 text-black font-display font-semibold text-[9.5px] sm:text-[10px] tracking-wide flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    className="min-h-8 px-2.5 py-1 rounded-none border border-black/15 bg-white/50 hover:bg-white/80 text-black font-display font-semibold text-[9.5px] sm:text-[10px] tracking-wide flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Opera</span>
                   </button>
-                  <p className="flex-1 min-w-0 text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
+                  <p className="min-w-0 text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
                     Trascina per esplorare
                   </p>
                 </div>
