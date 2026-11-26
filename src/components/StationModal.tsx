@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
+import { OltreCaseGrid } from "./OltreCaseGrid";
 import { ArchiveItem, ARCHIVE_ITEMS, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 import {
   OLTRE_CATEGORIES,
@@ -124,34 +125,6 @@ export function StationModal({
     () => getItemsByOltreCategory(ARCHIVE_ITEMS, activeCatKey),
     [activeCatKey]
   );
-
-  const [oltreGridElement, setOltreGridElement] = useState<HTMLDivElement | null>(null);
-  const [oltreGridColumns, setOltreGridColumns] = useState(5);
-
-  useEffect(() => {
-    if (!oltreGridElement) return;
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      const count = categoryItems.length;
-      const gap = 6;
-      let bestColumns = 1;
-      let bestSize = 0;
-      for (let columns = 1; columns <= count; columns++) {
-        const rows = Math.ceil(count / columns);
-        const size = Math.min(
-          (width - gap * (columns - 1)) / columns,
-          (height - gap * (rows - 1)) / rows
-        );
-        if (size > bestSize) {
-          bestSize = size;
-          bestColumns = columns;
-        }
-      }
-      setOltreGridColumns(bestColumns);
-    });
-    observer.observe(oltreGridElement);
-    return () => observer.disconnect();
-  }, [oltreGridElement, categoryItems.length]);
 
   const handleSelectCaseFromOltre = (selectedCase: ArchiveItem) => {
     setItem(selectedCase);
@@ -490,66 +463,23 @@ export function StationModal({
                     {categoryItems.length} OPERE
                   </span>
                 </div>
-                <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4]">
-                  {currentCatConfig.description}
-                </p>
               </div>
 
-              {/* Both axes share the available space: every case fits on one page. */}
+              {/* Compact bento cells remain separate; overflowing cases repeat in a loop. */}
               <div className="flex-1 min-h-0 p-3 sm:p-4">
-                  <div
-                    ref={setOltreGridElement}
-                    className="grid w-full h-full min-h-0 gap-1.5"
-                    style={{
-                      gridTemplateColumns: `repeat(${oltreGridColumns}, minmax(0, 1fr))`,
-                      gridTemplateRows: `repeat(${Math.max(1, Math.ceil(categoryItems.length / oltreGridColumns))}, minmax(0, 1fr))`,
-                    }}
-                  >
-                    {categoryItems.map((c) => {
-                      const isSelected = c.id === item.id;
-                      const imgSrc =
-                        c.imageUrl ||
-                        c.thumbnailUrl ||
-                        (c.galleryUrls && c.galleryUrls[0]) ||
-                        "";
-
-                      return (
-                        <button
-                          key={c.id}
-                          type="button"
-                          onClick={() => handleSelectCaseFromOltre(c)}
-                          title={`${c.number} — ${c.title} (${c.authorOrSubject})`}
-                          aria-label={`Caso ${c.number}: ${c.title}`}
-                          className={`group relative w-full h-full min-w-0 min-h-0 overflow-hidden transition-shadow duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
-                            isSelected
-                              ? "ring-2 ring-inset ring-black bg-black/5"
-                              : "hover:bg-white/30 hover:shadow-sm"
-                          }`}
-                        >
-                          {imgSrc ? (
-                            <img
-                              src={imgSrc}
-                              alt={c.title}
-                              className="w-full h-full object-contain p-1"
-                              loading="lazy"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-black/10 text-black/50 font-mono text-[9px]">
-                              {c.number}
-                            </div>
-                          )}
-                          {/* Number tag top-left on hover */}
-                          <div className="absolute top-1 left-1 px-1 py-0.2 bg-black/75 backdrop-blur-xs text-white font-mono text-[7px] leading-tight font-medium pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                            {c.number}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                <OltreCaseGrid
+                  key={activeCatKey}
+                  items={categoryItems}
+                  selectedId={item.id}
+                  onSelect={handleSelectCaseFromOltre}
+                />
               </div>
 
               {/* Fixed category controls remain reachable below the complete grid. */}
               <div className="@container px-4 py-2.5 shrink-0 border-t border-black/8 bg-white/30 backdrop-blur-xs">
+                <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4] mb-3">
+                  {currentCatConfig.description}
+                </p>
                 <div className="grid grid-cols-2 @min-[340px]:grid-cols-4 gap-1.5 w-full" role="group" aria-label="Narrazioni">
                   {OLTRE_CATEGORIES.map((cat) => (
                     <button
