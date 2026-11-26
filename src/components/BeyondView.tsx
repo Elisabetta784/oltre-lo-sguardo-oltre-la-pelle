@@ -4,7 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArchiveItem } from "@/data/archiveData";
 import { ArrowLeft, ZoomIn } from "lucide-react";
-import { BrandSlashes } from "./BrandSlashes";
+import { BrandSlashes, BrandSlashCluster } from "./BrandSlashes";
 
 export type BeyondCategoryId =
   | "mascherabilita"
@@ -277,6 +277,7 @@ export function BeyondView({
             <span className="font-display text-xs sm:text-[13px] font-black tracking-widest text-black uppercase whitespace-nowrap">
               OLTRE · VISIONE SISTEMICA
             </span>
+            <BrandSlashCluster className="hidden sm:inline-flex" />
           </div>
 
           {/* Symmetrical 2-Row Layout of Categories */}
@@ -459,7 +460,7 @@ export function BeyondView({
                 >
                   <div className="flex items-center justify-between border-b border-black/15 pb-2 mb-3">
                     <div className="flex items-center gap-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-black">
-                      <BrandSlashes count={5} />
+                      <BrandSlashes />
                       <span>CONSIDERAZIONI SISTEMICHE</span>
                     </div>
                     <span className="font-body text-[10px] text-black/60 font-semibold">
@@ -492,9 +493,7 @@ export function BeyondView({
                   </div>
 
                   <div className="font-body text-[10.5px] text-black leading-relaxed text-left text-pretty hyphens-auto opacity-95 pt-2 border-t border-black/10">
-                    <BrandSlashes className="mr-1.5" />
                     {activeCategory.considerations?.replace(/\s+/g, ' ')}
-                    <BrandSlashes count={1} className="ml-1.5" />
                   </div>
 
                   <div className="mt-4 pt-2 border-t border-black/15 flex items-center justify-between font-body text-[8.5px] text-black/60 uppercase tracking-wider">
@@ -573,7 +572,6 @@ export function BeyondView({
           </button>
         </span>
         <span className="hidden sm:inline">
-          <BrandSlashes count={3} className="mr-2" />
           {visualItems.length} CASI STUDIO VISIVI • 2 POLI DIALETTICI • 6 DIMENSIONI SOCIOLOGICHE
         </span>
       </div>

@@ -193,7 +193,6 @@ export function FilterSidebar({
             <div className="p-2.5 sm:p-3 border-b-2 border-black bg-[#ECEEF0]/95 flex flex-col gap-2 shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <BrandSlashes count={5} className="text-xs" />
                   <span className="font-display font-bold text-xs uppercase tracking-wider text-black">
                     FILTRI ARCHIVIO
                   </span>

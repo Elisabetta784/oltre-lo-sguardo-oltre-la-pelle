@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
 import { OltreCaseGrid } from "./OltreCaseGrid";
-import { BrandSlashes } from "./BrandSlashes";
+import { BrandSlashes, BrandSlashCluster } from "./BrandSlashes";
 import { ArchiveItem, ARCHIVE_ITEMS, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 import {
   OLTRE_CATEGORIES,
@@ -264,7 +264,6 @@ export function StationModal({
                   {/* Floating Badge: CASO XX (top-left, squadrato glass, no borders, sheer) */}
                   <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-none bg-white/[0.18] backdrop-blur-sm text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border-0 border-none shadow-2xs pointer-events-none">
                     CASO {item.number}
-                    <BrandSlashes count={1} className="ml-1.5" />
                   </div>
 
                   {/* Artwork Image Area (Clean, Unobstructed - gallery arrows NEVER overlay the image) */}
@@ -336,14 +335,12 @@ export function StationModal({
                     {/* Header row: CASO (left-aligned as previous version) */}
                     <div className="flex items-center justify-between pb-1 shrink-0 select-none border-b border-black/6">
                       <span className="font-display font-bold text-[8.5px] sm:text-[9px] uppercase tracking-wide text-black/60">
-                        CASO {item.number}
+                        CASO <BrandSlashes count={1} className="mx-1" /> {item.number}
                       </span>
-                      <BrandSlashes count={5} className="text-[9px]" />
                     </div>
 
                     {/* Title */}
                     <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight">
-                      <BrandSlashes className="mr-1.5" />
                       {item.title}
                     </h2>
 
@@ -355,7 +352,7 @@ export function StationModal({
                     {/* Section Descrizione */}
                     <div className="mt-0.5">
                       <span className="block font-display font-bold text-[7.5px] sm:text-[8px] text-black/45 uppercase tracking-wider mb-1">
-                        <BrandSlashes count={1} className="mr-1.5" />
+                        <BrandSlashes className="mr-1.5" />
                         Descrizione
                       </span>
                       <p className="font-body text-[9.5px] sm:text-[10px] leading-relaxed text-black/90 text-left text-pretty hyphens-auto">
@@ -452,14 +449,14 @@ export function StationModal({
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
               <div className="px-5 pt-3.5 pb-2.5 flex flex-col gap-1.5 shrink-0 select-none border-b border-black/8 bg-white/20 backdrop-blur-xs">
-                <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase">
-                  <BrandSlashes count={5} className="mr-2" />
-                  Narrazioni
-                </h2>
+                <div className="flex items-center justify-between gap-4">
+                  <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase">
+                    Narrazioni
+                  </h2>
+                  <BrandSlashCluster />
+                </div>
                 <p className="w-full text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
-                  <BrandSlashes count={1} className="mr-2" />
                   Trascina per esplorare
-                  <BrandSlashes count={1} className="ml-2" />
                 </p>
               </div>
 
@@ -480,6 +477,7 @@ export function StationModal({
                     <span className="font-mono text-[9.5px] font-bold text-black/60 tracking-wider">
                       {currentCatConfig.num}
                     </span>
+                    <BrandSlashes count={1} />
                     <h3 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase text-black whitespace-nowrap">
                       {currentCatConfig.label}
                     </h3>
@@ -489,9 +487,7 @@ export function StationModal({
                   </span>
                 </div>
                 <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4] mb-3">
-                  <BrandSlashes className="mr-1.5" />
                   {currentCatConfig.description}
-                  <BrandSlashes count={1} className="ml-1.5" />
                 </p>
                 <div className="grid grid-cols-2 @min-[340px]:grid-cols-4 gap-1.5 w-full" role="group" aria-label="Narrazioni">
                   {OLTRE_CATEGORIES.map((cat) => (
