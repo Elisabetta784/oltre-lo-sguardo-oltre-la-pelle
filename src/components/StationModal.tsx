@@ -456,19 +456,6 @@ export function StationModal({
                   <BrandSlashes count={5} className="mr-2" />
                   Narrazioni
                 </h2>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[9.5px] font-bold text-black/60 tracking-wider">
-                      {currentCatConfig.num}
-                    </span>
-                    <h3 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase text-black whitespace-nowrap">
-                      {currentCatConfig.label}
-                    </h3>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-none bg-white/[0.22] text-black font-mono text-[8px] tracking-widest font-semibold border-0">
-                    {categoryItems.length} OPERE
-                  </span>
-                </div>
               </div>
 
               {/* Compact bento cells remain separate; overflowing cases repeat in a loop. */}
@@ -483,6 +470,19 @@ export function StationModal({
 
               {/* Fixed category controls remain reachable below the complete grid. */}
               <div className="@container px-4 py-2.5 shrink-0 border-t border-black/8 bg-white/30 backdrop-blur-xs">
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[9.5px] font-bold text-black/60 tracking-wider">
+                      {currentCatConfig.num}
+                    </span>
+                    <h3 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase text-black whitespace-nowrap">
+                      {currentCatConfig.label}
+                    </h3>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-none bg-white/[0.22] text-black font-mono text-[8px] tracking-widest font-semibold border-0">
+                    {categoryItems.length} OPERE
+                  </span>
+                </div>
                 <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4] mb-3">
                   <BrandSlashes className="mr-1.5" />
                   {currentCatConfig.description}
@@ -513,9 +513,10 @@ export function StationModal({
                 <button
                   type="button"
                   onClick={() => setViewMode("image")}
-                  className="px-3.5 py-1 rounded-none bg-white/[0.18] hover:bg-white/[0.35] backdrop-blur-sm text-black font-display font-semibold text-[8.5px] sm:text-[9px] tracking-wide flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer border-0 border-none"
+                  aria-label="Torna all’opera"
+                  className="min-h-9 px-4 py-2 rounded-none bg-white/55 hover:bg-white/80 backdrop-blur-sm text-black font-display font-bold text-[11px] sm:text-[12px] tracking-wide flex items-center gap-2 shadow-2xs transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                 >
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
                   <span>Opera</span>
                 </button>
               </div>
