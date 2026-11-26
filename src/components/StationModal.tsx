@@ -456,6 +456,11 @@ export function StationModal({
                   <BrandSlashes count={5} className="mr-2" />
                   Narrazioni
                 </h2>
+                <p className="text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
+                  <BrandSlashes count={1} className="mr-2" />
+                  Trascina per esplorare
+                  <BrandSlashes count={1} className="ml-2" />
+                </p>
               </div>
 
               {/* Compact bento cells remain separate; overflowing cases repeat in a loop. */}

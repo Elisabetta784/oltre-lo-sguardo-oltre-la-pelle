@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
-import { BrandSlashes } from "./BrandSlashes";
 
 interface OltreCaseGridProps {
   items: ArchiveItem[];
@@ -218,13 +217,7 @@ export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProp
           ))}
         </div>
       </div>
-      {looping && (
-        <div className="shrink-0 px-1 text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
-          <BrandSlashes count={1} className="mr-2" />
-          Trascina per esplorare
-          <BrandSlashes count={1} className="ml-2" />
-        </div>
-      )}
+
     </div>
   );
 }
