@@ -267,11 +267,11 @@ export function StationModal({
                     CASO {item.number}
                   </div>
                   <div className="absolute top-3.5 right-4 z-20 text-[10px] text-black pointer-events-none">
-                    <BrandSlashes />
+                    <BrandSlashCluster />
                   </div>
 
                   {/* Artwork Image Area (Clean, Unobstructed - gallery arrows NEVER overlay the image) */}
-                  <div className="flex-1 min-h-0 w-full flex items-center justify-center pt-8 pb-1 px-4 sm:px-6 overflow-hidden">
+                  <div className="flex-1 min-h-0 w-full flex items-center justify-center pt-10 pb-1 px-4 sm:px-6 overflow-hidden">
                     <img
                       src={currentImg}
                       alt={item.title}
