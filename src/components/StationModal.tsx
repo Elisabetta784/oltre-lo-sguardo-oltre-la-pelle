@@ -263,7 +263,11 @@ export function StationModal({
                 <div className="relative w-full h-[430px] sm:h-[465px] max-h-[66vh] shrink-0 flex flex-col justify-between overflow-hidden select-none">
                   {/* Floating Badge: CASO XX (top-left, squadrato glass, no borders, sheer) */}
                   <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-none bg-white/[0.18] backdrop-blur-sm text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border-0 border-none shadow-2xs pointer-events-none">
+                    <BrandSlashes count={1} className="mr-1.5" />
                     CASO {item.number}
+                  </div>
+                  <div className="absolute top-3.5 right-4 z-20 text-[10px] text-black pointer-events-none">
+                    <BrandSlashes />
                   </div>
 
                   {/* Artwork Image Area (Clean, Unobstructed - gallery arrows NEVER overlay the image) */}
