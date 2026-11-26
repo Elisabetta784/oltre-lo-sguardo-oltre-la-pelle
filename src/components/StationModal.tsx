@@ -227,7 +227,7 @@ export function StationModal({
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
         onWheel={(e) => e.stopPropagation()}
-        className={`relative z-50 flex flex-col shrink-0 border-0 border-none ring-0 outline-none shadow-2xl shadow-black/[0.08] overflow-hidden text-black select-none rounded-none bg-white/[0.25] backdrop-blur-[12px] w-[88%] sm:w-[84%] max-w-[430px] sm:max-w-[465px] ${viewMode === "oltre" ? "h-[560px] sm:h-[600px] max-h-[82vh]" : "h-[430px] sm:h-[465px] max-h-[66vh]"} transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]`}
+        className={`relative z-50 flex flex-col shrink-0 border-0 border-none ring-0 outline-none shadow-2xl shadow-black/[0.08] overflow-hidden text-black select-none rounded-none bg-white/[0.25] backdrop-blur-[12px] w-[88%] sm:w-[84%] max-w-[430px] sm:max-w-[465px] h-[430px] sm:h-[465px] max-h-[66vh] transition-[max-width,width,max-height,height] duration-280 ease-[cubic-bezier(0.22,1,0.36,1)]`}
       >
         <AnimatePresence mode="wait" initial={false}>
           {/* =============================================================== */}
@@ -453,7 +453,7 @@ export function StationModal({
               transition={{ duration: 0.2 }}
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
-              <div className="px-5 pt-3.5 pb-2.5 flex flex-col gap-1.5 shrink-0 select-none border-b border-black/8 bg-white/20 backdrop-blur-xs">
+              <div className="px-4 py-2 flex flex-col gap-1 shrink-0 select-none border-b border-black/8 bg-white/20 backdrop-blur-xs">
                 <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase">
                     <BrandSlashes count={5} className="mr-2" />
@@ -478,7 +478,7 @@ export function StationModal({
               </div>
 
               {/* Compact bento cells remain separate; overflowing cases repeat in a loop. */}
-              <div className="flex-1 min-h-0 p-3 sm:p-4">
+              <div className="flex-1 min-h-0 p-2.5 sm:p-3">
                 <OltreCaseGrid
                   key={activeCatKey}
                   items={categoryItems}
@@ -488,22 +488,22 @@ export function StationModal({
               </div>
 
               {/* One compact editorial band: narrative, short description and selection. */}
-              <div className="@container px-4 py-3 shrink-0 border-t border-black/15 bg-white/20 backdrop-blur-xs">
-                <h3 className="font-display font-black text-[12px] sm:text-[13px] tracking-wide uppercase text-black mb-1">
+              <div className="@container px-3 py-2 shrink-0 border-t border-black/15 bg-white/20 backdrop-blur-xs">
+                <h3 className="font-display font-black text-[11px] sm:text-[12px] tracking-wide uppercase text-black mb-0.5">
                   <BrandSlashes className="mr-1.5" />
                   {currentCatConfig.label}
                 </h3>
-                <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4] min-h-[2.8em] mb-2.5">
+                <p className="font-body text-[9.5px] sm:text-[10px] text-black/85 leading-[1.35] min-h-[2.7em] mb-1.5">
                   {currentCatConfig.description}
                 </p>
-                <div className="grid grid-cols-2 @min-[340px]:grid-cols-4 gap-1.5 w-full" role="group" aria-label="Narrazioni">
+                <div className="grid grid-cols-[0.8fr_0.95fr_0.9fr_1.35fr] gap-1 w-full" role="group" aria-label="Narrazioni">
                   {OLTRE_CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
                       type="button"
                       aria-pressed={cat.id === activeCatKey}
                       onClick={() => setActiveCatKey(cat.id)}
-                      className={`min-h-8 px-2 py-1.5 rounded-none font-display font-semibold text-[8.5px] sm:text-[9px] uppercase tracking-wide whitespace-nowrap border transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                      className={`min-w-0 min-h-6 px-1 py-1 rounded-none font-display font-semibold text-[clamp(6px,2.8cqw,8.5px)] uppercase tracking-[0.01em] whitespace-nowrap border transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                         cat.id === activeCatKey
                           ? "border-black bg-black text-white"
                           : "border-black/20 bg-transparent hover:bg-white/35 text-black"
