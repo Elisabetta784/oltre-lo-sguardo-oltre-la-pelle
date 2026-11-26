@@ -341,6 +341,7 @@ export function StationModal({
 
                     {/* Title */}
                     <h2 className="font-display font-black text-[13px] sm:text-[14px] leading-tight uppercase text-black tracking-tight">
+                      <BrandSlashes className="mr-1.5" />
                       {item.title}
                     </h2>
 
@@ -364,7 +365,7 @@ export function StationModal({
                     <div className="mt-1 pt-2 border-t border-black/8 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[9px]">
                       <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                          Segno
+                          <BrandSlashes count={1} className="mr-1" /> Segno
                         </span>
                         <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
                           {item.segno || "—"}
@@ -373,7 +374,7 @@ export function StationModal({
 
                       <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                          Tono
+                          <BrandSlashes count={1} className="mr-1" /> Tono
                         </span>
                         <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
                           {item.tono || "—"}
@@ -382,7 +383,7 @@ export function StationModal({
 
                       <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                          Tipologia
+                          <BrandSlashes count={1} className="mr-1" /> Tipologia
                         </span>
                         <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
                           {item.tipologia || "—"}
@@ -391,7 +392,7 @@ export function StationModal({
 
                       <div>
                         <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                          Media
+                          <BrandSlashes count={1} className="mr-1" /> Media
                         </span>
                         <span className="font-body font-bold text-black text-[8.5px] sm:text-[9px] leading-tight block mt-0.5">
                           {item.tipoDiMedia || "—"}
@@ -401,7 +402,7 @@ export function StationModal({
                       {item.stileVisivo && (
                         <div className="col-span-2 sm:col-span-4 pt-1.5 border-t border-black/8">
                           <span className="block font-display font-semibold text-[7px] sm:text-[7.5px] uppercase tracking-wider text-black/45">
-                            Stile visivo
+                            <BrandSlashes count={1} className="mr-1" /> Stile visivo
                           </span>
                           <span className="font-body text-black/90 text-[8.5px] sm:text-[9px] leading-relaxed text-left text-pretty hyphens-auto block mt-0.5">
                             {item.stileVisivo?.replace(/\s+/g, ' ')}
@@ -451,6 +452,7 @@ export function StationModal({
               <div className="px-5 pt-3.5 pb-2.5 flex flex-col gap-1.5 shrink-0 select-none border-b border-black/8 bg-white/20 backdrop-blur-xs">
                 <div className="flex items-center justify-between gap-4">
                   <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase">
+                    <BrandSlashes count={5} className="mr-2" />
                     Narrazioni
                   </h2>
                   <BrandSlashCluster />
@@ -488,6 +490,7 @@ export function StationModal({
                 </div>
                 <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4] mb-3">
                   {currentCatConfig.description}
+                  <BrandSlashes className="ml-2" />
                 </p>
                 <div className="grid grid-cols-2 @min-[340px]:grid-cols-4 gap-1.5 w-full" role="group" aria-label="Narrazioni">
                   {OLTRE_CATEGORIES.map((cat) => (

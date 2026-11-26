@@ -194,6 +194,7 @@ export function FilterSidebar({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="font-display font-bold text-xs uppercase tracking-wider text-black">
+                    <BrandSlashes className="mr-1.5" />
                     FILTRI ARCHIVIO
                   </span>
                 </div>
@@ -299,7 +300,7 @@ export function FilterSidebar({
                   return (
                     <div key={catKey} className="mb-2.5">
                       <div className="font-display font-bold text-[10.5px] uppercase tracking-wider text-black mb-1 pb-0.5 border-b border-black/15 flex items-center justify-between">
-                        <span>{catDef.label}</span>
+                        <span><BrandSlashes count={1} className="mr-1.5" />{catDef.label}</span>
                         <span className="font-display text-[9px] font-medium text-black/50">
                           {catDef.options.length} OPZIONI
                         </span>

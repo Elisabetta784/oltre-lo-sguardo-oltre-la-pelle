@@ -469,6 +469,7 @@ export function BeyondView({
                   </div>
 
                   <h3 className="font-display text-sm sm:text-base font-black text-black tracking-tight uppercase mb-1">
+                    <BrandSlashes count={5} className="mr-2" />
                     {activeCategory.label}
                   </h3>
                   <p className="font-body text-[10px] text-black/65 mb-3 leading-tight">
@@ -494,6 +495,7 @@ export function BeyondView({
 
                   <div className="font-body text-[10.5px] text-black leading-relaxed text-left text-pretty hyphens-auto opacity-95 pt-2 border-t border-black/10">
                     {activeCategory.considerations?.replace(/\s+/g, ' ')}
+                    <BrandSlashes className="ml-2" />
                   </div>
 
                   <div className="mt-4 pt-2 border-t border-black/15 flex items-center justify-between font-body text-[8.5px] text-black/60 uppercase tracking-wider">

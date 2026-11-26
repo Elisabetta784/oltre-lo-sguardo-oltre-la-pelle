@@ -61,7 +61,7 @@ export function MicroView({
         </button>
 
         <div className="flex items-center gap-3">
-          <span className="hidden sm:inline font-body text-black/50">ARCHIVIO DEI SEGNI</span>
+          <span className="hidden sm:inline font-body text-black/50"><BrandSlashes count={5} className="mr-2" />ARCHIVIO DEI SEGNI</span>
           <span className="text-black/30">•</span>
           <span className="font-display font-bold text-black">
             CASO {String(currentIndex + 1).padStart(3, "0")} / {String(totalItems).padStart(3, "0")}
@@ -215,6 +215,7 @@ export function MicroView({
           <div className="w-full flex items-end justify-between font-body text-[10px] text-black/60 uppercase tracking-wider z-10">
             <div>
               ARCHIVIO · SEGNI E TESTIMONIANZE
+              <BrandSlashes className="ml-2" />
               <br />
               <span className="opacity-75">STATUS: CONSERVATO</span>
             </div>
@@ -394,6 +395,7 @@ export function MicroView({
               <div>
                 <span className="text-[10px] text-black/50 uppercase block mb-0.5 font-semibold">
                   SEGNATURA ARCHIVIO · CLASSIFICAZIONE
+                  <BrandSlashes className="ml-2" />
                 </span>
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-black">
                   № {item.number}
