@@ -459,22 +459,22 @@ export function StationModal({
                     <BrandSlashes count={5} className="mr-2" />
                     Narrazioni
                   </h2>
-                  <div className="flex items-center gap-3">
-                    <BrandSlashCluster />
-                    <button
-                      type="button"
-                      onClick={() => setViewMode("image")}
-                      aria-label="Torna all’opera"
-                      className="min-h-8 px-2 py-1 rounded-none bg-transparent hover:bg-white/30 text-black font-display font-medium text-[10px] sm:text-[10.5px] tracking-wide flex items-center gap-1.5 transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                    >
-                      <ArrowLeft className="w-3.5 h-3.5" />
-                      <span>Opera</span>
-                    </button>
-                  </div>
+                  <BrandSlashCluster />
                 </div>
-                <p className="w-full text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
-                  Trascina per esplorare
-                </p>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("image")}
+                    aria-label="Torna all’opera"
+                    className="shrink-0 min-h-8 px-2.5 py-1 rounded-none border border-black/15 bg-white/50 hover:bg-white/80 text-black font-display font-semibold text-[9.5px] sm:text-[10px] tracking-wide flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span>Opera</span>
+                  </button>
+                  <p className="flex-1 min-w-0 text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
+                    Trascina per esplorare
+                  </p>
+                </div>
               </div>
 
               {/* Compact bento cells remain separate; overflowing cases repeat in a loop. */}
