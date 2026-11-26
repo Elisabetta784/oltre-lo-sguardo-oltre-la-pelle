@@ -431,7 +431,7 @@ export function StationModal({
                         onClick={() => setViewMode("oltre")}
                         className="px-3.5 py-1 rounded-none bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer border-0 border-none"
                       >
-                        <span className="w-1.5 h-1.5 rounded-none bg-white/90" />
+                        <BrandSlashes className="opacity-100" />
                         <span>OLTRE</span>
                       </button>
                     </div>
