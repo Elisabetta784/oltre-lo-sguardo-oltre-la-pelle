@@ -115,6 +115,9 @@ export function StationModal({
   }, [onClose]);
 
   const currentImg = allImages[imgIdx] || item.imageUrl || item.thumbnailUrl || "";
+  const itemCategoryConfig = OLTRE_CATEGORIES.find(
+    (category) => category.id === getOltreCategoryForCase(item.id)
+  ) || OLTRE_CATEGORIES[0];
 
   // Oltre category config and items
   const currentCatConfig = useMemo(
@@ -261,10 +264,9 @@ export function StationModal({
               >
                 {/* SCREEN 1: Large Artwork Image View (fills first screen of modal) */}
                 <div className="relative w-full h-[430px] sm:h-[465px] max-h-[66vh] shrink-0 flex flex-col justify-between overflow-hidden select-none">
-                  {/* Floating Badge: CASO XX (top-left, squadrato glass, no borders, sheer) */}
-                  <div className="absolute top-3.5 left-4 z-20 px-3 py-0.5 rounded-none bg-white/[0.18] backdrop-blur-sm text-black font-display font-semibold text-[8px] sm:text-[8.5px] uppercase tracking-wider border-0 border-none shadow-2xs pointer-events-none">
-                    <BrandSlashes count={1} className="mr-1.5" />
-                    CASO {item.number}
+                  {/* Plain artwork caption, with its archive category. */}
+                  <div className="absolute top-3.5 left-4 right-24 z-20 text-black font-display font-semibold text-[8px] sm:text-[8.5px] leading-[1.4] uppercase tracking-wide pointer-events-none">
+                    CASO {item.number} – {itemCategoryConfig.tabLabel}
                   </div>
                   <div className="absolute top-3.5 right-4 z-20 text-[10px] text-black pointer-events-none">
                     <BrandSlashCluster />
@@ -428,7 +430,10 @@ export function StationModal({
 
                       <button
                         type="button"
-                        onClick={() => setViewMode("oltre")}
+                        onClick={() => {
+                          setActiveCatKey(getOltreCategoryForCase(item.id));
+                          setViewMode("oltre");
+                        }}
                         className="px-3.5 py-1 rounded-none bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer border-0 border-none"
                       >
                         <BrandSlashes className="opacity-100" />

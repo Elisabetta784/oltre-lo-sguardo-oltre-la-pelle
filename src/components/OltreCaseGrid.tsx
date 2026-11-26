@@ -40,6 +40,7 @@ function packRows(ratios: number[], width: number): number[][] {
 export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
+  const selectedTileRef = useRef<HTMLButtonElement>(null);
   const cycleHeight = useRef(0);
   const [width, setWidth] = useState(280);
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -78,11 +79,28 @@ export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProp
   }, []);
 
   useEffect(() => {
-    if (viewportRef.current) {
-      viewportRef.current.scrollTop = looping ? cycleHeight.current : 0;
-    }
-    lastInteraction.current = performance.now();
-  }, [looping]);
+    const frame = requestAnimationFrame(() => {
+      const viewport = viewportRef.current;
+      const copy = copyRef.current;
+      if (!viewport || !copy) return;
+      const cycle = copy.offsetHeight + 4;
+      cycleHeight.current = cycle;
+      const selected = selectedTileRef.current;
+      if (selected) {
+        const tileRect = selected.getBoundingClientRect();
+        const viewportRect = viewport.getBoundingClientRect();
+        const target = viewport.scrollTop + tileRect.top - viewportRect.top
+          + tileRect.height / 2 - viewport.clientHeight / 2;
+        viewport.scrollTop = looping
+          ? cycle + ((target % cycle) + cycle) % cycle
+          : Math.max(0, target);
+      } else {
+        viewport.scrollTop = looping ? cycle : 0;
+      }
+      lastInteraction.current = performance.now();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [looping, width, viewportHeight, selectedId]);
 
   useEffect(() => {
     if (!looping || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -195,17 +213,17 @@ export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProp
                     return (
                       <button
                         key={item.id}
+                        ref={item.id === selectedId && (!looping || copy === 1) ? selectedTileRef : undefined}
                         type="button"
                         tabIndex={looping && copy !== 1 ? -1 : 0}
                         onClick={() => onSelect(item)}
                         title={`${item.number} — ${item.title} (${item.authorOrSubject})`}
                         aria-label={`Caso ${item.number}: ${item.title}`}
+                        aria-current={item.id === selectedId ? "true" : undefined}
                         style={{
                           flex: `${ratios[index]} 1 0%`,
                         }}
-                        className={`group relative min-w-0 min-h-0 overflow-hidden cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-black hover:bg-white/30 ${
-                          item.id === selectedId ? "ring-2 ring-inset ring-black bg-black/5" : ""
-                        }`}
+                        className="group relative min-w-0 min-h-0 overflow-hidden cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-black hover:bg-white/30"
                       >
                         {image ? (
                           <img
@@ -220,6 +238,9 @@ export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProp
                           />
                         ) : (
                           <span className="text-[9px] font-mono">{item.number}</span>
+                        )}
+                        {item.id === selectedId && (
+                          <span aria-hidden="true" className="absolute inset-0 z-10 border-2 border-[#B52B2B] pointer-events-none" />
                         )}
                         <span className="absolute top-1 left-1 px-1 bg-black/75 text-white text-[7px] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100">
                           {item.number}
