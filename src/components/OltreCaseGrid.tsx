@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
 
 interface OltreCaseGridProps {
@@ -219,32 +218,8 @@ export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProp
         </div>
       </div>
       {looping && (
-        <div className="shrink-0 flex items-center justify-between gap-2 px-1 text-black font-display text-[9px] uppercase tracking-wide">
-          <span>Scorri o trascina per esplorare</span>
-          <div className="flex gap-1">
-            <button
-              type="button"
-              aria-label="Scorri i casi studio verso l’alto"
-              className="p-1 bg-white/50 hover:bg-black hover:text-white cursor-pointer"
-              onClick={() => {
-                lastInteraction.current = performance.now();
-                viewportRef.current?.scrollBy(0, -120);
-              }}
-            >
-              <ArrowUp className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              aria-label="Scorri i casi studio verso il basso"
-              className="p-1 bg-white/50 hover:bg-black hover:text-white cursor-pointer"
-              onClick={() => {
-                lastInteraction.current = performance.now();
-                viewportRef.current?.scrollBy(0, 120);
-              }}
-            >
-              <ArrowDown className="w-3.5 h-3.5 motion-safe:animate-bounce" />
-            </button>
-          </div>
+        <div className="shrink-0 px-1 text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
+          Trascina per esplorare
         </div>
       )}
     </div>
