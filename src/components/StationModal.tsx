@@ -487,25 +487,14 @@ export function StationModal({
                 />
               </div>
 
-              {/* Fixed category controls remain reachable below the complete grid. */}
-              <div className="@container px-4 py-2.5 shrink-0 border-t border-black/8 bg-white/30 backdrop-blur-xs">
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[9.5px] font-bold text-black/60 tracking-wider">
-                      {currentCatConfig.num}
-                    </span>
-                    <BrandSlashes count={1} />
-                    <h3 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase text-black whitespace-nowrap">
-                      {currentCatConfig.label}
-                    </h3>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-none bg-white/[0.22] text-black font-mono text-[8px] tracking-widest font-semibold border-0">
-                    {categoryItems.length} OPERE
-                  </span>
-                </div>
-                <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4] mb-3">
+              {/* One compact editorial band: narrative, short description and selection. */}
+              <div className="@container px-4 py-3 shrink-0 border-t border-black/15 bg-white/20 backdrop-blur-xs">
+                <h3 className="font-display font-black text-[12px] sm:text-[13px] tracking-wide uppercase text-black mb-1">
+                  <BrandSlashes className="mr-1.5" />
+                  {currentCatConfig.label}
+                </h3>
+                <p className="font-body text-[10px] sm:text-[11px] text-black/85 leading-[1.4] min-h-[2.8em] mb-2.5">
                   {currentCatConfig.description}
-                  <BrandSlashes className="ml-2" />
                 </p>
                 <div className="grid grid-cols-2 @min-[340px]:grid-cols-4 gap-1.5 w-full" role="group" aria-label="Narrazioni">
                   {OLTRE_CATEGORIES.map((cat) => (
@@ -514,10 +503,10 @@ export function StationModal({
                       type="button"
                       aria-pressed={cat.id === activeCatKey}
                       onClick={() => setActiveCatKey(cat.id)}
-                      className={`min-h-8 px-2 py-1.5 rounded-none font-display font-semibold text-[8.5px] sm:text-[9px] uppercase tracking-wide whitespace-nowrap shadow-2xs transition-colors cursor-pointer border-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                      className={`min-h-8 px-2 py-1.5 rounded-none font-display font-semibold text-[8.5px] sm:text-[9px] uppercase tracking-wide whitespace-nowrap border transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                         cat.id === activeCatKey
-                          ? "bg-black text-white"
-                          : "bg-white/[0.18] hover:bg-white/[0.35] text-black"
+                          ? "border-black bg-black text-white"
+                          : "border-black/20 bg-transparent hover:bg-white/35 text-black"
                       }`}
                     >
                       {cat.tabLabel}

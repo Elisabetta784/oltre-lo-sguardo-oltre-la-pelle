@@ -23,7 +23,7 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
     tabLabel: "Eroico",
     tagline: "Celebrazione, fierezza & riscatto",
     description:
-      "La cicatrice come trofeo di sopravvivenza, forza e riscatto. Il corpo esibisce il segno con fierezza celebrativa, trasformando la vulnerabilità in monumento di resilienza.",
+      "La cicatrice come segno di forza, sopravvivenza e riscatto.",
   },
   {
     id: "denuncia",
@@ -32,7 +32,7 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
     tabLabel: "Denuncia",
     tagline: "Rivendicazione, accusa & giustizia sociale",
     description:
-      "La ferita come atto d'accusa contro violenze sistemiche, abusi patriarcali o conflitti armati. Il corpo segnato si fa manifesto politico e prova tangibile di ingiustizia sociale.",
+      "Il corpo segnato denuncia violenze e ingiustizie sociali.",
   },
   {
     id: "testimonianza",
@@ -41,7 +41,7 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
     tabLabel: "Politico",
     tagline: "Memoria storica, archivio & documento",
     description:
-      "Il corpo come documento storico e archivio vivente. La cicatrice si fa traccia testimoniale indelebile per custodire la memoria collettiva e resistere all'oblio del tempo.",
+      "La cicatrice custodisce la memoria e diventa voce collettiva.",
   },
   {
     id: "normalizzazione",
@@ -50,7 +50,7 @@ export const OLTRE_CATEGORIES: OltreCategoryConfig[] = [
     tabLabel: "Normalizzato",
     tagline: "De-stigmatizzazione & pelle reale",
     description:
-      "La cicatrice restituita alla sua ordinaria umanità e quotidianità o risignificata attraverso il gesto artistico. La pelle reale diventa presenza, ornamento e linguaggio visivo, oltre i canoni omologati.",
+      "La pelle reale diventa espressione, presenza e quotidianità.",
   },
 ];
 
