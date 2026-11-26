@@ -25,7 +25,7 @@ export function HeaderNav({
                 : "text-black/40 hover:text-black font-normal"
             }`}
           >
-            OLTRE
+            ARCHIVIO
           </button>
 
           <button

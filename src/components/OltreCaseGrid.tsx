@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
+import { ARCHIVE_THUMBNAILS } from "@/data/archiveThumbnails";
 
 interface OltreCaseGridProps {
   items: ArchiveItem[];
@@ -184,7 +185,13 @@ export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProp
                 >
                   {row.map((index) => {
                     const item = items[index];
-                    const image = item.imageUrl || item.thumbnailUrl || item.galleryUrls?.[0];
+                    const original = item.imageUrl || item.galleryUrls?.[0] || item.thumbnailUrl;
+                    const thumbnail = original ? ARCHIVE_THUMBNAILS[original] : undefined;
+                    const image = thumbnail?.src || item.thumbnailUrl || original;
+                    const originalWidth = ARCHIVE_ASPECT_RATIOS[item.id]?.w;
+                    const sources = thumbnail?.width && original && originalWidth && originalWidth > thumbnail.width
+                      ? `${thumbnail.src} ${thumbnail.width}w, ${original} ${originalWidth}w`
+                      : undefined;
                     return (
                       <button
                         key={item.id}
@@ -201,7 +208,16 @@ export function OltreCaseGrid({ items, selectedId, onSelect }: OltreCaseGridProp
                         }`}
                       >
                         {image ? (
-                          <img src={image} alt={item.title} draggable={false} loading="lazy" className="w-full h-full object-cover" />
+                          <img
+                            src={image}
+                            srcSet={sources}
+                            sizes={`${Math.ceil(rowHeights[rowIndex] * ratios[index])}px`}
+                            alt={item.title}
+                            draggable={false}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <span className="text-[9px] font-mono">{item.number}</span>
                         )}

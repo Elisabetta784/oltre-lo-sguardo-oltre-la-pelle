@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Info, ExternalLink } from "lucide-react";
 import { ArchiveItem } from "@/data/archiveData";
+import { getArchiveThumbnail } from "@/data/archiveThumbnails";
 import { AudioPlayerSnippet } from "./AudioPlayerSnippet";
 import { BrandSlashes } from "./BrandSlashes";
 
@@ -192,7 +193,7 @@ export function MicroView({
                       : "border-black/20 opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <img src={item.imageUrl} alt="" className="w-full h-full object-cover pointer-events-none" />
+                  <img src={getArchiveThumbnail(item.imageUrl)} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover pointer-events-none" />
                 </div>
                 {item.galleryUrls.map((gUrl, gIdx) => (
                   <div
@@ -204,7 +205,7 @@ export function MicroView({
                         : "border-black/20 opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <img src={gUrl} alt="" className="w-full h-full object-cover pointer-events-none" />
+                    <img src={getArchiveThumbnail(gUrl)} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover pointer-events-none" />
                   </div>
                 ))}
               </div>

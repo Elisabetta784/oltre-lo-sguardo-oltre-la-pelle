@@ -432,7 +432,7 @@ export function StationModal({
                         className="px-3.5 py-1 rounded-none bg-black text-white hover:bg-black/85 font-display font-semibold text-[8px] sm:text-[8.5px] tracking-wider uppercase flex items-center gap-1.5 shadow-sm transition-all cursor-pointer border-0 border-none"
                       >
                         <BrandSlashes className="opacity-100" />
-                        <span>OLTRE</span>
+                        <span>ARCHIVIO</span>
                       </button>
                     </div>
                   </div>
@@ -451,16 +451,11 @@ export function StationModal({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="Archivio dei casi studio"
               className="relative w-full h-full flex flex-col overflow-hidden select-none"
             >
               <div className="px-4 py-2 flex flex-col gap-1 shrink-0 select-none border-b border-black/8 bg-white/20 backdrop-blur-xs">
-                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                  <h2 className="font-display font-black text-[12px] sm:text-[13px] tracking-wider uppercase">
-                    <BrandSlashes count={5} className="mr-2" />
-                    Narrazioni
-                  </h2>
-                  <BrandSlashCluster />
-                </div>
                 <div className="grid grid-cols-[4.5rem_minmax(0,1fr)_4.5rem] items-center gap-2">
                   <button
                     type="button"
@@ -472,8 +467,9 @@ export function StationModal({
                     <span>Opera</span>
                   </button>
                   <p className="min-w-0 text-center text-black font-display text-[9px] uppercase tracking-wide motion-safe:animate-pulse motion-safe:[animation-duration:3s]">
-                    Trascina per esplorare
+                    Scorri per esplorare l’archivio
                   </p>
+                  <BrandSlashCluster className="justify-self-end" />
                 </div>
               </div>
 
@@ -496,7 +492,7 @@ export function StationModal({
                 <p className="font-body text-[9.5px] sm:text-[10px] text-black/85 leading-[1.35] min-h-[2.7em] mb-1.5">
                   {currentCatConfig.description}
                 </p>
-                <div className="grid grid-cols-[0.8fr_0.95fr_0.9fr_1.35fr] gap-1 w-full" role="group" aria-label="Narrazioni">
+                <div className="grid grid-cols-[0.8fr_0.95fr_0.9fr_1.35fr] gap-1 w-full" role="group" aria-label="Categorie dell’archivio">
                   {OLTRE_CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}

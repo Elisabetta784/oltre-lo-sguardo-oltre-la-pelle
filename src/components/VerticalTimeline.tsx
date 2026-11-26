@@ -41,7 +41,7 @@ export function VerticalTimeline({
     currentView === "micro"
       ? String(safeActiveIndex + 1).padStart(3, "0")
       : currentView === "beyond"
-      ? "OLTRE"
+      ? "ARCHIVIO"
       : zoomLevel <= 0.25
       ? "MACRO"
       : `${Math.round(zoomLevel * 100)}%`;
@@ -139,9 +139,9 @@ export function VerticalTimeline({
                 ? "text-black font-black underline underline-offset-4 decoration-2"
                 : "text-black/40 hover:text-black font-medium"
             }`}
-            title="Vista Oltre (0%)"
+            title="Vista Archivio (0%)"
           >
-            OLTRE
+            ARCHIVIO
           </button>
 
           {/* 2. MACRO (24%) */}
@@ -190,7 +190,7 @@ export function VerticalTimeline({
           onPointerUp={handlePointerUp}
           onWheel={handleWheel}
           className="relative w-5 sm:w-6 flex items-center justify-center cursor-pointer group"
-          title="Trascina o usa la rotellina per zoomare tra Oltre, Macro e Micro"
+          title="Trascina o usa la rotellina per zoomare tra Archivio, Macro e Micro"
         >
           {/* Central Track Line */}
           <div className="relative w-[1.5px] h-full bg-black/20 group-hover:bg-black/60 transition-colors">

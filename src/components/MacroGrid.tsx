@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState, useMemo, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2 } from "lucide-react";
 import { ArchiveItem, ARCHIVE_ASPECT_RATIOS } from "@/data/archiveData";
+import { getArchiveThumbnail } from "@/data/archiveThumbnails";
 import { StationModal } from "./StationModal";
 import { BrandSlashes, BrandSlashCluster } from "./BrandSlashes";
 
@@ -295,7 +296,7 @@ function getThreePortionsLayout(
       ...itemToDupP2,
       id: `${itemToDupP2.id}-alt`,
       imageUrl: "/archive/case-028-1.jpg",
-      thumbnailUrl: "/archive/case-028-1.jpg",
+      thumbnailUrl: getArchiveThumbnail("/archive/case-028-1.jpg"),
     };
     const p2Items = [...baseP2, dupP2];
 
@@ -306,7 +307,7 @@ function getThreePortionsLayout(
       ...itemToDupP3,
       id: `${itemToDupP3.id}-alt`,
       imageUrl: "/archive/case-053-1.jpg",
-      thumbnailUrl: "/archive/case-053-1.jpg",
+      thumbnailUrl: getArchiveThumbnail("/archive/case-053-1.jpg"),
     };
     const p3Items = [...baseP3, dupP3];
 

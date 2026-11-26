@@ -275,7 +275,7 @@ export function BeyondView({
             </button>
             <BrandSlashes count={1} />
             <span className="font-display text-xs sm:text-[13px] font-black tracking-widest text-black uppercase whitespace-nowrap">
-              OLTRE · VISIONE SISTEMICA
+              ARCHIVIO · VISIONE SISTEMICA
             </span>
             <BrandSlashCluster className="hidden sm:inline-flex" />
           </div>

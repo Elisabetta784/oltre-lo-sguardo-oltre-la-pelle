@@ -261,7 +261,7 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "thumbnailUrl": "/archive/thumbs/case-003.jpg",
     "galleryUrls": [
       "/archive/case-003-1.jpg",
-      "/archive/case-003-2.jpg"
+      "/archive/case-003-2.webp"
     ],
     "excerpt": "Lanciata nel 2014 dal brand Aerie, la campagna rivoluziona la comunicazione dell'intimo eliminando del tutto l'aerografo e Photoshop. Mostrando modelle e donne reali con smagliatur..."
   },
@@ -600,8 +600,8 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "imageUrl": "/archive/case-012.jpg",
     "thumbnailUrl": "/archive/thumbs/case-012.jpg",
     "galleryUrls": [
-      "/archive/case-012-1.jpg",
-      "/archive/case-012-2.jpg"
+      "/archive/case-012-1.webp",
+      "/archive/case-012-2.webp"
     ],
     "excerpt": "Reportage editoriale che promuove la de-stigmatizzazione delle smagliature nei servizi premaman, invitando a vivere i cambiamenti epidermici con serenità e orgoglio."
   },
@@ -1140,19 +1140,19 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "non ne provo vergogna",
-    "imageUrl": "/archive/case-026.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-026.jpg",
+    "imageUrl": "/archive/case-026.webp",
+    "thumbnailUrl": "/archive/thumbs/case-026.webp",
     "galleryUrls": [
-      "/archive/case-026-1.jpg",
-      "/archive/case-026-2.jpg",
-      "/archive/case-026-3.jpg",
-      "/archive/case-026-4.jpg",
-      "/archive/case-026-5.jpg",
-      "/archive/case-026-6.jpg",
-      "/archive/case-026-7.jpg",
-      "/archive/case-026-8.jpg",
+      "/archive/case-026-1.webp",
+      "/archive/case-026-2.webp",
+      "/archive/case-026-3.webp",
+      "/archive/case-026-4.webp",
+      "/archive/case-026-5.webp",
+      "/archive/case-026-6.webp",
+      "/archive/case-026-7.webp",
+      "/archive/case-026-8.webp",
       "/archive/case-026-9.jpg",
-      "/archive/case-026-10.jpg"
+      "/archive/case-026-10.webp"
     ],
     "excerpt": "Autoritratto che espone la cicatrice della mastectomia sulla copertina del New York Times Magazine (1993), rompendo il silenzio e la vergogna legati alla malattia."
   },
@@ -1271,7 +1271,7 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
       "/archive/case-029-1.jpg",
       "/archive/case-029-2.jpg",
       "/archive/case-029-3.jpg",
-      "/archive/case-029-4.jpg"
+      "/archive/case-029-4.webp"
     ],
     "excerpt": "Serie fotografica nata per elaborare la mastectomia e le terapie oncologiche dell'attrice: l'opera rifiuta la retorica della vittima per celebrare sensualità, energia e nuova ident..."
   },
@@ -1344,13 +1344,13 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "non ne provo vergogna",
-    "imageUrl": "/archive/case-031.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-031.jpg",
+    "imageUrl": "/archive/case-031.webp",
+    "thumbnailUrl": "/archive/thumbs/case-031.webp",
     "galleryUrls": [
-      "/archive/case-031-1.jpg",
-      "/archive/case-031-2.jpg",
-      "/archive/case-031-3.jpg",
-      "/archive/case-031-4.jpg"
+      "/archive/case-031-1.webp",
+      "/archive/case-031-2.webp",
+      "/archive/case-031-3.webp",
+      "/archive/case-031-4.webp"
     ],
     "excerpt": "Campagna fotografica e narrativa dedicata a bambini nati con cardiopatie congenite: valorizza la cicatrice sternotomica 'zipper' come simbolo di forza, sopravvivenza e fierezza."
   },
@@ -1577,11 +1577,11 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "ne provo vergogna",
-    "imageUrl": "/archive/case-037.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-037.jpg",
+    "imageUrl": "/archive/case-037.webp",
+    "thumbnailUrl": "/archive/thumbs/case-037.webp",
     "galleryUrls": [
       "/archive/case-037-1.jpg",
-      "/archive/case-037-2.jpg"
+      "/archive/case-037-2.webp"
     ],
     "excerpt": "Serie di intensi ritratti a olio dedicata a giovani sopravvissuti a gravi ustioni, nata dalla collaborazione con un centro grandi ustionati, per restituire valore al vissuto e alla..."
   },
@@ -1654,12 +1654,12 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "non ne provo vergogna",
-    "imageUrl": "/archive/case-039.jpg",
+    "imageUrl": "/archive/case-039.webp",
     "thumbnailUrl": "/archive/thumbs/case-039.jpg",
     "galleryUrls": [
-      "/archive/case-039-1.jpg",
-      "/archive/case-039-2.jpg",
-      "/archive/case-039-3.jpg"
+      "/archive/case-039-1.webp",
+      "/archive/case-039-2.webp",
+      "/archive/case-039-3.webp"
     ],
     "excerpt": "Progetto documentario corale che attraverso il ritratto fotografico e le parole dirette dei protagonisti valorizza le cicatrici fisiche e interiori come segni di resilienza e rinas..."
   },
@@ -1849,8 +1849,8 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "imageUrl": "/archive/case-044.jpg",
     "thumbnailUrl": "/archive/thumbs/case-044.jpg",
     "galleryUrls": [
-      "/archive/case-044-1.jpg",
-      "/archive/case-044-2.jpg"
+      "/archive/case-044-1.webp",
+      "/archive/case-044-2.webp"
     ],
     "excerpt": "Campagna di sensibilizzazione di ASTi che utilizza il formato di un catalogo di moda per denunciare il legame tra l'uso di acido nell'industria tessile e gli attacchi con l'acido n..."
   },
@@ -2387,11 +2387,11 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "non ne provo vergogna",
-    "imageUrl": "/archive/case-058.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-058.jpg",
+    "imageUrl": "/archive/case-058.webp",
+    "thumbnailUrl": "/archive/thumbs/case-058.webp",
     "galleryUrls": [
-      "/archive/case-058-1.jpg",
-      "/archive/case-058-2.jpg"
+      "/archive/case-058-1.webp",
+      "/archive/case-058-2.webp"
     ],
     "excerpt": "Reportage sulla mobilitazione pro-democrazia a Khartoum e Omdurman: i traumi e le lesioni dei manifestanti raccontano la tenacia e il sacrificio della resistenza civile."
   },
@@ -2426,10 +2426,10 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "non ne provo vergogna",
-    "imageUrl": "/archive/case-059.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-059.jpg",
+    "imageUrl": "/archive/case-059.webp",
+    "thumbnailUrl": "/archive/thumbs/case-059.webp",
     "galleryUrls": [
-      "/archive/case-059-1.jpg"
+      "/archive/case-059-1.webp"
     ],
     "excerpt": "Cronaca dello scavo e del soccorso durante l'assedio della Ghouta orientale: le ferite e le mani nude dei soccorritori diventano emblema di resilienza e umanità estrema."
   },
@@ -2693,10 +2693,10 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "ne provo vergogna",
-    "imageUrl": "/archive/case-066.jpg",
+    "imageUrl": "/archive/case-066.webp",
     "thumbnailUrl": "/archive/thumbs/case-066.jpg",
     "galleryUrls": [
-      "/archive/case-066-1.jpg"
+      "/archive/case-066-1.webp"
     ],
     "excerpt": "Corpus fotografico monumentale che ritrae veterani delle guerre in Iraq e Afghanistan segnati da gravi ustioni, esplosioni e innesti cutanei, esponendo il costo corporeo e permanen..."
   },
@@ -2803,8 +2803,8 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "ne provo vergogna",
-    "imageUrl": "/archive/case-069.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-069.jpg",
+    "imageUrl": "/archive/case-069.webp",
+    "thumbnailUrl": "/archive/thumbs/case-069.webp",
     "galleryUrls": [],
     "excerpt": "Documentario d'inchiesta che ricostruisce la morte per percosse del tassista afghano Dilawar a Bagram, smascherando la tortura e gli abusi come prassi istituzionalizzata."
   },
@@ -2840,10 +2840,10 @@ export const ARCHIVE_ITEMS: ArchiveItem[] = [
     "percezioneEstetica": "Visto come respingente",
     "valenzaDelRicordo": "legato a un ricordo negativo",
     "sensoDiVergogna": "ne provo vergogna",
-    "imageUrl": "/archive/case-071.jpg",
-    "thumbnailUrl": "/archive/thumbs/case-071.jpg",
+    "imageUrl": "/archive/case-071.webp",
+    "thumbnailUrl": "/archive/thumbs/case-071.webp",
     "galleryUrls": [
-      "/archive/case-071-1.jpg"
+      "/archive/case-071-1.webp"
     ],
     "excerpt": "Ricerca storica sul progetto che portò 25 giovani hibakusha negli Stati Uniti per interventi di chirurgia ricostruttiva sulle cicatrici e sui cheloidi da radiazioni atomiche."
   },
